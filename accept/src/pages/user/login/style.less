@@ -1,0 +1,116 @@
+@import '~antd/es/style/themes/default.less';
+
+.main {
+  width: 400px;
+  position: absolute;
+  right: 10%;
+  top: 0;
+  margin-top: calc((100vh - 200px - 452px) /2);
+  @media screen and (max-width: @screen-sm) {
+    width: 95%;
+    right: 2.5%;
+  }
+
+  .LoginComponentsBg {
+    background: rgba(0, 0, 0, 0.5);
+    padding-bottom: 20px;
+  }
+
+  .top {
+    font-size: 28px;
+    text-align: center;
+    color: #fff;
+    font-weight: bold;
+    margin-bottom: 45px;
+  }
+
+  .icon {
+    margin-left: 16px;
+    color: rgba(0, 0, 0, 0.2);
+    font-size: 24px;
+    vertical-align: middle;
+    cursor: pointer;
+    transition: color 0.3s;
+
+    &:hover {
+      color: @primary-color;
+    }
+  }
+
+  .other {
+    width: 80%;
+    margin: 0 auto;
+    font-size: 16px;
+
+    .forget {
+      float: left;
+      color: #fff;
+    }
+
+    .register {
+      float: right;
+    }
+
+    :global {
+      .ant-btn-lg {
+        height: 50px;
+        font-size: 20px;
+      }
+
+      .ant-form-item{
+        margin: 0 2px 5px;
+      }
+    }
+  }
+
+  :global {
+    .ant-input-affix-wrapper{ 
+      .ant-input-prefix {
+        left: 0;
+      }
+
+      .ant-input-prefix:before {
+        display: inline-block;
+        content: ' ';
+        width: 60px;
+        height: 60px;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #ccc;
+        border-radius: 4px 0 0 4px;
+      }
+
+      .anticon {
+        position: relative;
+        left: 24px;
+      }
+
+      input {
+        height: 60px;
+        padding-left: 80px!important;
+      }
+    }
+
+    .antd-pro-login-submit {
+      width: 100%;
+      margin-top: 24px;
+    }
+
+    .ant-tabs-nav {
+      width: 100%;
+
+      .ant-tabs-tab {
+        width: 50%;
+        margin-right: 0;
+        font-size: 18px;
+        color: #fff;
+      }
+
+      .ant-tabs-tab-active {
+        color: #1890ff;
+      }
+    }
+  }
+}
