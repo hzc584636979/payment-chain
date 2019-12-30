@@ -1,4 +1,4 @@
-import { fakebuyOrder, fakeBuyOrderSearchAll, fakeBuyOrderReceipt } from '@/services/api';
+import { fakeBuyOrder, fakeBuyOrderSearchAll, fakeBuyOrderReceipt, fakeBuyOrderExport } from '@/services/api';
 
 const Model = {
   namespace: 'buyOrder',
@@ -28,13 +28,13 @@ const Model = {
   effects: {
     *fetch({ payload }, { select,call, put }) {
       let response = {};
-      if(window.location.hash === "/order/sellOrder?history"){
-        const his = yield select(state => state.sellOrder.data.history);
+      if(window.location.hash === "/order/buyOrder?history"){
+        const his = yield select(state => state.buyOrder.data.history);
         payload = {};
         payload = { ...his };
         response = yield call(fakeBuyOrderSearchAll, payload);
       }else{
-        response = yield call(fakebuyOrder, payload);
+        response = yield call(fakeBuyOrder, payload);
       }
       let { data, total } = response.result || {};
       let page = payload && payload.page;
@@ -56,6 +56,10 @@ const Model = {
     },
     *receipt({ payload }, { call, put }) {
       const response = yield call(fakeBuyOrderReceipt, payload);
+      return response;
+    },
+    *export({ payload }, { call, put }) {
+      const response = yield call(fakeBuyOrderExport, payload);
       return response;
     },
   },

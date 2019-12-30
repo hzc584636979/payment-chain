@@ -76,11 +76,6 @@ class Forget extends Component {
       country: "china",
       prefix: '86',
     };
-    if(tabType == 'email') {
-      params = {
-        country: "china",
-      };
-    }
     this.setState({
       tabType,
       params,
@@ -92,12 +87,15 @@ class Forget extends Component {
   onGetCaptcha = () => {
     const { dispatch } = this.props;
     const { params, tabType } = this.state;
+    let url = '';
     if(tabType == 'phone') {
+      url = 'userAndregister/getPhoneCode'
       if(!params.phone || !(/^1\d{10}$/.test(params.phone))) {
         message.error('请输入正确的手机号！');
         return;
       }
     }else {
+      url = 'userAndregister/getEmailCode'
       if(!params.email) {
         message.error('请输入正确的邮箱地址！');
         return;
@@ -105,11 +103,11 @@ class Forget extends Component {
     }
 
     dispatch({
-      type: 'userAndregister/getCode',
-      payload: params.phone,
+      type: url,
+      payload: tabType == 'phone' ? params.phone : params.email,
     }).then(data => {
       if(!data) {
-        message.error('短信验证码发送失败，请重试！');
+        message.error('验证码发送失败，请重试！');
         return;
       }
       let count = 59;
@@ -518,20 +516,6 @@ class Forget extends Component {
     if(stepCurrent == 0) {
       renderJsx = (
         <Form style={{width: '80%', margin: '0 auto'}} {...formItemLayout}>
-          <FormItem label="国籍/地区">
-            {getFieldDecorator('country', {
-              initialValue: params.country,
-              rules: [
-                {
-                  required: true,
-                },
-              ],
-            })(
-              <Select style={{ width: 120 }}>
-                <Option value="china">中国大陆</Option>
-              </Select>,
-            )}
-          </FormItem>
           <FormItem label="邮箱">
             {getFieldDecorator('mail', {
               rules: [
@@ -684,9 +668,9 @@ class Forget extends Component {
       <Steps labelPlacement="vertical" className={styles.stepWrap}>
         {
           stepCurrent == 0 ?
-          <Step status="process" className={`${styles.stepOn}`} title="账号找回" />
+          <Step status="process" className={`${styles.stepOn}`} title="输入账户" />
           :
-          <Step status="finish" className={`${styles.stepOn}`} title="账号找回" />
+          <Step status="finish" className={`${styles.stepOn}`} title="输入账户" />
         }
         {
           stepCurrent == 1 ?
@@ -721,8 +705,8 @@ class Forget extends Component {
         {this.renderSteps()}
         <div className={styles.cardContainer}>
           <div className={styles.tabs}>
-            <div className={`${styles.button} ${tabType == 'phone' && styles.on}`} onClick={() => this.handleTab('phone')}>手机重置密码</div>
-            <div className={`${styles.button} ${tabType == 'email' && styles.on}`} onClick={() => this.handleTab('email')}>邮箱重置密码</div>
+            <div className={`${styles.button} ${tabType == 'phone' && styles.on}`} onClick={() => this.handleTab('phone')}>手机找回</div>
+            <div className={`${styles.button} ${tabType == 'email' && styles.on}`} onClick={() => this.handleTab('email')}>邮箱找回</div>
           </div>
           <div className={styles.tabBox}>
             {

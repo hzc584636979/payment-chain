@@ -9,13 +9,16 @@ import {
   Col,
   Divider,
   Popconfirm,
+  Modal,
 } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
 import StandardTable from '@/components/StandardTable';
 import styles from './style.less';
 
+const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
 const { Option } = Select;
 const getValue = obj =>
@@ -35,6 +38,43 @@ const payIcon = {
   1: yinlian,
   2: zhifubao,
 }
+
+const CreateExportForm = Form.create()(props => {
+  const { modalVisible, form, submit, cancel } = props;
+  const okHandle = () => {
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+      form.resetFields();
+      submit(fieldsValue);
+    });
+  };
+
+  const cancelHandle = () => {
+    form.resetFields();
+    cancel();
+  }
+
+  return (
+    <Modal
+      title="导出"
+      visible={modalVisible}
+      onOk={okHandle}
+      onCancel={cancelHandle}
+      centered
+      okText='导出'
+    >
+      <Form>
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="选择日期">
+          {form.getFieldDecorator('time')(
+            <RangePicker
+              style={{ width: '100%' }}
+            />
+          )}
+        </FormItem>
+      </Form>
+    </Modal>
+  );
+});
 
 @connect(({ sellOrder, loading }) => ({
   sellOrder,
@@ -133,12 +173,12 @@ class SellOrder extends Component {
           <Col xl={6} lg={12} sm={24}>
             <FormItem label="创建时间">
               {getFieldDecorator('time',{ initialValue: history.time })(
-                <DatePicker format={'YYYY-MM-DD'}/>
+                <DatePicker format={'YYYY-MM-DD'} style={{width: '100%'}}/>
               )}
             </FormItem>
           </Col>
           <Col xl={6} lg={12} sm={24}>
-            <span className={styles.submitButtons}>
+            <span className={styles.submitButtons} style={{paddingTop: 4, display: 'inline-block'}}>
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
@@ -159,9 +199,39 @@ class SellOrder extends Component {
     });
   }
 
+  handleFormExport = () => {
+    this.setState({
+      exportVisible: true,
+    })
+  }
+
+  exportOk = fieldsValue => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'sellOrder/export',
+      payload: fieldsValue,
+    }).then(data => {
+      if(!data) {
+        message.error('修改失败，请重试！');
+        return;
+      }
+      this.setState({
+        exportVisible: false,
+      })
+    })
+  }
+
+  exportCancel = () => {
+    this.setState({
+      exportVisible: false,
+    })
+  }
+
   render() {
     const { loading } = this.props;
     const { history, list, pagination } = this.props.sellOrder.data;
+    const { exportVisible } = this.state;
     const columns = [
       {
         title: '时效',
@@ -230,14 +300,23 @@ class SellOrder extends Component {
                 <Button>确认收款</Button>
               </Popconfirm>
               <span style={{display: 'inline-block', width: '10px'}}></span>
-              <Button href={`/order/sellOrder_appeal/${record._id}`}>申述</Button>
+              <Button>
+                <Link to={`/order/sellOrder_appeal/${record._id}`}>申述</Link>
+              </Button>
               <span style={{display: 'inline-block', width: '10px'}}></span>
-              <Button href={`/order/sellOrder_detail/${record._id}`}>查看</Button>
+              <Button>
+                <Link to={`/order/sellOrder_detail/${record._id}`}>查看</Link>
+              </Button>
             </span>
           );
         },
       },
     ];
+
+    const exportMethods = {
+      submit: this.exportOk,
+      cancel: this.exportCancel,
+    };
 
     return (
       <ContLayout>
@@ -252,6 +331,7 @@ class SellOrder extends Component {
             scroll={{ x: 1400 }}
           />
         </div>
+        <CreateExportForm {...exportMethods} modalVisible={ exportVisible } />
       </ContLayout>
     );
   }

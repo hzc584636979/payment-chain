@@ -51,19 +51,8 @@ class Register extends Component {
 
   interval = undefined;
 
-  componentDidUpdate() {
-    const { userAndregister, form } = this.props;
-    const account = form.getFieldValue('mail');
+  componentDidMount() {
 
-    if (userAndregister.status === 'ok') {
-      message.success('注册成功！');
-      router.push({
-        pathname: '/user/register-result',
-        state: {
-          account,
-        },
-      });
-    }
   }
 
   componentWillUnmount() {
@@ -76,11 +65,6 @@ class Register extends Component {
       country: "china",
       prefix: '86',
     };
-    if(tabType == 'email') {
-      params = {
-        country: "china",
-      };
-    }
     this.setState({
       tabType,
       params,
@@ -92,12 +76,15 @@ class Register extends Component {
   onGetCaptcha = () => {
     const { dispatch } = this.props;
     const { params, tabType } = this.state;
+    let url = '';
     if(tabType == 'phone') {
+      url = 'userAndregister/getPhoneCode'
       if(!params.phone || !(/^1\d{10}$/.test(params.phone))) {
         message.error('请输入正确的手机号！');
         return;
       }
     }else {
+      url = 'userAndregister/getEmailCode'
       if(!params.email) {
         message.error('请输入正确的邮箱地址！');
         return;
@@ -105,11 +92,11 @@ class Register extends Component {
     }
 
     dispatch({
-      type: 'userAndregister/getCode',
-      payload: params.phone,
+      type: url,
+      payload: tabType == 'phone' ? params.phone : params.email,
     }).then(data => {
       if(!data) {
-        message.error('短信验证码发送失败，请重试！');
+        message.error('验证码发送失败，请重试！');
         return;
       }
       let count = 59;
@@ -518,20 +505,6 @@ class Register extends Component {
     if(stepCurrent == 0) {
       renderJsx = (
         <Form style={{width: '80%', margin: '0 auto'}} {...formItemLayout}>
-          <FormItem label="国籍/地区">
-            {getFieldDecorator('country', {
-              initialValue: params.country,
-              rules: [
-                {
-                  required: true,
-                },
-              ],
-            })(
-              <Select style={{ width: 120 }}>
-                <Option value="china">中国大陆</Option>
-              </Select>,
-            )}
-          </FormItem>
           <FormItem label="邮箱">
             {getFieldDecorator('mail', {
               rules: [

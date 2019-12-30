@@ -3,7 +3,7 @@ import React, { Component, Fragment } from 'react';
 import Link from 'umi/link';
 import { GridContent } from '@ant-design/pro-layout';
 import { connect, routerRedux } from 'dva';
-import Layer from './components/pay';
+import Layer from '@/components/Layer';
 import copy from 'copy-to-clipboard';
 import styles from './style.less';
 import banner1 from '@/assets/img_home_banner.png';
@@ -117,7 +117,7 @@ class Home extends Component {
                       您尚未通过支付链商家认证，<Link to="/account">去认证></Link>
                     </Col>
                     <Col>
-                      <Link to="/" style={{color: '#2194FF'}}>了解详情</Link>
+                      <Link to="/message" style={{color: '#2194FF'}}>了解详情</Link>
                     </Col>
                   </Row>
                   <div className={styles.message2} style={{height: 205}}>
@@ -138,41 +138,13 @@ class Home extends Component {
                         <span style={{display: 'inline-block', width: 16, height: 16, borderRadius: '50%', background: '#DDDDDD', marginRight: 20, verticalAlign: 'middle'}}></span><span style={{color: '#CF0000'}}>[重要通知]</span> 您提交的支付链商家认证，后台正在审核中
                       </Col>
                       <Col>
-                        <Link to="/" style={{color: '#2194FF', fontSize: 16}}>查看更多</Link>
+                        <Link to="/message" style={{color: '#2194FF', fontSize: 16}}>查看更多</Link>
                       </Col>
                     </Row>
                     <Row
                       type="flex"
                     >
-                      <Col xl={8} md={8} sm={24} xs={24}>
-                        <div className={styles.itemBox} style={{borderRight: '1px solid #ECECEC'}}>
-                          <div className={styles.title}>账户余额</div>
-                          <div className={styles.item}>
-                            <span style={{display: 'inline-block', width: 160}}>可用余额（元）</span>
-                            {accountBalance1 ? 
-                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>0.00</span>
-                              : 
-                              <span style={{display: 'inline-block', minWidth: 100, color: '#333333'}}>****</span>
-                            }
-                            <span style={{cursor: 'pointer'}} onClick={() => this.eyeVisible('accountBalance1')}>{accountBalance1 ? <Icon type="eye-invisible" /> : <Icon type="eye" />}</span> 
-                          </div>
-                          <div className={styles.item}>
-                            <span style={{display: 'inline-block', width: 160}}>不可用余额（元）</span>
-                            {accountBalance2 ? 
-                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>0.00</span>
-                              : 
-                              <span style={{display: 'inline-block', minWidth: 100, color: '#333333'}}>****</span>
-                            }
-                            <span style={{cursor: 'pointer'}} onClick={() => this.eyeVisible('accountBalance2')}>{accountBalance2 ? <Icon type="eye-invisible" /> : <Icon type="eye" />}</span> 
-                          </div>
-                          <div className={styles.but}>
-                            <a onClick={this.handlePayVisible}>充值</a>
-                            <a>提现</a>
-                            <a>转账</a>
-                          </div>
-                        </div>
-                      </Col>
-                      <Col xl={8} md={8} sm={24} xs={24}>
+                      <Col xl={12} md={12} sm={24} xs={24}>
                         <div className={styles.itemBox} style={{borderRight: '1px solid #ECECEC'}}>
                           <div className={styles.title}>代币余额</div>
                           <div className={styles.item}>
@@ -194,12 +166,12 @@ class Home extends Component {
                             <span style={{cursor: 'pointer'}} onClick={() => this.eyeVisible('tokenBalance2')}>{tokenBalance2 ? <Icon type="eye-invisible" /> : <Icon type="eye" />}</span> 
                           </div>
                           <div className={styles.but}>
-                            <a>转入</a>
-                            <a>转出</a>
+                            <a onClick={this.handlePayVisible}>充值</a>
+                            <Link to="/finance/withdrawApply">提现</Link>
                           </div>
                         </div>
                       </Col>
-                      <Col xl={8} md={8} sm={24} xs={24}>
+                      <Col xl={12} md={12} sm={24} xs={24}>
                         <div className={styles.itemBox}>
                           <div className={styles.title}>抵押资金</div>
                           <div className={styles.item}>
@@ -208,7 +180,7 @@ class Home extends Component {
                           </div>
                           <div className={styles.but} style={{marginTop: 64}}>
                             <a onClick={this.handleMortgageVisible}>抵押</a>
-                            <a>申请解冻</a>
+                            <Link to="/finance/depositList">申请解冻</Link>
                           </div>
                         </div>
                       </Col>
@@ -278,7 +250,7 @@ class Home extends Component {
                       </Col>
                       <Col xl={6} md={6} sm={12} xs={12}>
                         <div className={styles.item}>
-                          <div className={styles.name}>出售异议待处理</div>
+                          <div className={styles.name}>购买异议待处理</div>
                           <div className={styles.num}>0</div>
                           <div className={styles.but}><Button type="primary">去处理</Button></div>
                         </div>

@@ -1,4 +1,4 @@
-import { fakeSellOrder, fakeSellOrderSearchAll, fakeSellOrderReceipt } from '@/services/api';
+import { fakeSellOrder, fakeSellOrderSearchAll, fakeSellOrderReceipt, fakeSellOrderExport } from '@/services/api';
 
 const Model = {
   namespace: 'sellOrder',
@@ -56,6 +56,10 @@ const Model = {
     },
     *receipt({ payload }, { call, put }) {
       const response = yield call(fakeSellOrderReceipt, payload);
+      return response;
+    },
+    *export({ payload }, { call, put }) {
+      const response = yield call(fakeSellOrderExport, payload);
       return response;
     },
   },
