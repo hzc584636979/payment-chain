@@ -130,7 +130,7 @@ const BasicLayout = props => {
   const newRoute = () => {
     let item = [];
     props.route.routes.map(data => {
-      item.push(data.routes ? {name: data.name, path: data.path, component: data.routes[0].component} : data)
+      data.path != '/account' && item.push(data.routes ? {name: data.name, path: data.path, component: data.routes[0].component} : data)
     })
 
     return {
@@ -161,10 +161,11 @@ const BasicLayout = props => {
           </Link>
         )}
         menuItemRender={(menuItemProps, defaultDom) => {
-          if (menuItemProps.isUrl || menuItemProps.children) {
-            return defaultDom;
+          let checked = false;
+          if(props.location.pathname.indexOf(menuItemProps.path) > -1) {
+            checked = true;
           }
-          return <Link to={menuItemProps.path}>{defaultDom}</Link>;
+          return <Link style={checked ? {borderBottom: '2px solid #1890ff', color: '#1890ff'} : {}} to={menuItemProps.path}>{defaultDom}</Link>;
         }}
         footerRender={footerRender}
         menuDataRender={menuDataRender}

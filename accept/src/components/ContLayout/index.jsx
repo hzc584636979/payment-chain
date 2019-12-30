@@ -17,7 +17,6 @@ const { Item } = Menu;
   currentUser: user.currentUser,
   location,
 }))
-
 class ContLayout extends Component {
   constructor(props) {
     super(props);
@@ -31,8 +30,7 @@ class ContLayout extends Component {
   componentDidMount() {
     this.path = this.props.location.pathname;
     this.hashRoutes();
-    console.log(this.props.currentUser)
-    !this.props.currentUser.auth && this.props.dispatch(routerRedux.push('/account'));
+    this.path != '/account/center' && !this.props.currentUser.auth && this.props.dispatch(routerRedux.push('/account'));
   }
 
   componentWillUnmount() {
@@ -65,7 +63,8 @@ class ContLayout extends Component {
   getBreadcrumb = () => {
     let breadcrumb = this.matchBreadcrumb();
     let renderJsx = [];
-    breadcrumb && breadcrumb.map((v, index, arr) => {
+
+    breadcrumb && breadcrumb.unshift(this.hash['/home']) && breadcrumb.map((v, index, arr) => {
       renderJsx.push(
         v.component ? 
         (arr.length - 1 != index ? <Link style={{color: '#999'}} key={index} to={v.path+'?history'}>{v.name}</Link> 
@@ -111,27 +110,32 @@ class ContLayout extends Component {
 
   render() {
     const { children } = this.props;
+    const getBreadcrumb = this.getBreadcrumb();
+    const isMessagePage = this.props.location.pathname.indexOf('/message/') > -1;
 
     return (
       <GridContent className={styles.wrap}>
         <Row>
-          <Col xs={4}>
-            <div className={styles.menuWrap}>
-              <h1>订单管理</h1>
-              <Menu
-                onClick={this.handleMenuClick}
-                style={{ width: '100%' }}
-                selectedKeys={this.getMenuKey()}
-                mode="inline"
-              >
-                {this.getMenuData()}
-              </Menu>
-            </div>
-          </Col>
-          <Col xs={20}>
+          {
+            !isMessagePage &&
+            <Col xs={4}>
+              <div className={styles.menuWrap}>
+                <h1>{ getBreadcrumb.length > 0 && getBreadcrumb[2] }</h1>
+                <Menu
+                  onClick={this.handleMenuClick}
+                  style={{ width: '100%' }}
+                  selectedKeys={this.getMenuKey()}
+                  mode="inline"
+                >
+                  { this.getMenuData() }
+                </Menu>
+              </div>
+            </Col>
+          }
+          <Col xs={!isMessagePage ? 20 : 24}>
             <div className={styles.PageWrap}>
               <div className={styles.breadcrumb}>
-                { this.getBreadcrumb() }
+                { getBreadcrumb }
               </div>
               { children }
             </div>
