@@ -1,4 +1,4 @@
-import { fakeGetPhoneCode, fakeNextPhoneStep2, fakePhoneRegister, fakeGetEmailCode, fakeNextEmailStep2, fakeEmailRegister } from '@/services/api';
+import { getPhoneCode, nextPhoneStep2, phoneRegister, getEmailCode, nextEmailStep2, emailRegister } from '@/services/api';
 
 const Model = {
   namespace: 'userAndregister',
@@ -7,27 +7,27 @@ const Model = {
   },
   effects: {
     *getPhoneCode({ payload }, { call, put }) {
-      const response = yield call(fakeGetPhoneCode, payload);
+      const response = yield call(getPhoneCode, payload);
       return response;
     },
     *nextPhoneStep2({ payload }, { call, put }) {
-      const response = yield call(fakeNextPhoneStep2, payload);
+      const response = yield call(nextPhoneStep2, payload);
       return response;
     },
     *phoneSubmit({ payload }, { call, put }) {
-      const response = yield call(fakePhoneRegister, payload);
+      const response = yield call(phoneRegister, payload);
       return response;
     },
     *getEmailCode({ payload }, { call, put }) {
-      const response = yield call(fakeGetEmailCode, payload);
+      const response = yield call(getEmailCode, payload);
       return response;
     },
     *nextEmailStep2({ payload }, { call, put }) {
-      const response = yield call(fakeNextEmailStep2, payload);
+      const response = yield call(nextEmailStep2, payload);
       return response;
     },
     *emailSubmit({ payload }, { call, put }) {
-      const response = yield call(fakeEmailRegister, payload);
+      const response = yield call(emailRegister, payload);
       return response;
     },
   },

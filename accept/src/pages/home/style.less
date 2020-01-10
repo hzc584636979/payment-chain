@@ -33,7 +33,7 @@
   }
 
   .bottom {
-    margin-top: 255px;
+    margin-top: 217px;
     .button {
       margin-bottom: 20px;
       font-size: 16px;
@@ -74,6 +74,21 @@
     left: 22px;
     top: 50%;
     transform: translateY(-50%);
+  }
+
+  .message1.passed {
+    font-size: 16px;
+    background: #d4ffd6;
+    border: 1px solid #77dc62;
+    height: 68px;
+    line-height: 68px;
+    padding: 0 17px 0 57px;
+    position: relative;
+    margin-bottom: 10px!important;
+  }
+
+  .message1.passed:before {
+    content: none;
   }
 
   .message1error {
@@ -122,10 +137,14 @@
       content: ' ';
       width: 20px;
       height: 20px;
-      background: url('@/assets/icon_qianbi.png');
+      background: url('@/assets/icon_btc.png');
       position: absolute;
       left: 30px;
       top: 34px;
+    }
+
+    .itemBoxBg2:before {
+      background: url('@/assets/icon_ensure.png');
     }
   }
 }
@@ -214,4 +233,20 @@
     margin: 68px 0;
     color: #999999;
   }
+}
+
+.passedLayer {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  line-height: 100vh;
+  color: #fff;
+  font-size: 20px;
+  background: rgba(0, 0, 0, .5);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  border-radius: 5px;
+  z-index: 999;
 }

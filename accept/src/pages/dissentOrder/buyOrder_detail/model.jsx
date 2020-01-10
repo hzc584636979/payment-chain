@@ -1,26 +1,32 @@
-import { queryBuyDissentOrderDetail, fakeBuyDissentOrderReceipt } from '@/services/api';
+import { queryBuyDissentOrderDetail, buyDissentOrderKF, buyDissentOrderClose } from '@/services/api';
 import pathToRegexp from 'path-to-regexp';
 
 const Model = {
   namespace: 'buyDissentOrderDetail',
   state: {
-    data: {},
+
   },
   effects: {
     *fetch({ payload }, { call, put }) {
-      const match = pathToRegexp('/dissentOrder/buyOrder_detail/:id').exec(window.location.hash);
-      const payload1 = { id: match[1] };
+      const match = pathToRegexp('/dissentOrder/buyOrder_detail/:id').exec(window.location.pathname);
+      const payload1 = { order_id: match[1], order_type: 1 };
       const response = yield call(queryBuyDissentOrderDetail, payload1);
       yield put({
         type: 'save',
-        payload: response.result,
+        payload: response.data,
       });
       return response;
     },
-    *receipt({ payload }, { call, put }) {
-      const match = pathToRegexp('/dissentOrder/buyOrder_detail/:id').exec(window.location.hash);
-      const payload1 = { id: match[1] };
-      const response = yield call(fakeBuyDissentOrderReceipt, payload1);
+    *KF({ payload }, { call, put }) {
+      const match = pathToRegexp('/dissentOrder/buyOrder_detail/:id').exec(window.location.pathname);
+      const payload1 = { order_id: match[1], order_type: 1 };
+      const response = yield call(buyDissentOrderKF, payload1);
+      return response;
+    },
+    *close({ payload }, { call, put }) {
+      const match = pathToRegexp('/dissentOrder/buyOrder_detail/:id').exec(window.location.pathname);
+      const payload1 = { order_id: match[1], order_type: 1 };
+      const response = yield call(buyDissentOrderClose, payload1);
       return response;
     },
   },
@@ -28,7 +34,7 @@ const Model = {
     save(state, action) {
       return {
         ...state,
-        data: action.payload,
+        ...action.payload,
       };
     },
   },

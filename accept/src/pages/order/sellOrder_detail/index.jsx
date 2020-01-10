@@ -4,6 +4,7 @@ import { connect } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
 import Layer from '@/components/Layer';
+import moment from 'moment';
 import styles from './style.less';
 
 const { TextArea } = Input;
@@ -14,14 +15,14 @@ const { TextArea } = Input;
 }))
 class SellOrderDetail extends Component {
   state = {
-    KFVisible: false,
+    
   };
 
   componentDidMount() {
     const { dispatch } = this.props;
-    /*dispatch({
+    dispatch({
       type: 'sellOrderDetail/fetch',
-    });*/
+    });
   }
 
   componentWillUnmount() {
@@ -35,81 +36,57 @@ class SellOrderDetail extends Component {
     });
   }
 
-  handleKF = () => {
-    this.setState({
-      KFVisible: !this.state.KFVisible,
-    })
+  receipt = id => {
+    dispatch({
+      type: 'sellOrderDetail/receipt',
+    });
   }
 
-  handleOk = () => {
-    this.setState({
-      KFVisible: false,
-    })
-  }
-
-  handleCancel = () => {
-    this.setState({
-      KFVisible: false,
-    })
+  noReceipt = id => {
+    dispatch({
+      type: 'sellOrderDetail/noReceipt',
+    });
   }
 
   render() {
-    const { loading } = this.props;
-    const { KFVisible, submitLock } = this.state;
+    const { sellOrderDetail, loading } = this.props;
+    const time = (new Date().getTime() - moment(sellOrderDetail.updated_at).local().format('x')) > 5 * 60 * 1000 ? true : false;
                                                
     return (
       <ContLayout>
         <div className={styles.wrap}>
           <Descriptions column={1}>
-            <Descriptions.Item label="订单状态">已过期</Descriptions.Item>
-            <Descriptions.Item label="平台订单号">215898456123564632156325412</Descriptions.Item>
-            <Descriptions.Item label="商户订单号">4652312511215</Descriptions.Item>
-            <Descriptions.Item label="付款方式">支付宝转银行卡</Descriptions.Item>
-            <Descriptions.Item label="收款姓名">金三胖</Descriptions.Item>
-            <Descriptions.Item label="银行卡号">478485613213254651</Descriptions.Item>
-            <Descriptions.Item label="银行名称">中国银行</Descriptions.Item>
-            <Descriptions.Item label="商户购买">14.24</Descriptions.Item>
-            <Descriptions.Item label="平台折扣后金额（CNY）">100.00</Descriptions.Item>
-            <Descriptions.Item label="成交汇率">7.05</Descriptions.Item>
-            <Descriptions.Item label="调价收入">0.00</Descriptions.Item>
-            <Descriptions.Item label="购买订单总金额（USDT）">14.24</Descriptions.Item>
-            <Descriptions.Item label="创建时间">2019-11-11 18:24:30</Descriptions.Item>
-            <Descriptions.Item label="转账时间">--</Descriptions.Item>
-            <Descriptions.Item label="承兑商确认时间">--</Descriptions.Item>
+            <Descriptions.Item label="订单状态">{ sellStatusType[sellOrderDetail.state] }</Descriptions.Item>
+            <Descriptions.Item label="平台订单号">{ sellOrderDetail.order_id }</Descriptions.Item>
+            <Descriptions.Item label="商户订单号">{ sellOrderDetail.out_order_id }</Descriptions.Item>
+            <Descriptions.Item label="付款用户">{ sellOrderDetail.payee_name }</Descriptions.Item>
+            <Descriptions.Item label="付款方式">{ payIcon[sellOrderDetail.pay_type] }</Descriptions.Item>
+            <Descriptions.Item label="币种">{ coinType[sellOrderDetail.token_id] }</Descriptions.Item>
+            <Descriptions.Item label="收币商户">{ sellOrderDetail.m_user_name }</Descriptions.Item>
+            <Descriptions.Item label="创建时间">{ moment(sellOrderDetail.created_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
+            <Descriptions.Item label="付款时间">{ sellOrderDetail.transfer_time ? moment(sellOrderDetail.transfer_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
+            <Descriptions.Item label="承兑商确认时间">{ sellOrderDetail.confirm_time ? moment(sellOrderDetail.confirm_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
             <Descriptions.Item label="操作">
-              <Popconfirm title="是否要确认收款？" onConfirm={this.receipt}>
-                <Button type="primary">确定收款</Button>
-              </Popconfirm>
-              <span style={{display: 'inline-block', width: '10px'}}></span>
-              <Button type="primary" onClick={this.handleKF}>客服介入</Button>
-              <span style={{display: 'inline-block', width: '10px'}}></span>
-              <Button type="danger">
-                <Link to="/order/sellOrder?history">关闭</Link>
-              </Button>
+              {
+                sellOrderDetail.state == 2 &&
+                <Fragment>
+                  <Popconfirm title="是否要确认收款？" onConfirm={this.receipt}>
+                    <Button>确认收款</Button>
+                  </Popconfirm>
+                  {
+                    time &&
+                    <Fragment>
+                      <span style={{display: 'inline-block', width: '10px'}}></span>
+                      <Popconfirm title="是否要确认未收款？" onConfirm={this.noReceipt}>
+                        <Button>未收到收款</Button>
+                      </Popconfirm>
+                    </Fragment>
+                  }
+                </Fragment>
+              }
             </Descriptions.Item>
           </Descriptions>
         </div>
-        {
-          KFVisible && 
-          <Layer 
-            title="客服介入"
-            hiddenVisible={this.handleCancel}
-          >
-            <div className={styles.layerWrap} style={{width: '70%', margin: '0 auto'}}>
-              <Descriptions column={1}>
-                <Descriptions.Item label="联系方式">
-                  <Input placeholder="请选择问题类型" style={{width: '100%'}} onChange={this.handleSelect} />
-                </Descriptions.Item>
-                <Descriptions.Item label="申诉描述" className={styles.textTop}>
-                  <TextArea onChange={this.handleDesc} style={{width: '100%', height: 162}} />
-                </Descriptions.Item>
-                <Descriptions.Item className={styles.noneBeforeIcon}>
-                  <Button type="primary" onClick={this.submit} disabled={submitLock}>确定提交</Button>
-                </Descriptions.Item>
-              </Descriptions>
-            </div>
-          </Layer>
-        }
       </ContLayout>
     );
   }

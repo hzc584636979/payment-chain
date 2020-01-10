@@ -6,7 +6,7 @@
 import ProLayout, { DefaultFooter, SettingDrawer } from '@ant-design/pro-layout';
 import React, { Fragment, useEffect } from 'react';
 import Link from 'umi/link';
-import { connect } from 'dva';
+import { connect, routerRedux } from 'dva';
 import { Icon, Result, Button, Divider } from 'antd';
 import Authorized from '@/utils/Authorized';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
@@ -67,7 +67,7 @@ const defaultFooterDom = (
 );
 
 const footerRender = () => {
-  if (!isAntDesignPro()) {
+  /*if (!isAntDesignPro()) {
     return defaultFooterDom;
   }
 
@@ -89,7 +89,8 @@ const footerRender = () => {
         </a>
       </div>
     </Fragment>
-  );
+  );*/
+  return '';
 };
 
 const BasicLayout = props => {
@@ -109,10 +110,12 @@ const BasicLayout = props => {
    * constructor
    */
 
+  !g_getLocalStorage() && dispatch(routerRedux.push('/user/login'));
+
   useEffect(() => {
     if (dispatch) {
       dispatch({
-        type: 'user/fetchCurrent',
+        type: 'user/getUserInfo',
       });
     }
   }, []);
@@ -148,7 +151,7 @@ const BasicLayout = props => {
   return (
     <ConfigProvider locale={zh_CN}>
       <div className={styles.topTitle}>
-        <Link to="/account">{ currentUser && currentUser.name }</Link>
+        <Link to="/account">{ currentUser && currentUser.user_name || '设置名称' }</Link>
         <Divider type="vertical" />
         <a onClick={onLogoutClick}>退出</a>
       </div>

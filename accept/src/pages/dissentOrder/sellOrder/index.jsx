@@ -9,32 +9,32 @@ import {
   Col,
   Divider,
   Popconfirm,
+  message,
 } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
 import StandardTable from '@/components/StandardTable';
+import exportXLSX from '@/utils/exportXLSX';
+import moment from 'moment';
 import styles from './style.less';
 
+const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
 const { Option } = Select;
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
-const statusType = {
-  0: '0',
-  1: '1',
-};
 
 import weixin from '@/assets/icon_saoma_weixin.png';
 import yinlian from '@/assets/icon_saoma_yinlian.png';
 import zhifubao from '@/assets/icon_saoma_zhifubao.png';
 const payIcon = {
-  0: weixin,
   1: yinlian,
   2: zhifubao,
+  3: weixin,
 }
 
 @connect(({ sellDissentOrder, loading }) => ({
@@ -49,10 +49,16 @@ class SellDissentOrder extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    /*dispatch({
+    dispatch({
       type: 'sellDissentOrder/fetch',
-      payload:{pageSize:10,page:0},
-    });*/
+      payload:{
+        pageSize:10,
+        page:0,
+        state: 0,
+        token_id: 0,
+        time: [moment().startOf('day'), moment().endOf('day')],
+      },
+    });
   }
 
   componentWillUnmount() {
@@ -61,19 +67,12 @@ class SellDissentOrder extends Component {
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
-    const { formValues } = this.state;
-
-    const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = { ...obj };
-      newObj[key] = getValue(filtersArg[key]);
-      return newObj;
-    }, {});
+    const { history } = this.props.sellDissentOrder.data;
 
     const params = {
+      ...history,
       page: pagination.current -1,
       pageSize: pagination.pageSize,
-      ...formValues,
-      ...filters,
     };
 
     dispatch({
@@ -90,19 +89,13 @@ class SellDissentOrder extends Component {
 
       const values = {
         ...fieldsValue,
-        time: fieldsValue.time && fieldsValue.time.valueOf(),
+        state: fieldsValue.state || 0,
         page:0,
         pageSize:10,
       };
       dispatch({
         type: 'sellDissentOrder/search',
         payload: values,
-      });
-
-      delete values.page;
-      delete values.pageSize;
-      this.setState({
-        formValues: values,
       });
     });
   };
@@ -113,30 +106,48 @@ class SellDissentOrder extends Component {
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={24}>
-          <Col xl={10} lg={12} sm={24}>
-            <FormItem label="订单状态">
-              {getFieldDecorator('status',{ initialValue: history.status })(
+          <Col xl={6} lg={12} sm={24}>
+            <FormItem label="币种">
+              {getFieldDecorator('token_id',{ initialValue: history.token_id+'' })(
                 <Select placeholder="请选择">
                   {
-                    Object.keys(statusType).map(value => {
-                      return <Option value={value} key={value}>{statusType[value]}</Option>
+                    Object.keys(coinType).map(value => {
+                      return <Option value={value} key={value}>{coinType[value]}</Option>
                     })
                   }
                 </Select>
               )}
             </FormItem>
           </Col>
-          <Col xl={10} lg={12} sm={24}>
-            <FormItem label="创建时间">
-              {getFieldDecorator('time',{ initialValue: history.time })(
-                <DatePicker format={'YYYY-MM-DD'} style={{width: '100%'}}/>
+          <Col xl={6} lg={12} sm={24}>
+            <FormItem label="订单状态">
+              {getFieldDecorator('state',{ initialValue: history.state+'' })(
+                <Select placeholder="请选择">
+                  {
+                    Object.keys(sellStatusType).map(value => {
+                      return <Option value={value} key={value}>{sellStatusType[value]}</Option>
+                    })
+                  }
+                </Select>
               )}
             </FormItem>
           </Col>
-          <Col xl={4} lg={12} sm={24}>
+          <Col xl={6} lg={12} sm={24}>
+            <FormItem label="异议时间">
+              {getFieldDecorator('time',{ initialValue: history.time })(
+                <RangePicker
+                  style={{ width: '100%' }}
+                />
+              )}
+            </FormItem>
+          </Col>
+          <Col xl={6} lg={12} sm={24}>
             <span className={styles.submitButtons} style={{paddingTop: 4, display: 'inline-block'}}>
               <Button type="primary" htmlType="submit">
                 查询
+              </Button>
+              <Button style={{ marginLeft: 8 }} onClick={this.exportOk}>
+                导出
               </Button>
             </span>
           </Col>
@@ -145,10 +156,49 @@ class SellDissentOrder extends Component {
     );
   }
 
-  receipt = id => {
-    dispatch({
-      type: 'sellDissentOrder/receipt',
-      payload: {id},
+  exportOk = fieldsValue => {
+    const { dispatch, form } = this.props;
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+
+      const values = {
+        ...fieldsValue,
+        state: fieldsValue.state || 0,
+        page:0,
+        pageSize:10,
+      };
+      dispatch({
+        type: 'sellDissentOrder/export',
+        payload: values,
+      }).then(data => {
+        if(data.status != 1) {
+          message.error(data.msg);
+          return;
+        }else {
+          message.success('操作成功');
+        }
+        if(data.data.rows.length <= 0){
+          message.error('选择的日期内无数据');
+          return;
+        }
+        let dataWCN = [];
+        data.data.rows.map((i) => {
+          let dataWObj = {
+              "异议时间": moment(i.issue_create_time).local().format('YYYY-MM-DD HH:mm:ss'),
+              "问题类型": i.issue_type,
+              "平台订单号": i.order_id,
+              "商户订单号": i.out_order_id,
+              "付款用户": i.payee_name,
+              "付款方式": payName[i.pay_type],
+              "币种": coinType[i.token_id],
+              "收币商户": i.m_user_name,
+              "订单状态": sellStatusType[i.state],
+              "订单创建时间": moment(i.created_at).local().format('YYYY-MM-DD HH:mm:ss'),
+          };
+          dataWCN.push(dataWObj);
+        })
+        exportXLSX('异议出售订单', dataWCN);
+      })
     });
   }
 
@@ -157,58 +207,82 @@ class SellDissentOrder extends Component {
     const { history, list, pagination } = this.props.sellDissentOrder.data;
     const columns = [
       {
-        title: '内部订单号',
-        dataIndex: 'internalOrder',
-        key: 'internalOrder',
+        title: '异议时间',
+        dataIndex: 'issue_create_time',
+        key: 'issue_create_time',
+        align: 'center',
+        render: (val, record) => {
+          return moment(val).local().format('YYYY-MM-DD HH:mm:ss')
+        }
+      },
+      {
+        title: '问题类型',
+        dataIndex: 'issue_type',
+        key: 'issue_type',
+        align: 'center',
+        render: (val, record) => {
+          return val
+        }
+      },
+      {
+        title: '平台订单号',
+        dataIndex: 'order_id',
+        key: 'order_id',
         align: 'center',
       },
       {
-        title: '外部订单号',
-        dataIndex: 'externalOrder',
-        key: 'externalOrder',
+        title: '商户订单号',
+        dataIndex: 'out_order_id',
+        key: 'out_order_id',
         align: 'center',
       },
       {
-        title: '付款姓名',
-        dataIndex: 'payName',
-        key: 'payName',
+        title: '付款用户',
+        dataIndex: 'payee_name',
+        key: 'payee_name',
         align: 'center',
       },
       {
-        title: '客户收款方式',
-        dataIndex: 'way',
-        key: 'way',
+        title: '付款方式',
+        dataIndex: 'pay_type',
+        key: 'pay_type',
         align: 'center',
         render:(val,record)=>{
           return <img src={payIcon[val]} />;
         },
       },
       {
-        title: '客户收款昵称',
-        dataIndex: 'customerNickname',
-        key: 'customerNickname',
+        title: '币种',
+        dataIndex: 'token_id',
+        key: 'token_id',
+        align: 'center',
+        render: (val,record) => {
+          return coinType[val];
+        }
+      },
+      {
+        title: '收币商户',
+        dataIndex: 'm_user_name',
+        key: 'm_user_name',
         align: 'center',
       },
       {
-        title: '收款账户',
-        dataIndex: 'account',
-        key: 'account',
+        title: '订单状态',
+        dataIndex: 'state',
+        key: 'state',
         align: 'center',
+        render: (val, record) => {
+          return sellStatusType[val];
+        }
       },
       {
-        title: '开户行',
-        dataIndex: 'bank',
-        key: 'bank',
+        title: '订单创建时间',
+        dataIndex: 'created_at',
+        key: 'created_at',
         align: 'center',
-      },
-      {
-        title: '状态',
-        dataIndex: 'status',
-        key: 'status',
-        align: 'center',
-        render:(val,record)=>{
-          return statusType[val];
-        },
+        render: (val, record) => {
+          return moment(val).local().format('YYYY-MM-DD HH:mm:ss')
+        }
       },
       {
         title: '操作',
@@ -220,7 +294,7 @@ class SellDissentOrder extends Component {
           return(
             <span>
               <Button>
-                <Link to={`/dissentOrder/sellOrder_detail/${record._id}`}>查看</Link>
+                <Link to={`/dissentOrder/sellOrder_detail/${record.order_id}`}>查看</Link>
               </Button>
             </span>
           );
@@ -238,9 +312,10 @@ class SellDissentOrder extends Component {
             data={{ list, pagination }}
             columns={columns}
             onChange={this.handleStandardTableChange}
-            scroll={{ x: 1400 }}
+            scroll={list && list.length > 0 ? { x: 1400 } : {}}
           />
         </div>
+        <a style={{display: 'none'}} href="" download id="hf">导出</a>
       </ContLayout>
     );
   }

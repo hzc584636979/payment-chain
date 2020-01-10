@@ -1,6 +1,7 @@
 import { routerRedux } from 'dva/router';
-import { fakePhoneAccountLogin, fakeEmailAccountLogin } from '@/services/api';
+import { phoneAccountLogin, emailAccountLogin } from '@/services/api';
 import { getPageQuery, setAuthority } from './utils/utils';
+import { notification } from 'antd';
 
 const Model = {
   namespace: 'userAndlogin',
@@ -9,14 +10,9 @@ const Model = {
   },
   effects: {
     *phoneLogin({ payload }, { call, put }) {
-      const response = yield call(fakePhoneAccountLogin, payload);
+      const response = yield call(phoneAccountLogin, payload);
 
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response,
-      }); // Login successfully
-
-      if (response.status === 'ok') {
+      if (response.status == 1) {
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;
@@ -36,17 +32,31 @@ const Model = {
           }
         }
 
+        yield put({
+        type: 'changeLoginStatus',
+          payload: response.data ? {
+            rate: response.data.rate,
+            success_order_percent: response.data.success_order_percent,
+            token_price: response.data.token_price,
+            ...response.data.accountInfo,
+            ...response.data.userInfo,
+            walletInfo: response.data.walletInfo,
+          } : null,
+        });
+
         yield put(routerRedux.replace(redirect || '/'));
+      }else {
+        notification.error({
+          message: `登录失败，请重试`,
+          description: response.msg,
+        });
+        return;
       }
     },
     *emailLogin({ payload }, { call, put }) {
-      const response = yield call(fakeEmailAccountLogin, payload);
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response,
-      }); // Login successfully
-
-      if (response.status === 'ok') {
+      const response = yield call(emailAccountLogin, payload);
+      
+      if (response.status == 1) {
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;
@@ -66,14 +76,33 @@ const Model = {
           }
         }
 
+        yield put({
+          type: 'changeLoginStatus',
+          payload: response.data ? {
+            rate: response.data.rate,
+            success_order_percent: response.data.success_order_percent,
+            token_price: response.data.token_price,
+            ...response.data.accountInfo,
+            ...response.data.userInfo,
+            walletInfo: response.data.walletInfo,
+          } : null,
+        });
+        
         yield put(routerRedux.replace(redirect || '/'));
+      }else {
+        notification.error({
+          message: `登录失败，请重试`,
+          description: response.msg,
+        });
+        return;
       }
     },
   },
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.currentAuthority);
-      return { ...state, status: payload.status, type: payload.type };
+      setAuthority('admin');
+      g_setLocalStorage(payload);
+      return { ...state, status: payload.status };
     },
   },
 };

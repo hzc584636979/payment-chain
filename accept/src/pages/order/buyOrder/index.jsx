@@ -10,12 +10,15 @@ import {
   Divider,
   Popconfirm,
   Modal,
+  message,
 } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
 import StandardTable from '@/components/StandardTable';
+import exportXLSX from '@/utils/exportXLSX';
+import moment from 'moment';
 import styles from './style.less';
 
 const { RangePicker } = DatePicker;
@@ -25,47 +28,6 @@ const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
-const statusType = {
-  0: '0',
-  1: '1',
-};
-
-const CreateExportForm = Form.create()(props => {
-  const { modalVisible, form, submit, cancel } = props;
-  const okHandle = () => {
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      form.resetFields();
-      submit(fieldsValue);
-    });
-  };
-
-  const cancelHandle = () => {
-    form.resetFields();
-    cancel();
-  }
-
-  return (
-    <Modal
-      title="导出"
-      visible={modalVisible}
-      onOk={okHandle}
-      onCancel={cancelHandle}
-      centered
-      okText='导出'
-    >
-      <Form>
-        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="选择日期">
-          {form.getFieldDecorator('time')(
-            <RangePicker
-              style={{ width: '100%' }}
-            />
-          )}
-        </FormItem>
-      </Form>
-    </Modal>
-  );
-});
 
 @connect(({ buyOrder, loading }) => ({
   buyOrder,
@@ -77,33 +39,43 @@ class BuyOrder extends Component {
     
   };
 
+  interval = undefined;
+
   componentDidMount() {
     const { dispatch } = this.props;
-    /*dispatch({
+    dispatch({
       type: 'buyOrder/fetch',
-      payload:{pageSize:10,page:0},
-    });*/
+      payload:{
+        pageSize:10,
+        page:0,
+        state: 0,
+        token_id: 0,
+        order_id: null,
+        time: [moment().startOf('day'), moment().endOf('day')],
+      },
+    }).then(data => {
+      let count = 0;
+      this.interval = window.setInterval(() => {
+        count += 1;
+        this.setState({
+          count,
+        });
+      }, 1000);
+    })
   }
 
   componentWillUnmount() {
-
+    clearInterval(this.interval);
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
-    const { formValues } = this.state;
-
-    const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = { ...obj };
-      newObj[key] = getValue(filtersArg[key]);
-      return newObj;
-    }, {});
+    const { history } = this.props.buyOrder.data;
 
     const params = {
+      ...history,
       page: pagination.current -1,
       pageSize: pagination.pageSize,
-      ...formValues,
-      ...filters,
     };
 
     dispatch({
@@ -120,7 +92,6 @@ class BuyOrder extends Component {
 
       const values = {
         ...fieldsValue,
-        time: fieldsValue.time && fieldsValue.time.valueOf(),
         page:0,
         pageSize:10,
       };
@@ -128,52 +99,62 @@ class BuyOrder extends Component {
         type: 'buyOrder/search',
         payload: values,
       });
-
-      delete values.page;
-      delete values.pageSize;
-      this.setState({
-        formValues: values,
-      });
     });
   };
 
   renderForm() {
     const { getFieldDecorator } = this.props.form;
     const { history } = this.props.buyOrder.data;
+
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={24}>
-          <Col xl={6} lg={12} sm={24}>
+          <Col xl={5} lg={12} sm={24}>
             <FormItem>
-              {getFieldDecorator('nickname',{ initialValue: history.nickname })(<Input placeholder="姓名/承兑商/订单号" />)}
+              {getFieldDecorator('order_id',{ initialValue: history.order_id })(<Input placeholder="平台订单号" />)}
             </FormItem>
           </Col>
-          <Col xl={6} lg={12} sm={24}>
-            <FormItem label="订单状态">
-              {getFieldDecorator('status',{ initialValue: history.status })(
+          <Col xl={5} lg={12} sm={24}>
+            <FormItem label="币种">
+              {getFieldDecorator('token_id',{ initialValue: history.token_id+'' })(
                 <Select placeholder="请选择">
                   {
-                    Object.keys(statusType).map(value => {
-                      return <Option value={value} key={value}>{statusType[value]}</Option>
+                    Object.keys(coinType).map(value => {
+                      return <Option value={value} key={value}>{coinType[value]}</Option>
                     })
                   }
                 </Select>
               )}
             </FormItem>
           </Col>
-          <Col xl={6} lg={12} sm={24}>
-            <FormItem label="创建时间">
-              {getFieldDecorator('time',{ initialValue: history.time })(
-                <DatePicker format={'YYYY-MM-DD'} style={{width: '100%'}}/>
+          <Col xl={5} lg={12} sm={24}>
+            <FormItem label="订单状态">
+              {getFieldDecorator('state',{ initialValue: history.state+'' })(
+                <Select placeholder="请选择">
+                  {
+                    Object.keys(buyStatusType).map(value => {
+                      return <Option value={value} key={value}>{buyStatusType[value]}</Option>
+                    })
+                  }
+                </Select>
               )}
             </FormItem>
           </Col>
-          <Col xl={6} lg={12} sm={24}>
+          <Col xl={5} lg={12} sm={24}>
+            <FormItem label="创建时间">
+              {getFieldDecorator('time',{ initialValue: history.time })(
+                <RangePicker
+                  style={{ width: '100%' }}
+                />
+              )}
+            </FormItem>
+          </Col>
+          <Col xl={4} lg={12} sm={24}>
             <span className={styles.submitButtons} style={{paddingTop: 4, display: 'inline-block'}}>
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormExport}>
+              <Button style={{ marginLeft: 8 }} onClick={this.exportOk}>
                 导出
               </Button>
             </span>
@@ -183,96 +164,137 @@ class BuyOrder extends Component {
     );
   }
 
-  receipt = id => {
+  transfer = id => {
     dispatch({
-      type: 'buyOrder/receipt',
-      payload: {id},
+      type: 'buyOrder/transfer',
+      payload: {
+        order_id: id
+      },
     });
   }
 
-  handleFormExport = () => {
-    this.setState({
-      exportVisible: true,
-    })
+  receipt = id => {
+    dispatch({
+      type: 'buyOrder/receipt',
+      payload: {
+        order_id: id
+      },
+    });
   }
 
   exportOk = fieldsValue => {
-    const { dispatch } = this.props;
+    const { dispatch, form } = this.props;
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
 
-    dispatch({
-      type: 'sellOrder/export',
-      payload: fieldsValue,
-    }).then(data => {
-      if(!data) {
-        message.error('修改失败，请重试！');
-        return;
-      }
-      this.setState({
-        exportVisible: false,
+      const values = {
+        ...fieldsValue,
+        state: fieldsValue.state || 0,
+        page:0,
+        pageSize:10,
+      };
+      dispatch({
+        type: 'buyOrder/export',
+        payload: values,
+      }).then(data => {
+        if(data.status != 1) {
+          message.error(data.msg);
+          return;
+        }else {
+          message.success('操作成功');
+        }
+        if(data.data.rows.length <= 0){
+          message.error('选择的日期内无数据');
+          return;
+        }
+        let dataWCN = [];
+        data.data.rows.map((i) => {
+          let dataWObj = {
+              "平台订单号": i.order_id,
+              "商户订单号": i.out_order_id,
+              "商户昵称": i.payee_name,
+              "商户账号": i.payee_account,
+              "币种": coinType[i.token_id],
+              "商户出售金额 (USDT)": i.pay_amount,
+              "等值 (CNY)": i.pay_amount_cny,
+              "订单状态": buyStatusType[i.state],
+          };
+          dataWCN.push(dataWObj);
+        })
+        exportXLSX('购买订单', dataWCN);
       })
-    })
-  }
-
-  exportCancel = () => {
-    this.setState({
-      exportVisible: false,
-    })
+    });
   }
 
   render() {
     const { loading } = this.props;
     const { history, list, pagination } = this.props.buyOrder.data;
-    const { exportVisible } = this.state;
     const columns = [
       {
         title: '时效',
-        dataIndex: 'time',
-        key: 'time',
+        dataIndex: 'aging',
+        key: 'aging',
+        align: 'center',
+        render: (val, record) => {
+          const time1 = new Date().getTime() - moment(record.updated_at).local().format('x');
+          const time2 = Number(val) * 60 * 1000;
+          const lessTime = moment.duration(time2 - time1 > 0 ? time2 - time1 : 0);
+          const hoursTime = 60 * 60 * 1000;
+          return <span style={{color: '#EA0000'}}>{lessTime >= hoursTime ? `${lessTime.hours()} : ${lessTime.minutes()} : ${lessTime.seconds()}` : `${lessTime.minutes()} : ${lessTime.seconds()}`}</span>;
+        },
+      },
+      {
+        title: '平台订单号',
+        dataIndex: 'order_id',
+        key: 'order_id',
         align: 'center',
       },
       {
-        title: '内部订单号',
-        dataIndex: 'internalOrder',
-        key: 'internalOrder',
+        title: '商户订单号',
+        dataIndex: 'out_order_id',
+        key: 'out_order_id',
         align: 'center',
       },
       {
-        title: '外部订单号',
-        dataIndex: 'externalOrder',
-        key: 'externalOrder',
+        title: '商户昵称',
+        dataIndex: 'payee_name',
+        key: 'payee_name',
         align: 'center',
       },
       {
-        title: '客户付款姓名',
-        dataIndex: 'payName',
-        key: 'payName',
+        title: '商户账号',
+        dataIndex: 'payee_account',
+        key: 'payee_account',
         align: 'center',
       },
       {
-        title: '承兑商收款姓名',
-        dataIndex: 'way',
-        key: 'way',
+        title: '币种',
+        dataIndex: 'token_id',
+        key: 'token_id',
         align: 'center',
+        render: (val,record) => {
+          return coinType[val];
+        }
       },
       {
         title: '商户出售金额 (USDT)',
-        dataIndex: 'customerNickname',
-        key: 'customerNickname',
+        dataIndex: 'pay_amount',
+        key: 'pay_amount',
         align: 'center',
       },
       {
         title: '等值 (CNY)',
-        dataIndex: 'account',
-        key: 'account',
+        dataIndex: 'pay_amount_cny',
+        key: 'pay_amount_cny',
         align: 'center',
       },
       {
-        title: '状态',
-        dataIndex: 'status',
-        key: 'status',
+        title: '订单状态',
+        dataIndex: 'state',
+        key: 'state',
         align: 'center',
-        render:(val,record)=>{
-          return statusType[val];
+        render: (val, record) => {
+          return buyStatusType[val];
         },
       },
       {
@@ -284,27 +306,32 @@ class BuyOrder extends Component {
         render: (val, record) => {
           return(
             <span>
-              <Popconfirm title="是否要确认收款？" onConfirm={() => this.receipt(record._id)}>
-                <Button>确认收款</Button>
-              </Popconfirm>
+              {
+                record.state == 5 ?
+                <Popconfirm title="是否要确认转款？" onConfirm={() => this.transfer(record.order_id)}>
+                  <Button>确认转款</Button>
+                </Popconfirm>
+                :
+                record.state == 4 ?
+                <Popconfirm title="是否要确认接单？" onConfirm={() => this.receipt(record.order_id)}>
+                  <Button>确认接单</Button>
+                </Popconfirm>
+                :
+                null
+              }
               <span style={{display: 'inline-block', width: '10px'}}></span>
               <Button>
-                <Link to={`/order/buyOrder_appeal/${record._id}`}>申述</Link>
+                <Link to={`/order/buyOrder_appeal/${record.order_id}`}>申述</Link>
               </Button>
               <span style={{display: 'inline-block', width: '10px'}}></span>
               <Button>
-                <Link to={`/order/buyOrder_detail/${record._id}`}>查看</Link>
+                <Link to={`/order/buyOrder_detail/${record.order_id}`}>查看</Link>
               </Button>
             </span>
           );
         },
       },
     ];
-
-    const exportMethods = {
-      submit: this.exportOk,
-      cancel: this.exportCancel,
-    };
 
     return (
       <ContLayout>
@@ -316,10 +343,10 @@ class BuyOrder extends Component {
             data={{ list, pagination }}
             columns={columns}
             onChange={this.handleStandardTableChange}
-            scroll={{ x: 1400 }}
+            scroll={list && list.length > 0 ? { x: 1400 } : {}}
           />
         </div>
-        <CreateExportForm {...exportMethods} modalVisible={ exportVisible } />
+        <a style={{display: 'none'}} href="" download id="hf">导出</a>
       </ContLayout>
     );
   }

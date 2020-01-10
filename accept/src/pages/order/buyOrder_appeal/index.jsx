@@ -58,12 +58,17 @@ class BuyOrderAppeal extends Component {
     }
     if (info.file.status === 'done') {
       // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl =>
-        this.setState({
-          fileList: info.fileList,
-          upLock: info.fileList.length < 5 ? false : true,
-          loading: false,
-        }),
+      getBase64(info.file.originFileObj, 
+        imageUrl => {
+          this.setState({
+            fileList: [
+              ...this.state.fileList,
+              imageUrl,
+            ],
+            upLock: info.fileList.length < 5 ? false : true,
+            loading: false,
+          })
+        },
       );
     }
   }
@@ -87,17 +92,25 @@ class BuyOrderAppeal extends Component {
       message.error('请填写完整信息后提交');
       return;
     }
+    this.setState({
+      submitLock: true,
+    })
     const { dispatch } = this.props;
     dispatch({
       type: 'buyOrderAppeal/submit',
       payload: {
-        fileList,
-        type,
-        desc
+        issue_file: fileList,
+        issue_type: type,
+        issue_desc: desc
       },
     }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+      }else {
+        message.success('操作成功');
+      }
       this.setState({
-        submitLock: true,
+        submitLock: false,
       })
     })
   }
@@ -115,7 +128,7 @@ class BuyOrderAppeal extends Component {
       <ContLayout>
         <div className={styles.wrap}>
           <Descriptions column={1}>
-            <Descriptions.Item label="问题类型">
+            <Descriptions.Item label={<span className={styles.itemLabel}>问题类型</span>}>
               <Select placeholder="请选择问题类型" style={{width: 280, maxWidth: '100%'}} onChange={this.handleSelect}>
                 {
                   Object.keys(statusType).map(value => {
@@ -124,26 +137,25 @@ class BuyOrderAppeal extends Component {
                 }
               </Select>
             </Descriptions.Item>
-            <Descriptions.Item label="申诉描述" className={styles.textTop} style={{}}>
-              <TextArea onChange={this.handleDesc} style={{width: 511, height: 162, maxWidth: '100%'}} />
+            <Descriptions.Item label={<span className={styles.itemLabel}>申诉描述</span>} className={styles.textTop} style={{}}>
+              <TextArea placeholder="请输入申诉描述" onChange={this.handleDesc} style={{width: 511, height: 162, maxWidth: '100%'}} />
             </Descriptions.Item>
-            <Descriptions.Item label="上传图片" className={styles.textTop}>
+            <Descriptions.Item label={<span className={styles.itemLabel}>上传图片</span>} className={styles.textTop}>
               <Upload
                 name="avatar"
                 listType="picture-card"
                 showUploadList={true}
-                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                 beforeUpload={beforeUpload}
                 onChange={this.handleChange}
                 disabled={upLock}
                 multiple={true}
               >
-                {uploadButton}
+                {!submitLock && !upLock && uploadButton}
               </Upload>
               <div className={styles.upImgDesc}>图片上传限制:最多5张，最大5M</div>
             </Descriptions.Item>
             <Descriptions.Item className={styles.noneBeforeIcon}>
-              <Button type="primary" onClick={this.submit} disabled={submitLock}>确定提交</Button>
+              <Button type="primary" loading={submitLock} onClick={this.submit}>确定提交</Button>
               <span style={{display: 'inline-block', width: '10px'}}></span>
               <Button>
                 <Link to="/order/buyOrder?history">返回</Link>

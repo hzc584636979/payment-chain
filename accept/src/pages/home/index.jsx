@@ -1,34 +1,38 @@
-import { Col, Dropdown, Icon, Menu, Row, Button, notification, message, Input } from 'antd';
+import { Col, Dropdown, Icon, Menu, Row, Button, notification, message, Input, Carousel, Select } from 'antd';
 import React, { Component, Fragment } from 'react';
 import Link from 'umi/link';
 import { GridContent } from '@ant-design/pro-layout';
 import { connect, routerRedux } from 'dva';
 import Layer from '@/components/Layer';
 import copy from 'copy-to-clipboard';
+import { getRealNamePassed } from '@/utils/utils';
+import moment from 'moment';
+import QRCode  from 'qrcode.react';
 import styles from './style.less';
 import banner1 from '@/assets/img_home_banner.png';
 import ewm from '@/assets/icon_qianbi.png';
+
+const { Option } = Select;
 
 @connect(({ user, home, loading }) => ({
   currentUser: user.currentUser,
   home,
   loading: loading.effects['home/fetch'],
 }))
-
 class Home extends Component {
   state = {
-    accountBalance1: true,
-    accountBalance2: true,
-    tokenBalance1: true,
-    tokenBalance2: true,
+    accountBalance1: false,
+    tokenBalance1: false,
+    tokenBalance2: false,
     payVisible: false,
     mortgageVisible: false,
-    buyStatus: 'on',
-    sellStatus: 'on',
+    buyStatus: 'out',
+    sellStatus: 'out',
   };
 
   componentDidMount() {
     const { dispatch } = this.props;
+
     dispatch({
       type: 'home/fetch',
     });
@@ -45,27 +49,49 @@ class Home extends Component {
   }
 
   handlePayVisible = () => {
-    this.checkUserAuth();
-    this.setState({
-      payVisible: !this.state.payVisible,
-    })
+    if(!getRealNamePassed()) return;
+    if(this.checkUserAuth()) {
+      this.setState({
+        payVisible: !this.state.payVisible,
+      })
+    }
   }
 
   handleMortgageVisible = () => {
-    this.checkUserAuth();
-    this.setState({
-      mortgageVisible: !this.state.mortgageVisible,
-    })
+    if(!getRealNamePassed()) return;
+    if(this.checkUserAuth()) {
+      this.setState({
+        mortgageVisible: !this.state.mortgageVisible,
+      })
+    }
   }
 
   toggleManagement = (type, status) => {
-    this.setState({
-      [type]: status
+    if(!getRealNamePassed()) return;
+    const { dispatch } = this.props;
+    let url = type == 'buyStatus' ? 'home/buyStatus' : 'home/sellStatus';
+
+    dispatch({
+      type: url,
+      payload: {
+        online_status: status,
+      }
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      dispatch({
+        type: 'user/getUserInfo',
+      });
     })
   }
 
   handleClipBoard = () => {
-    if(copy(`sahidhioafsf4563ahdj13265ans`)){
+    const { currentUser } = this.props;
+    if(copy(currentUser.walletInfo.address)){
       message.success('复制成功') 
     }else{
       message.error('复制失败，请重试') 
@@ -73,17 +99,84 @@ class Home extends Component {
   }
 
   checkUserAuth = () => {
-    const { currentUser } = this.props;
     const { dispatch } = this.props;
-    if(!currentUser.auth) {
+    if(!getRealNamePassed()) {
       dispatch(routerRedux.push('/account'));
     }
   }
 
+  clickDownLoad = () => {
+    var Qr = document.getElementById('qrid');  
+    let image = new Image();
+    image.src = Qr.toDataURL("image/png");
+    var a_link = document.getElementById('aId');
+    a_link.href = image.src;
+    a_link.download = "二维码.png";
+  }
+
+  handleMortgageNumber = e => {
+    this.setState({
+      mortgageValue: e.target.value,
+    })
+  }
+
+  handleMortgageAll = e => {
+    const { currentUser } = this.props;
+    this.setState({
+      mortgageValue: currentUser.walletInfo.balance,
+    })
+  }
+
+  handleMortgage = () => {
+    const { dispatch } = this.props;
+
+    if(!this.state.mortgageValue) {
+      message.error('请输入金额');
+      return;
+    }
+
+    dispatch({
+      type: 'home/mortgage',
+      payload: {
+        pledge_amount: this.state.mortgageValue,
+      }
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      dispatch({
+        type: 'user/getUserInfo',
+      });
+    })
+  }
+
+  changeWallet = (walletType) => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'user/changeWalletInfo',
+      payload: {
+        walletType: Number(walletType) - 1,
+      }
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      this.setState({
+        walletType
+      })
+    })
+  }
+
   render() {
-    const { accountBalance1, accountBalance2, tokenBalance1, tokenBalance2, payVisible, mortgageVisible, buyStatus, sellStatus } = this.state;
+    const { accountBalance1, tokenBalance1, tokenBalance2, payVisible, mortgageVisible, buyStatus, sellStatus, mortgageValue, walletType } = this.state;
     const { currentUser, home, loading } = this.props;
-    const {  } = home;
 
     return (
       <GridContent>
@@ -95,33 +188,67 @@ class Home extends Component {
             >
               <Col xl={5} md={24} sm={24} xs={24}>
                 <div className={`${styles.layoutLeft} ${styles.userInfo}`}>
-                  <div className={styles.avatar}><img src={ currentUser.avatar } /></div>
+                  <div className={styles.avatar}><img src={ currentUser.logo_path || DEFAULTAVATAR } /></div>
                   <div className={styles.user}>
-                    承兑商名称 | <span style={{color: '#2194FF'}}>94%</span><br/>
-                    <span style={{fontSize: 12}}>18977777777</span>
+                    { currentUser.user_name || <Link to="/account">设置名称</Link> } | <span style={{color: '#2194FF'}}>{ Number(currentUser.success_order_percent) * 100 }%</span><br/>
+                    <div style={{margin: '5px 0'}}>
+                      <label style={{fontSize: 16}}>USDT币种：</label>
+                      <Select value={walletType || "1"} onChange={this.changeWallet}>
+                        {
+                          Object.keys(coinType).map((value, index) => {
+                            if(index != 0){
+                              return <Option value={value} key={value}>{coinType[value]}</Option>
+                            }
+                          })
+                        }
+                      </Select>
+                    </div>
+                    <span style={{fontSize: 12}}>{ currentUser.telephone_number }</span>
                   </div>
                   <div className={styles.bottom}>
                     <div className={styles.button}><Link to="/account">账户管理</Link></div>
-                    <div className={styles.time}>上次登录：2019-11-11 05:22:33</div>
+                    <div className={styles.time}>上次登录：{ moment(currentUser.login_date).local().format('YYYY-MM-DD HH:mm:ss') }</div>
                   </div>
                 </div>
               </Col>
               <Col xl={19} md={24} sm={24} xs={24}>
                 <div className={`${styles.layoutRight} ${styles.messageWrap}`}>
-                  <Row
-                    className={styles.message1}
-                    type="flex"
-                    justify="space-between"
-                  >
-                    <Col>
-                      您尚未通过支付链商家认证，<Link to="/account">去认证></Link>
-                    </Col>
-                    <Col>
-                      <Link to="/message" style={{color: '#2194FF'}}>了解详情</Link>
-                    </Col>
-                  </Row>
-                  <div className={styles.message2} style={{height: 205}}>
-                    <img src={banner1} />
+                  {
+                    currentUser.real_name_passed ?
+                    <Row
+                      className={`${styles.message1} ${styles.passed}`}
+                      type="flex"
+                      justify="space-between"
+                    >
+                      <Col>
+                        您已通过支付链商家认证
+                      </Col>
+                    </Row>
+                    :
+                    <Row
+                      className={styles.message1}
+                      type="flex"
+                      justify="space-between"
+                    >
+                      <Col>
+                        您尚未通过支付链商家认证，<Link to="/account">去认证></Link>
+                      </Col>
+                      {/*<Col>
+                        <Link to="/message" style={{color: '#2194FF'}}>了解详情</Link>
+                      </Col>*/}
+                    </Row>
+                  }
+                  <div className={styles.message2}>
+                    <Carousel
+                      style={{
+                        width: '100%',
+                        height: 205,
+                        overflow: 'hidden',
+                      }}
+                      autoplay={true}
+                    >
+                      <img src={banner1} width="100%" height="205" />
+                    </Carousel>
                   </div>
                   <div className={styles.message3}>
                     <Row
@@ -135,11 +262,17 @@ class Home extends Component {
                       justify="space-between"
                     >
                       <Col style={{fontSize: 16}}>
-                        <span style={{display: 'inline-block', width: 16, height: 16, borderRadius: '50%', background: '#DDDDDD', marginRight: 20, verticalAlign: 'middle'}}></span><span style={{color: '#CF0000'}}>[重要通知]</span> 您提交的支付链商家认证，后台正在审核中
+                        <span style={{display: 'inline-block', width: 16, height: 16, borderRadius: '50%', background: '#DDDDDD', marginRight: 20, verticalAlign: 'middle'}}></span><span style={{color: '#CF0000'}}>[重要通知]</span> 
+                        {
+                          currentUser.real_name_passed ?
+                          ` 您提交的支付链商家认证，已通过审核`
+                          :
+                          ` 您提交的支付链商家认证，后台正在审核中`
+                        }
                       </Col>
-                      <Col>
+                      {/*<Col>
                         <Link to="/message" style={{color: '#2194FF', fontSize: 16}}>查看更多</Link>
-                      </Col>
+                      </Col>*/}
                     </Row>
                     <Row
                       type="flex"
@@ -150,7 +283,7 @@ class Home extends Component {
                           <div className={styles.item}>
                             <span style={{display: 'inline-block', width: 160}}>可用余额（USDT）</span>
                             {tokenBalance1 ? 
-                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>0.00</span>
+                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>{ currentUser.walletInfo.balance }</span>
                               : 
                               <span style={{display: 'inline-block', minWidth: 100, color: '#333333'}}>****</span>
                             }
@@ -159,7 +292,7 @@ class Home extends Component {
                           <div className={styles.item}>
                             <span style={{display: 'inline-block', width: 160}}>不可用余额（USDT）</span>
                             {tokenBalance2 ? 
-                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>0.00</span>
+                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>{ currentUser.walletInfo.lock_balance }</span>
                               : 
                               <span style={{display: 'inline-block', minWidth: 100, color: '#333333'}}>****</span>
                             }
@@ -167,16 +300,21 @@ class Home extends Component {
                           </div>
                           <div className={styles.but}>
                             <a onClick={this.handlePayVisible}>充值</a>
-                            <Link to="/finance/withdrawApply">提现</Link>
+                            <Link to="/finance/withdrawApply">提币</Link>
                           </div>
                         </div>
                       </Col>
                       <Col xl={12} md={12} sm={24} xs={24}>
-                        <div className={styles.itemBox}>
+                        <div className={`${styles.itemBox} ${styles.itemBoxBg2}`}>
                           <div className={styles.title}>抵押资金</div>
                           <div className={styles.item}>
-                            <span style={{display: 'inline-block', width: 160}}>资金余额（USDT）</span>
-                            <span style={{display: 'inline-block', minWidth: 100,color: '#333333'}}>1000.00</span>
+                            <span style={{display: 'inline-block', width: 160}}>抵押资金（USDT）</span>
+                            {accountBalance1 ? 
+                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>{ currentUser.pledge_amount }</span>
+                              : 
+                              <span style={{display: 'inline-block', minWidth: 100, color: '#333333'}}>****</span>
+                            }
+                            <span style={{cursor: 'pointer'}} onClick={() => this.eyeVisible('accountBalance1')}>{accountBalance1 ? <Icon type="eye-invisible" /> : <Icon type="eye" />}</span> 
                           </div>
                           <div className={styles.but} style={{marginTop: 64}}>
                             <a onClick={this.handleMortgageVisible}>抵押</a>
@@ -203,15 +341,15 @@ class Home extends Component {
                   <div className={styles.item}>
                     <p>购买</p>
                     <div className={styles.but}>
-                      <Button type={buyStatus == 'on' ? 'primary' : ''} style={{width: '47%', marginRight: '3%'}} onClick={() => this.toggleManagement('buyStatus', 'on')}>上线</Button>
-                      <Button type={buyStatus == 'out' ? 'primary' : ''} style={{width: '47%'}} onClick={() => this.toggleManagement('buyStatus', 'out')}>下线</Button>
+                      <Button type={currentUser.buy_online ? 'primary' : ''} style={{width: '47%', marginRight: '3%'}} onClick={() => this.toggleManagement('buyStatus', true)}>上线</Button>
+                      <Button type={!currentUser.buy_online ? 'primary' : ''} style={{width: '47%'}} onClick={() => this.toggleManagement('buyStatus', false)}>下线</Button>
                     </div>
                   </div>
                   <div className={styles.item}>
                     <p>出售</p>
                     <div className={styles.but}>
-                      <Button type={sellStatus == 'on' ? 'primary' : ''} style={{width: '47%', marginRight: '3%'}} onClick={() => this.toggleManagement('sellStatus', 'on')}>上线</Button>
-                      <Button type={sellStatus == 'out' ? 'primary' : ''} style={{width: '47%'}} onClick={() => this.toggleManagement('sellStatus', 'out')}>下线</Button>
+                      <Button type={currentUser.sell_online ? 'primary' : ''} style={{width: '47%', marginRight: '3%'}} onClick={() => this.toggleManagement('sellStatus', true)}>上线</Button>
+                      <Button type={!currentUser.sell_online ? 'primary' : ''} style={{width: '47%'}} onClick={() => this.toggleManagement('sellStatus', false)}>下线</Button>
                     </div>
                   </div>
                 </div>
@@ -230,29 +368,29 @@ class Home extends Component {
                       <Col xl={6} md={6} sm={12} xs={12}>
                         <div className={styles.item}>
                           <div className={styles.name}>出售订单待处理</div>
-                          <div className={styles.num}>0</div>
-                          <div className={styles.but}><Button type="primary">去处理</Button></div>
+                          <div className={styles.num}>{ home.sell_order_pending }</div>
+                          <div className={styles.but}><Link to="/order/sellOrder"><Button type="primary">去处理</Button></Link></div>
                         </div>
                       </Col>
                       <Col xl={6} md={6} sm={12} xs={12}>
                         <div className={styles.item}>
                           <div className={styles.name}>购买订单待处理</div>
-                          <div className={styles.num}>0</div>
-                          <div className={styles.but}><Button type="primary">去处理</Button></div>
+                          <div className={styles.num}>{ home.buy_order_pending }</div>
+                          <div className={styles.but}><Link to="/order/buyOrder"><Button type="primary">去处理</Button></Link></div>
                         </div>
                       </Col>
                       <Col xl={6} md={6} sm={12} xs={12}>
                         <div className={styles.item}>
                           <div className={styles.name}>出售异议待处理</div>
-                          <div className={styles.num}>0</div>
-                          <div className={styles.but}><Button type="primary">去处理</Button></div>
+                          <div className={styles.num}>{ home.sell_complaint_order_pending }</div>
+                          <div className={styles.but}><Link to="/dissentOrder/sellOrder"><Button type="primary">去处理</Button></Link></div>
                         </div>
                       </Col>
                       <Col xl={6} md={6} sm={12} xs={12}>
                         <div className={styles.item}>
                           <div className={styles.name}>购买异议待处理</div>
-                          <div className={styles.num}>0</div>
-                          <div className={styles.but}><Button type="primary">去处理</Button></div>
+                          <div className={styles.num}>{ home.buy_complaint_order_pending }</div>
+                          <div className={styles.but}><Link to="/dissentOrder/buyOrder"><Button type="primary">去处理</Button></Link></div>
                         </div>
                       </Col>
                     </Row>
@@ -269,25 +407,25 @@ class Home extends Component {
                       <Col xl={6} md={6} sm={12} xs={12}>
                         <div className={styles.item}>
                           <div className={styles.name}>总收益（USDT）</div>
-                          <div className={styles.num}>0.00</div>
+                          <div className={styles.num}>{ home.total_earnings }</div>
                         </div>
                       </Col>
                       <Col xl={6} md={6} sm={12} xs={12}>
                         <div className={styles.item}>
                           <div className={styles.name}>总成单量（笔）</div>
-                          <div className={styles.num}>0</div>
+                          <div className={styles.num}>{ home.total_success_order }</div>
                         </div>
                       </Col>
                       <Col xl={6} md={6} sm={12} xs={12}>
                         <div className={styles.item}>
-                          <div className={styles.name}>总收益（USDT）</div>
-                          <div className={styles.num}>0.00</div>
+                          <div className={styles.name}>今日收益（USDT）</div>
+                          <div className={styles.num}>{ home.today_earnings }</div>
                         </div>
                       </Col>
                       <Col xl={6} md={6} sm={12} xs={12}>
                         <div className={styles.item}>
-                          <div className={styles.name}>总收益（USDT）</div>
-                          <div className={styles.num}>0.00</div>
+                          <div className={styles.name}>今日成单量（笔）</div>
+                          <div className={styles.num}>{ home.today_success_order }</div>
                         </div>
                       </Col>
                     </Row>
@@ -303,16 +441,21 @@ class Home extends Component {
             hiddenVisible={this.handlePayVisible}
           >
             <div className={styles.payLayout}>
-              <div style={{textAlign: 'center'}}>
-                <div className={styles.ewm}>
-                  <img src={ewm} />
+              {
+                currentUser.walletInfo.address &&
+                <div style={{textAlign: 'center'}}>
+                  <div className={styles.ewm}>
+                    <QRCode id='qrid' value={currentUser.walletInfo.address} size={220} style={{margin: '0 auto'}} /> 
+                  </div>
+                  <Button type="primary" style={{width: 130}}>
+                    <a download id='aId' onClick={this.clickDownLoad}>保存二维码</a>
+                  </Button>
+                  <div className={styles.address}>{currentUser.walletInfo.address}</div>
+                  <Button type="primary" style={{width: 130}} onClick={this.handleClipBoard}>复制地址</Button>
                 </div>
-                <Button type="primary" style={{width: 130}}>保存二维码</Button>
-                <div className={styles.address}>sahidhioafsf4563ahdj13265ans</div>
-                <Button type="primary" style={{width: 130}} onClick={this.handleClipBoard}>复制地址</Button>
-              </div>
+              }
               <div className={styles.desc}>
-                温馨提示：<br/>充值USDT需要6个区块确认，请耐心等待。此地址只接受OMNI协议的USDT，请勿往地址元值其他协议的USDT发送其他币种到此地址将无法找回，平台也不承担带来的损失。
+                温馨提示：<br/>充值USDT需要6个区块确认，请耐心等待。此地址只接受{coinType[currentUser.walletInfo.type]}协议的USDT，请勿往地址元值其他协议的USDT发送其他币种到此地址将无法找回，平台也不承担带来的损失。
               </div>
             </div>
           </Layer>
@@ -329,16 +472,16 @@ class Home extends Component {
                     抵押金额：
                   </Col>
                   <Col xl={14} md={13} sm={24} xs={24} style={{marginRight: 10}}>
-                    <Input placeholder="请输入抵押金额" />
+                    <Input placeholder="请输入抵押金额" onChange={this.handleMortgageNumber} value={mortgageValue} />
                   </Col>
                   <Col xl={5} md={5} sm={24} xs={24}>
-                    <Button style={{width: 128}}>全部抵押</Button>
+                    <Button style={{width: 128}} onClick={this.handleMortgageAll}>全部抵押</Button>
                   </Col>
                 </Row>
                 <Row>
                   <Col xl={4} md={5} sm={0} xs={0} style={{lineHeight: '32px', fontSize: 16, color: '#666666'}}></Col>
                   <Col xl={14} md={13} sm={24} xs={24} style={{color: '#333333', textAlign: 'left'}}>
-                    可用余额:777856.56 USDT
+                    可用余额:{ currentUser.walletInfo.balance } USDT
                   </Col>
                 </Row>
               </div>
@@ -348,10 +491,14 @@ class Home extends Component {
                 2.地址将无法找回，平台也不承担带来的损失。充值USDT需要6个区块确认，请耐心等待。 此地址 只接受OMNI协议的USDT，请勿往地址元值其他协议的USDT发送其他币种到此地址将无法找回，平台也不承担带来的损失。
               </div>
               <div style={{textAlign: 'center'}}>
-                <Button type="primary" style={{width: 120}}>确定抵押</Button>
+                <Button type="primary" style={{width: 120}} onClick={this.handleMortgage}>确定抵押</Button>
               </div>
             </div>
           </Layer>
+        }
+        {
+          !getRealNamePassed() &&
+          <div className={styles.passedLayer}>用户必须通过实名认证后方可使用平台的功能 <span onClick={this.checkUserAuth} style={{color: '#EA0000', cursor: 'pointer'}}>去认证</span></div>
         }
       </GridContent>
     );

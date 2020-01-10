@@ -1,73 +1,63 @@
-import { fakeBuyOrder, fakeBuyOrderSearchAll, fakeBuyOrderReceipt, fakeBuyOrderExport } from '@/services/api';
+import { buyOrder, buyOrderSearchAll, buyOrderTakeOrder, buyOrderReceipt } from '@/services/api';
 
 const Model = {
   namespace: 'buyOrder',
   state: {
     data: {
-      list: [
-        {
-          _id: 0,
-          time: 1,
-          internalOrder: 1,
-          externalOrder: 1,
-          payName: 1,
-          way: 1,
-          customerNickname: 1,
-          account: 1,
-          status: 1,
-        }
-      ],
-      pagination: {
-        total: 500,
-        current: 1,
-        pageSize: 10
-      },
+      list: [],
+      pagination: {},
       history: {},
     },
   },
   effects: {
     *fetch({ payload }, { select,call, put }) {
       let response = {};
-      if(window.location.hash === "/order/buyOrder?history"){
+      if(window.location.href.indexOf('?history') > -1){
         const his = yield select(state => state.buyOrder.data.history);
-        payload = {};
-        payload = { ...his };
-        response = yield call(fakeBuyOrderSearchAll, payload);
+        payload = { ...his, page: his.page || payload.page, pageSize: his.pageSize || payload.pageSize };
+        response = yield call(buyOrderSearchAll, payload);
       }else{
-        response = yield call(fakeBuyOrder, payload);
+        response = yield call(buyOrder, payload);
       }
-      let { data, total } = response.result || {};
+      let { rows, count } = response.data || {};
       let page = payload && payload.page;
       let pageSize = payload && payload.pageSize;
-      const responseResult = { list: data, pagination: { total, current: page+1, pageSize: pageSize }, history: {...payload} };
+      const responseResult = { list: rows, pagination: { total: count, current: page+1, pageSize }, history: { ...payload } };
       yield put({
         type: 'save',
         payload: responseResult,
       });
     },
     *search({ payload }, { call, put }) {
-      const response = yield call(fakeBuyOrderSearchAll, payload);
-      let { data, total } = response.result || {};
-      let responseResult ={ list: data, pagination: { total, current: payload.page+1, pageSize: payload.pageSize }, history: { ...payload } };
+      const response = yield call(buyOrderSearchAll, payload);
+      let { rows, count } = response.data || {};
+      let page = payload && payload.page;
+      let pageSize = payload && payload.pageSize;
+      const responseResult = { list: rows, pagination: { total: count, current: page+1, pageSize }, history: { ...payload } };
       yield put({
         type: 'save',
         payload: responseResult,
       });
     },
+    *transfer({ payload }, { call, put }) {
+      const response = yield call(buyOrderTakeOrder, payload);
+      return response;
+    },
     *receipt({ payload }, { call, put }) {
-      const response = yield call(fakeBuyOrderReceipt, payload);
+      const response = yield call(buyOrderReceipt, payload);
       return response;
     },
     *export({ payload }, { call, put }) {
-      const response = yield call(fakeBuyOrderExport, payload);
+      console.log(payload)
+      const response = yield call(buyOrderSearchAll, payload);
       return response;
     },
   },
   reducers: {
-    save(state, action) {
+    save(state, { payload }) {
       return {
         ...state,
-        data: action.payload,
+        data: payload,
       };
     },
   },

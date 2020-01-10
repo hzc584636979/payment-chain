@@ -60,6 +60,8 @@ class Register extends Component {
   }
 
   handleTab = tabType => {
+    const { form } = this.props;
+    form.resetFields();
     clearInterval(this.interval);
     let params = {
       country: "china",
@@ -93,11 +95,13 @@ class Register extends Component {
 
     dispatch({
       type: url,
-      payload: tabType == 'phone' ? params.phone : params.email,
+      payload: tabType == 'phone' ? {telephone_number: params.phone} : {email_address: params.email},
     }).then(data => {
-      if(!data) {
-        message.error('验证码发送失败，请重试！');
+      if(data.status != 1) {
+        message.error(data.msg);
         return;
+      }else {
+        message.success('操作成功');
       }
       let count = 59;
       this.setState({
@@ -183,13 +187,15 @@ class Register extends Component {
     dispatch({
       type: 'userAndregister/nextPhoneStep2',
       payload: {
-        phone: params.phone,
-        code: params.code,
+        telephone_number: params.phone,
+        telephone_verify_code: params.code,
       },
     }).then(data => {
-      if(!data) {
-        message.error('操作失败，请重试！');
+      if(data.status != 1) {
+        message.error(data.msg);
         return;
+      }else {
+        message.success('操作成功');
       }
       clearInterval(this.interval);
       this.setState({
@@ -213,11 +219,16 @@ class Register extends Component {
           const { params } = this.state;
           dispatch({
             type: 'userAndregister/phoneSubmit',
-            payload: params,
+            payload: {
+              telephone_number: params.phone,
+              login_pwd: values.password,
+            },
           }).then(data => {
             if(!data) {
-              message.error('操作失败，请重试！');
+              message.error(data.msg);
               return;
+            }else {
+              message.success('操作成功');
             }
             this.setState({
               stepCurrent: 2,
@@ -246,7 +257,7 @@ class Register extends Component {
     if(stepCurrent == 0) {
       renderJsx = (
         <Form style={{width: '80%', margin: '0 auto'}} {...formItemLayout}>
-          <FormItem label="国籍/地区">
+          {/*<FormItem label="国籍/地区">
             {getFieldDecorator('country', {
               initialValue: params.country,
               rules: [
@@ -259,10 +270,10 @@ class Register extends Component {
                 <Option value="china">中国大陆</Option>
               </Select>,
             )}
-          </FormItem>
+          </FormItem>*/}
           <FormItem label="手机号码">
             <InputGroup compact>
-              <Select
+              {/*<Select
                 size="large"
                 value={params.prefix}
                 onChange={this.changePrefix}
@@ -273,7 +284,7 @@ class Register extends Component {
               >
                 <Option value="86">+86</Option>
                 <Option value="87">+87</Option>
-              </Select>
+              </Select>*/}
               {getFieldDecorator('mobile', {
                 rules: [
                   {
@@ -442,13 +453,15 @@ class Register extends Component {
     dispatch({
       type: 'userAndregister/nextEmailStep2',
       payload: {
-        email: params.email,
-        code: params.code,
+        email_address: params.email,
+        email_verify_code: params.code,
       },
     }).then(data => {
-      if(!data) {
-        message.error('操作失败，请重试！');
+      if(data.status != 1) {
+        message.error(data.msg);
         return;
+      }else {
+        message.success('操作成功');
       }
       clearInterval(this.interval);
       this.setState({
@@ -472,14 +485,19 @@ class Register extends Component {
           const { params } = this.state;
           dispatch({
             type: 'userAndregister/emailSubmit',
-            payload: params,
+            payload: {
+              email_address: params.email,
+              login_pwd: values.password,
+            },
           }).then(data => {
-            if(!data) {
-              message.error('操作失败，请重试！');
+            if(data.status != 1) {
+              message.error(data.msg);
               return;
+            }else {
+              message.success('操作成功');
             }
             this.setState({
-              stepCurrent: 1,
+              stepCurrent: 2,
             })
           })
         }

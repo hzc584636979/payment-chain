@@ -33,6 +33,15 @@
       }
     }
   }
+
+  .itemLabel:before {
+    display: inline-block;
+    content: '*';
+    position: relative;
+    left: -5px;
+    top: 2px;
+    color: red;
+  }
   
   :global {
 
@@ -50,19 +59,6 @@
       color: #999999;
       padding-left: 10px;
       
-    }
-
-    .ant-descriptions-item {
-      position: relative;
-    }
-
-    .ant-descriptions-item:before {
-      display: inline-block;
-      content: '*';
-      position: absolute;
-      left: 0;
-      top: 0;
-      color: red;
     }
 
     .ant-descriptions-item-content {

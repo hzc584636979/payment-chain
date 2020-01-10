@@ -3,12 +3,14 @@ import {
   Menu,
   Row,
   Col,
+  Spin,
 } from 'antd';
 import React, { Component } from 'react';
 import Link from 'umi/link';
 import { GridContent, PageHeaderWrapper, RouteContext } from '@ant-design/pro-layout';
 import { connect, routerRedux } from 'dva';
 import config from '../../../config/config.js';
+import { getRealNamePassed } from '@/utils/utils';
 import styles from './style.less';
 
 const { Item } = Menu;
@@ -30,7 +32,7 @@ class ContLayout extends Component {
   componentDidMount() {
     this.path = this.props.location.pathname;
     this.hashRoutes();
-    this.path != '/account/center' && !this.props.currentUser.auth && this.props.dispatch(routerRedux.push('/account'));
+    this.path != '/account/center' && !getRealNamePassed() && this.props.dispatch(routerRedux.push('/account'));
   }
 
   componentWillUnmount() {
@@ -97,7 +99,7 @@ class ContLayout extends Component {
     let splitArr = this.path.split('/');
     let newSplitArr = splitArr.slice(0, splitArr.length-1).join('/')+'/:id';
 
-    let newPath = this.hash[this.path] ? this.hash[this.path] : this.hash[this.hash[newSplitArr].expandPath];
+    let newPath = this.hash[this.path] ? (this.hash[this.path].expandPath ? this.hash[this.hash[this.path].expandPath] : this.hash[this.path]) : this.hash[this.hash[newSplitArr].expandPath];
     if(!newPath) return '';
 
     return newPath.index + '';
@@ -109,39 +111,41 @@ class ContLayout extends Component {
   }
 
   render() {
-    const { children } = this.props;
+    const { children, loading } = this.props;
     const getBreadcrumb = this.getBreadcrumb();
     const isMessagePage = this.props.location.pathname.indexOf('/message/') > -1;
 
     return (
-      <GridContent className={styles.wrap}>
-        <Row>
-          {
-            !isMessagePage &&
-            <Col xs={4}>
-              <div className={styles.menuWrap}>
-                <h1>{ getBreadcrumb.length > 0 && getBreadcrumb[2] }</h1>
-                <Menu
-                  onClick={this.handleMenuClick}
-                  style={{ width: '100%' }}
-                  selectedKeys={this.getMenuKey()}
-                  mode="inline"
-                >
-                  { this.getMenuData() }
-                </Menu>
+      <Spin spinning={!!loading}>
+        <GridContent className={styles.wrap}>
+          <Row>
+            {
+              !isMessagePage &&
+              <Col xs={4}>
+                <div className={styles.menuWrap}>
+                  <h1>{ getBreadcrumb.length > 0 && getBreadcrumb[2] }</h1>
+                  <Menu
+                    onClick={this.handleMenuClick}
+                    style={{ width: '100%' }}
+                    selectedKeys={this.getMenuKey()}
+                    mode="inline"
+                  >
+                    { this.getMenuData() }
+                  </Menu>
+                </div>
+              </Col>
+            }
+            <Col xs={!isMessagePage ? 20 : 24}>
+              <div className={styles.PageWrap}>
+                <div className={styles.breadcrumb}>
+                  { getBreadcrumb }
+                </div>
+                { children }
               </div>
             </Col>
-          }
-          <Col xs={!isMessagePage ? 20 : 24}>
-            <div className={styles.PageWrap}>
-              <div className={styles.breadcrumb}>
-                { getBreadcrumb }
-              </div>
-              { children }
-            </div>
-          </Col>
-        </Row>
-      </GridContent>
+          </Row>
+        </GridContent>
+      </Spin>
     );
   }
 }

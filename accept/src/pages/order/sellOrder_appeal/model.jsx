@@ -8,8 +8,8 @@ const Model = {
   },
   effects: {
     *submit({ payload }, { call, put }) {
-      const match = pathToRegexp('/order/sellOrder_appeal/:id').exec(window.location.hash);
-      const payload1 = { id: match[1] };
+      const match = pathToRegexp('/order/sellOrder_appeal/:id').exec(window.location.pathname);
+      const payload1 = { ...payload, order_id: match[1], order_type: 2 };
       const response = yield call(sellOrderAppeal, payload1);
       yield put({
         type: 'save',

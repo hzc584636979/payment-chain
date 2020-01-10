@@ -19,6 +19,15 @@
     color: #999999;
     font-size: 14px;
   }
+
+  .itemLabel:before {
+    display: inline-block;
+    content: '*';
+    position: relative;
+    left: -5px;
+    top: 2px;
+    color: red;
+  }
   
   :global {
 
@@ -38,23 +47,9 @@
       
     }
 
-    .ant-descriptions-item {
-      position: relative;
-    }
-
-    .ant-descriptions-item:before {
-      display: inline-block;
-      content: '*';
-      position: absolute;
-      left: 0;
-      top: 0;
-      color: red;
-    }
-
     .ant-descriptions-item-content {
       font-size: 16px;
       color: #333333;
-      font-weight: 600;
       width: calc(100% - 100px);
     }
   }

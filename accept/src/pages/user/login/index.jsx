@@ -22,8 +22,7 @@ class Login extends Component {
     const { type } = this.state;
     let payload = {
       userName: type == 'mobile' ? values.phoneUsername : values.emailUsername,
-      password: type == 'mobile' ? values.phonePassword : values.emailPassword,
-      type,
+      login_pwd: type == 'mobile' ? values.phonePassword : values.emailPassword,
     };
 
     if (!err) {
@@ -72,13 +71,13 @@ class Login extends Component {
             key="mobile"
             tab="手机登录"
           >
-            {status === 'error' &&
+            {status == 0 &&
               loginType === 'mobile' &&
               !submitting &&
               this.renderMessage('验证码错误')}
             <Mobile
               name="phoneUsername"
-              placeholder={'手机号'}
+              placeholder={'请输入手机号'}
               rules={[
                 {
                   required: true,
@@ -92,7 +91,7 @@ class Login extends Component {
             />
             <Password
               name="phonePassword"
-              placeholder={`密码: ant`}
+              placeholder={`请输入登录密码`}
               rules={[
                 {
                   required: true,
@@ -109,7 +108,7 @@ class Login extends Component {
             key="account"
             tab="邮箱登录"
           >
-            {status === 'error' &&
+            {status == 0 &&
               loginType === 'account' &&
               !submitting &&
               this.renderMessage('账户或密码错误')}
@@ -129,7 +128,7 @@ class Login extends Component {
             />
             <Password
               name="emailPassword"
-              placeholder={`密码: ant`}
+              placeholder={`请输入登录密码`}
               rules={[
                 {
                   required: true,

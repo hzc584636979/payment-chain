@@ -1,9 +1,10 @@
-import { Button, Descriptions, Popconfirm, Input } from 'antd';
+import { Button, Descriptions, Popconfirm, Input, message } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
 import Layer from '@/components/Layer';
+import moment from 'moment';
 import styles from './style.less';
 
 const { TextArea } = Input;
@@ -15,24 +16,31 @@ const { TextArea } = Input;
 class SellDissentOrderDetail extends Component {
   state = {
     KFVisible: false,
+    contact: '',
+    content: '',
   };
 
   componentDidMount() {
     const { dispatch } = this.props;
-    /*dispatch({
+    dispatch({
       type: 'sellDissentOrderDetail/fetch',
-    });*/
+    });
   }
 
   componentWillUnmount() {
 
   }
 
-  receipt = () => {
-    dispatch({
-      type: 'sellDissentOrderDetail/receipt',
-      payload: {id},
-    });
+  handleContact = e => {
+    this.setState({
+      contact: e.target.value
+    })
+  }
+
+  handleContent = e => {
+    this.setState({
+      content: e.target.value
+    })
   }
 
   handleKF = () => {
@@ -42,8 +50,33 @@ class SellDissentOrderDetail extends Component {
   }
 
   handleOk = () => {
+    const { dispatch } = this.props;
+    const { contact, content } = this.state;
+    if(contact == '' || content == ''){
+      message.error('请填写完整信息后提交');
+      return;
+    }
+
     this.setState({
-      KFVisible: false,
+      submitLock: true,
+    })
+
+    dispatch({
+      type: 'sellDissentOrderDetail/KF',
+      payload: {
+        contact,
+        content,
+      },
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+      }else {
+        message.success('操作成功');
+      }
+      this.setState({
+        KFVisible: false,
+        submitLock: false,
+      })
     })
   }
 
@@ -53,39 +86,50 @@ class SellDissentOrderDetail extends Component {
     })
   }
 
+  closeObjection = () => {
+    const { dispatch } = this.props;
+
+    this.setState({
+      closeLock: true,
+    })
+
+    dispatch({
+      type: 'sellDissentOrderDetail/close',
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+      }else {
+        message.success('操作成功');
+      }
+      this.setState({
+        KFVisible: false,
+        closeLock: false,
+      })
+    })
+  }
+
   render() {
-    const { loading } = this.props;
-    const { KFVisible, submitLock } = this.state;
+    const { sellDissentOrderDetail, loading } = this.props;
+    const { KFVisible, submitLock, closeLock } = this.state;
                                                
     return (
       <ContLayout>
         <div className={styles.wrap}>
           <Descriptions column={1}>
-            <Descriptions.Item label="订单状态">已过期</Descriptions.Item>
-            <Descriptions.Item label="平台订单号">215898456123564632156325412</Descriptions.Item>
-            <Descriptions.Item label="商户订单号">4652312511215</Descriptions.Item>
-            <Descriptions.Item label="付款方式">支付宝转银行卡</Descriptions.Item>
-            <Descriptions.Item label="收款姓名">金三胖</Descriptions.Item>
-            <Descriptions.Item label="银行卡号">478485613213254651</Descriptions.Item>
-            <Descriptions.Item label="银行名称">中国银行</Descriptions.Item>
-            <Descriptions.Item label="商户购买">14.24</Descriptions.Item>
-            <Descriptions.Item label="平台折扣后金额（CNY）">100.00</Descriptions.Item>
-            <Descriptions.Item label="成交汇率">7.05</Descriptions.Item>
-            <Descriptions.Item label="调价收入">0.00</Descriptions.Item>
-            <Descriptions.Item label="购买订单总金额（USDT）">14.24</Descriptions.Item>
-            <Descriptions.Item label="创建时间">2019-11-11 18:24:30</Descriptions.Item>
-            <Descriptions.Item label="转账时间">--</Descriptions.Item>
-            <Descriptions.Item label="承兑商确认时间">--</Descriptions.Item>
+            <Descriptions.Item label="异议时间">{ moment(sellDissentOrderDetail.issue_create_time).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
+            <Descriptions.Item label="问题类型">{ sellDissentOrderDetail.issue_type }</Descriptions.Item>
+            <Descriptions.Item label="平台订单号">{ sellDissentOrderDetail.order_id }</Descriptions.Item>
+            <Descriptions.Item label="商户订单号">{ sellDissentOrderDetail.out_order_id }</Descriptions.Item>
+            <Descriptions.Item label="付款用户">{ sellDissentOrderDetail.payee_name }</Descriptions.Item>
+            <Descriptions.Item label="付款方式">{ payIcon[sellDissentOrderDetail.pay_type] }</Descriptions.Item>
+            <Descriptions.Item label="币种">{ coinType[sellDissentOrderDetail.token_id] }</Descriptions.Item>
+            <Descriptions.Item label="收币商户">{ sellDissentOrderDetail.m_user_name }</Descriptions.Item>
+            <Descriptions.Item label="订单状态">{ sellStatusType[sellDissentOrderDetail.state] }</Descriptions.Item>
+            <Descriptions.Item label="订单创建时间">{ moment(sellDissentOrderDetail.created_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
             <Descriptions.Item label="操作">
-              <Popconfirm title="是否要确认收款？" onConfirm={this.receipt}>
-                <Button type="primary">确定收款</Button>
-              </Popconfirm>
-              <span style={{display: 'inline-block', width: '10px'}}></span>
               <Button type="primary" onClick={this.handleKF}>客服介入</Button>
               <span style={{display: 'inline-block', width: '10px'}}></span>
-              <Button type="danger">
-                <Link to="/dissentOrder/sellOrder?history">关闭</Link>
-              </Button>
+              <Button loading={closeLock} type="danger" onClick={this.closeObjection}>关闭异议</Button>
             </Descriptions.Item>
           </Descriptions>
         </div>
@@ -98,13 +142,13 @@ class SellDissentOrderDetail extends Component {
             <div className={styles.layerWrap} style={{width: '70%', margin: '0 auto'}}>
               <Descriptions column={1}>
                 <Descriptions.Item label={<span className={styles.itemLabel}>联系方式</span>}>
-                  <Input placeholder="输入联系方式" style={{width: '100%'}} onChange={this.handleSelect} />
+                  <Input placeholder="输入联系方式" style={{width: '100%'}} onChange={this.handleContact} />
                 </Descriptions.Item>
                 <Descriptions.Item label={<span className={styles.itemLabel}>申诉描述</span>} className={styles.textTop}>
-                  <TextArea placeholder="请输入申诉描述" onChange={this.handleDesc} style={{width: '100%', height: 162}} />
+                  <TextArea placeholder="请输入申诉描述" onChange={this.handleContent} style={{width: '100%', height: 162}} />
                 </Descriptions.Item>
                 <Descriptions.Item className={styles.noneBeforeIcon}>
-                  <Button type="primary" onClick={this.submit} disabled={submitLock}>确定提交</Button>
+                  <Button type="primary" loading={submitLock} onClick={this.submit}>确定提交</Button>
                 </Descriptions.Item>
               </Descriptions>
             </div>

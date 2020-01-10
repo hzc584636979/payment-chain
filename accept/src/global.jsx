@@ -6,6 +6,54 @@ const { pwa } = defaultSettings; // if pwa is true
 
 window.EXHIBITION = '/';
 window.EXHIBITION2 = '--';
+window.DEFAULTAVATAR = 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png';
+
+window.g_getLocalStorage = () => {
+  return localStorage.getItem('paymentChain') ? JSON.parse(localStorage.getItem('paymentChain')) : null;
+};
+
+window.g_setLocalStorage = (params) => {
+  return localStorage.setItem('paymentChain', JSON.stringify(params));
+};
+
+import weixin from '@/assets/icon_saoma_weixin.png';
+import yinlian from '@/assets/icon_saoma_yinlian.png';
+import zhifubao from '@/assets/icon_saoma_zhifubao.png';
+window.payIcon = {
+  1: yinlian,
+  2: zhifubao,
+  3: weixin,
+}
+window.payName = {
+  1: '银联',
+  2: '支付宝',
+  3: '微信',
+}
+window.sellStatusType = {
+  0: '全部',
+  1: '待用户付款',
+  2: '用户已付款',
+  3: '承兑商已确认收款',
+  4: '承兑商未收到款',
+  5: '已过期',
+};
+window.buyStatusType = {
+  0: '全部',
+  1: '待审核',
+  2: '已通过',
+  3: '审核不通过',
+  4: '待承兑商接单',
+  5: '待承兑商转账',
+  6: '承兑商已确认转账',
+  7: '商户出金',
+  8: '关闭订单',
+  9: '已过期',
+};
+window.coinType = {
+  0: '全部',
+  1: 'USDT(erc20)',
+  /*2: 'USDT(omni)',*/
+}
 
 if (pwa) {
   // Notify user if offline now

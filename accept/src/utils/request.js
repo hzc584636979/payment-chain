@@ -19,7 +19,7 @@ const codeMessage = {
   500: '服务器发生错误，请检查服务器。',
   502: '网关错误。',
   503: '服务不可用，服务器暂时过载或维护。',
-  504: '网关超时。',
+  504: '服务器异常，请重新登陆稍后再试。',
 };
 /**
  * 异常处理程序
@@ -35,6 +35,11 @@ const errorHandler = error => {
       message: `请求错误 ${status}: ${url}`,
       description: errorText,
     });
+    if(status == 504) {
+      window.g_app._store.dispatch({
+        type: 'login/logout',
+      });
+    }
   } else if (!response) {
     notification.error({
       description: '您的网络发生异常，无法连接服务器',
@@ -49,8 +54,23 @@ const errorHandler = error => {
  */
 
 const request = extend({
-  errorHandler,
-  // 默认错误处理
+  errorHandler,// 默认错误处理
   credentials: 'include', // 默认请求是否带上cookie
 });
+
+request.interceptors.request.use((url, options) => {
+  const user_id = g_getLocalStorage() ? {user_id: g_getLocalStorage().id} : {};
+
+  return {
+    url,
+    options: { 
+      ...options,
+      data: {
+        ...(options.data || {}),
+        ...user_id,
+      }
+    },
+  };
+});
+
 export default request;

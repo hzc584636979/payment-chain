@@ -34,9 +34,9 @@ const passwordProgressMap = {
   poor: 'exception',
 };
 
-@connect(({ userAndregister, loading }) => ({
-  userAndregister,
-  submitting: loading.effects['userAndregister/submit'],
+@connect(({ userForget, loading }) => ({
+  userForget,
+  submitting: loading.effects['userForget/submit'],
 }))
 class Forget extends Component {
   state = {
@@ -51,19 +51,8 @@ class Forget extends Component {
 
   interval = undefined;
 
-  componentDidUpdate() {
-    const { userAndregister, form } = this.props;
-    const account = form.getFieldValue('mail');
+  componentDidMount() {
 
-    if (userAndregister.status === 'ok') {
-      message.success('注册成功！');
-      router.push({
-        pathname: '/user/register-result',
-        state: {
-          account,
-        },
-      });
-    }
   }
 
   componentWillUnmount() {
@@ -71,6 +60,8 @@ class Forget extends Component {
   }
 
   handleTab = tabType => {
+    const { form } = this.props;
+    form.resetFields();
     clearInterval(this.interval);
     let params = {
       country: "china",
@@ -89,13 +80,13 @@ class Forget extends Component {
     const { params, tabType } = this.state;
     let url = '';
     if(tabType == 'phone') {
-      url = 'userAndregister/getPhoneCode'
+      url = 'userForget/getPhoneCode'
       if(!params.phone || !(/^1\d{10}$/.test(params.phone))) {
         message.error('请输入正确的手机号！');
         return;
       }
     }else {
-      url = 'userAndregister/getEmailCode'
+      url = 'userForget/getEmailCode'
       if(!params.email) {
         message.error('请输入正确的邮箱地址！');
         return;
@@ -104,11 +95,13 @@ class Forget extends Component {
 
     dispatch({
       type: url,
-      payload: tabType == 'phone' ? params.phone : params.email,
+      payload: tabType == 'phone' ? {telephone_number: params.phone} : {email_address: params.email},
     }).then(data => {
-      if(!data) {
-        message.error('验证码发送失败，请重试！');
+      if(data.status != 1) {
+        message.error(data.msg);
         return;
+      }else {
+        message.success('操作成功');
       }
       let count = 59;
       this.setState({
@@ -138,7 +131,6 @@ class Forget extends Component {
   }
 
   checkPassword = (rule, value, callback) => {
-    console.log(value)
     if (value.length < 6 || value.length > 9) {
       callback('请输入6位~9位之间的密码');
     } else {
@@ -192,15 +184,17 @@ class Forget extends Component {
       return;
     }
     dispatch({
-      type: 'userAndregister/nextPhoneStep2',
+      type: 'userForget/nextPhoneStep2',
       payload: {
-        phone: params.phone,
-        code: params.code,
+        telephone_number: params.phone,
+        telephone_verify_code: params.code,
       },
     }).then(data => {
-      if(!data) {
-        message.error('操作失败，请重试！');
+      if(data.status != 1) {
+        message.error(data.msg);
         return;
+      }else {
+        message.success('操作成功');
       }
       clearInterval(this.interval);
       this.setState({
@@ -223,12 +217,17 @@ class Forget extends Component {
         if (!err) {
           const { params } = this.state;
           dispatch({
-            type: 'userAndregister/phoneSubmit',
-            payload: params,
+            type: 'userForget/phoneSubmit',
+            payload: {
+              telephone_number: params.phone,
+              login_pwd: values.password,
+            },
           }).then(data => {
             if(!data) {
-              message.error('操作失败，请重试！');
+              message.error(data.msg);
               return;
+            }else {
+              message.success('操作成功');
             }
             this.setState({
               stepCurrent: 2,
@@ -257,7 +256,7 @@ class Forget extends Component {
     if(stepCurrent == 0) {
       renderJsx = (
         <Form style={{width: '80%', margin: '0 auto'}} {...formItemLayout}>
-          <FormItem label="国籍/地区">
+          {/*<FormItem label="国籍/地区">
             {getFieldDecorator('country', {
               initialValue: params.country,
               rules: [
@@ -270,10 +269,10 @@ class Forget extends Component {
                 <Option value="china">中国大陆</Option>
               </Select>,
             )}
-          </FormItem>
+          </FormItem>*/}
           <FormItem label="手机号码">
             <InputGroup compact>
-              <Select
+              {/*<Select
                 size="large"
                 value={params.prefix}
                 onChange={this.changePrefix}
@@ -284,7 +283,7 @@ class Forget extends Component {
               >
                 <Option value="86">+86</Option>
                 <Option value="87">+87</Option>
-              </Select>
+              </Select>*/}
               {getFieldDecorator('mobile', {
                 rules: [
                   {
@@ -425,7 +424,7 @@ class Forget extends Component {
       renderJsx = (
         <div className={styles.phoneSuccessImg}>
           <img src={img_logon_empty} />
-          <div className={styles.txt}>您已成功重置密码，赶快去<Link to="/user/login" style={{color: '#1890ff'}}>登录~</Link></div>
+          <div className={styles.txt}>您已成功注册，赶快去<Link to="/user/login" style={{color: '#1890ff'}}>登录~</Link></div>
         </div>
       )
     }
@@ -451,15 +450,17 @@ class Forget extends Component {
       return;
     }
     dispatch({
-      type: 'userAndregister/nextEmailStep2',
+      type: 'userForget/nextEmailStep2',
       payload: {
-        email: params.email,
-        code: params.code,
+        email_address: params.email,
+        email_verify_code: params.code,
       },
     }).then(data => {
-      if(!data) {
-        message.error('操作失败，请重试！');
+      if(data.status != 1) {
+        message.error(data.msg);
         return;
+      }else {
+        message.success('操作成功');
       }
       clearInterval(this.interval);
       this.setState({
@@ -482,15 +483,20 @@ class Forget extends Component {
         if (!err) {
           const { params } = this.state;
           dispatch({
-            type: 'userAndregister/emailSubmit',
-            payload: params,
+            type: 'userForget/emailSubmit',
+            payload: {
+              email_address: params.email,
+              login_pwd: values.password,
+            },
           }).then(data => {
-            if(!data) {
-              message.error('操作失败，请重试！');
+            if(data.status != 1) {
+              message.error(data.msg);
               return;
+            }else {
+              message.success('操作成功');
             }
             this.setState({
-              stepCurrent: 1,
+              stepCurrent: 2,
             })
           })
         }
@@ -652,7 +658,7 @@ class Forget extends Component {
       renderJsx = (
         <div className={styles.phoneSuccessImg}>
           <img src={img_logon_empty} />
-          <div className={styles.txt}>您已成功重置密码，赶快去<Link to="/user/login" style={{color: '#1890ff'}}>登录~</Link></div>
+          <div className={styles.txt}>您已成功注册，赶快去<Link to="/user/login" style={{color: '#1890ff'}}>登录~</Link></div>
         </div>
       )
     }
@@ -674,12 +680,12 @@ class Forget extends Component {
         }
         {
           stepCurrent == 1 ?
-          <Step status="process" className={`${styles.stepOn}`} title="重置密码" />
+          <Step status="process" className={`${styles.stepOn}`} title="重设密码" />
           :
           stepCurrent < 1 ? 
-          <Step title="重置密码" />
+          <Step title="重设密码" />
           :
-          <Step status="finish" className={`${styles.stepOn}`} title="重置密码" />
+          <Step status="finish" className={`${styles.stepOn}`} title="重设密码" />
         }
         {
           stepCurrent == 2 ?

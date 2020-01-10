@@ -1,26 +1,32 @@
-import { querySellOrderDetail, fakeSellOrderReceipt } from '@/services/api';
+import { querySellOrderDetail, sellOrderReceipt, sellOrderNoReceipt } from '@/services/api';
 import pathToRegexp from 'path-to-regexp';
 
 const Model = {
   namespace: 'sellOrderDetail',
   state: {
-    data: {},
+
   },
   effects: {
     *fetch({ payload }, { call, put }) {
-      const match = pathToRegexp('/order/sellOrder_detail/:id').exec(window.location.hash);
-      const payload1 = { id: match[1] };
+      const match = pathToRegexp('/order/sellOrder_detail/:id').exec(window.location.pathname);
+      const payload1 = { order_id: match[1], order_type: 2 };
       const response = yield call(querySellOrderDetail, payload1);
       yield put({
         type: 'save',
-        payload: response.result,
+        payload: response.data,
       });
       return response;
     },
     *receipt({ payload }, { call, put }) {
-      const match = pathToRegexp('/order/sellOrder_detail/:id').exec(window.location.hash);
-      const payload1 = { id: match[1] };
-      const response = yield call(fakeSellOrderReceipt, payload1);
+      const match = pathToRegexp('/order/sellOrder_detail/:id').exec(window.location.pathname);
+      const payload1 = { order_id: match[1] };
+      const response = yield call(sellOrderReceipt, payload1);
+      return response;
+    },
+    *noReceipt({ payload }, { call, put }) {
+      const match = pathToRegexp('/order/sellOrder_detail/:id').exec(window.location.pathname);
+      const payload1 = { order_id: match[1] };
+      const response = yield call(sellOrderNoReceipt, payload1);
       return response;
     },
   },
@@ -28,7 +34,7 @@ const Model = {
     save(state, action) {
       return {
         ...state,
-        data: action.payload,
+        ...action.payload,
       };
     },
   },
