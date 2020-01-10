@@ -103,16 +103,23 @@ class WithdrawApply extends Component {
   }
 
   submit = () => {
+    const { withdrawApply } = this.props;
     const { 
       token_id, 
       to_address,
       coin_number,
       telephone_verify_code,
     } = this.state;
-    if(!token_id || !to_address || !coin_number || !telephone_verify_code){
+    if(!token_id || !to_address || !coin_number || coin_number == 0 || !telephone_verify_code){
       message.error('请填写完整信息后提交');
       return;
     }
+
+    if(coin_number > withdrawApply.balance) {
+      message.error('超过最大金额');
+      return;
+    }
+
     this.setState({
       submitLoading: true,
     })

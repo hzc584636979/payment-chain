@@ -28,6 +28,7 @@ class Home extends Component {
     mortgageVisible: false,
     buyStatus: 'out',
     sellStatus: 'out',
+    walletType: 1,
   };
 
   componentDidMount() {
@@ -129,8 +130,9 @@ class Home extends Component {
 
   handleMortgage = () => {
     const { dispatch } = this.props;
+    const { walletType } = this.state;
 
-    if(!this.state.mortgageValue) {
+    if(!this.state.mortgageValue || this.state.mortgageValue == 0) {
       message.error('请输入金额');
       return;
     }
@@ -138,6 +140,7 @@ class Home extends Component {
     dispatch({
       type: 'home/mortgage',
       payload: {
+        token_id: walletType,
         pledge_amount: this.state.mortgageValue,
       }
     }).then(data => {
@@ -193,7 +196,7 @@ class Home extends Component {
                     { currentUser.user_name || <Link to="/account">设置名称</Link> } | <span style={{color: '#2194FF'}}>{ Number(currentUser.success_order_percent) * 100 }%</span><br/>
                     <div style={{margin: '5px 0'}}>
                       <label style={{fontSize: 16}}>USDT币种：</label>
-                      <Select value={walletType || "1"} onChange={this.changeWallet}>
+                      <Select value={walletType+""} onChange={this.changeWallet}>
                         {
                           Object.keys(coinType).map((value, index) => {
                             if(index != 0){
@@ -487,7 +490,7 @@ class Home extends Component {
               </div>
               <div className={styles.desc}>
                 温馨提示：<br/>
-                1.充值USDT需要6个区块确认，请耐心等待。 此地址 只接受OMNI协议的USDT，请勿往地址元值其他协议的USDT发送其他币种到此<br/>
+                1.充值USDT需要6个区块确认，请耐心等待。 此地址 只接受{ coinType[walletType] }协议的USDT，请勿往地址元值其他协议的USDT发送其他币种到此<br/>
                 2.地址将无法找回，平台也不承担带来的损失。充值USDT需要6个区块确认，请耐心等待。 此地址 只接受OMNI协议的USDT，请勿往地址元值其他协议的USDT发送其他币种到此地址将无法找回，平台也不承担带来的损失。
               </div>
               <div style={{textAlign: 'center'}}>
