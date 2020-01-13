@@ -21,12 +21,14 @@ function beforeUpload(file) {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
   if (!isJpgOrPng) {
     message.error('只能上传JPG/PNG文件!');
+    return false;
   }
   const isLt2M = file.size / 1024 / 1024 < 5;
   if (!isLt2M) {
     message.error('图片超过5MB!');
+    return false;
   }
-  return isJpgOrPng && isLt2M;
+  return true;
 }
 
 @connect(({ buyOrderAppeal, loading }) => ({
@@ -50,26 +52,19 @@ class BuyOrderAppeal extends Component {
 
   }
 
-  handleChange = info => {
-    if (info.file.status === 'uploading') {
-      this.setState({ loading: true });
-      return;
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, 
-        imageUrl => {
-          this.setState({
-            fileList: [
-              ...this.state.fileList,
-              imageUrl,
-            ],
-            upLock: info.fileList.length < 5 ? false : true,
-            loading: false,
-          })
-        },
-      );
-    }
+  handleChange = file => {
+    if(!beforeUpload(file)) return false;
+    getBase64(file, imageUrl =>
+      this.setState({
+        fileList: [
+          ...this.state.fileList,
+          imageUrl,
+        ],
+        upLock: this.state.fileList.length < 4 ? false : true,
+        loading: false,
+      }),
+    );
+    return false;
   }
 
   handleSelect = e => {
@@ -144,8 +139,7 @@ class BuyOrderAppeal extends Component {
                 name="avatar"
                 listType="picture-card"
                 showUploadList={true}
-                beforeUpload={beforeUpload}
-                onChange={this.handleChange}
+                beforeUpload={this.handleChange}
                 disabled={upLock}
                 multiple={true}
                 accept={'.jpg,.jpeg,.png'}

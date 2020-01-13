@@ -17,12 +17,14 @@ function beforeUpload(file) {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
   if (!isJpgOrPng) {
     message.error('只能上传JPG/PNG文件!');
+    return false;
   }
   const isLt2M = file.size / 1024 / 1024 < 5;
   if (!isLt2M) {
     message.error('图片超过5MB!');
+    return false;
   }
-  return isJpgOrPng && isLt2M;
+  return true;
 }
 
 @connect(({ userBase, loading }) => ({
@@ -43,6 +45,9 @@ class UserBase extends Component {
     dispatch({
       type: 'user/getUserInfo',
     }).then(data => {
+      if(!data || data.status != 1){
+        return;
+      }
       this.setState({
         params: {
           ...data
@@ -56,61 +61,46 @@ class UserBase extends Component {
     clearInterval(this.interval2);
   }
 
-  handleChange = info => {
-    if (info.file.status === 'uploading') {
-      this.setState({ loading: true });
-      return;
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl =>
-        this.setState({
-          params: {
-            ...this.state.params,
-            logo_path: imageUrl
-          },
-          loading: false,
-        }),
-      );
-    }
+  handleChange = file => {
+    if(!beforeUpload(file)) return false;
+    getBase64(file, imageUrl =>
+      this.setState({
+        params: {
+          ...this.state.params,
+          logo_path: imageUrl
+        },
+        loading: false,
+      }),
+    );
+    return false;
   }
 
-  handleChangeIdentityZ = info => {
-    if (info.file.status === 'uploading') {
-      this.setState({ identityZloading: true });
-      return;
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl =>
-        this.setState({
-          params: {
-            ...this.state.params,
-            id_card_front_path: imageUrl
-          },
-          identityZloading: false,
-        }),
-      );
-    }
+  handleChangeIdentityZ = file => {
+    if(!beforeUpload(file)) return false;
+    getBase64(file, imageUrl =>
+      this.setState({
+        params: {
+          ...this.state.params,
+          id_card_front_path: imageUrl
+        },
+        identityZloading: false,
+      }),
+    );
+    return false;
   }
 
-  handleChangeIdentityF = info => {
-    if (info.file.status === 'uploading') {
-      this.setState({ identityFloading: true });
-      return;
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl =>
-        this.setState({
-          params: {
-            ...this.state.params,
-            id_card_back_path: imageUrl
-          },
-          identityFloading: false,
-        }),
-      );
-    }
+  handleChangeIdentityF = file => {
+    if(!beforeUpload(file)) return false;
+    getBase64(file, imageUrl =>
+      this.setState({
+        params: {
+          ...this.state.params,
+          id_card_back_path: imageUrl
+        },
+        identityFloading: false,
+      }),
+    );
+    return false;
   }
 
   handleNickname = e => {
@@ -414,8 +404,7 @@ class UserBase extends Component {
                   name="avatar"
                   listType="picture-card"
                   showUploadList={false}
-                  beforeUpload={beforeUpload}
-                  onChange={this.handleChange}
+                  beforeUpload={this.handleChange}
                   disabled={disabled}
                   accept={'.jpg,.jpeg,.png'}
                 >
@@ -436,8 +425,7 @@ class UserBase extends Component {
                       name="avatar"
                       listType="picture-card"
                       showUploadList={false}
-                      beforeUpload={beforeUpload}
-                      onChange={this.handleChangeIdentityZ}
+                      beforeUpload={this.handleChangeIdentityZ}
                       disabled={disabled}
                       accept={'.jpg,.jpeg,.png'}
                     >
@@ -450,8 +438,7 @@ class UserBase extends Component {
                       name="avatar"
                       listType="picture-card"
                       showUploadList={false}
-                      beforeUpload={beforeUpload}
-                      onChange={this.handleChangeIdentityF}
+                      beforeUpload={this.handleChangeIdentityF}
                       disabled={disabled}
                       accept={'.jpg,.jpeg,.png'}
                     >

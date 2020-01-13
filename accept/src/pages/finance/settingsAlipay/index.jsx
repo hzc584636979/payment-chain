@@ -15,12 +15,14 @@ function beforeUpload(file) {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
   if (!isJpgOrPng) {
     message.error('只能上传JPG/PNG文件!');
+    return false;
   }
   const isLt2M = file.size / 1024 / 1024 < 5;
   if (!isLt2M) {
     message.error('图片超过5MB!');
+    return false;
   }
-  return isJpgOrPng && isLt2M;
+  return true;
 }
 
 @connect(({ financeSettingsAlipay, loading }) => ({
@@ -70,23 +72,18 @@ class FinanceSettingsAlipay extends Component {
     })
   }
 
-  handleChange = info => {
-    if (info.file.status === 'uploading') {
-      this.setState({ loading: true });
-      return;
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl =>
-        this.setState({
-          params: {
-            ...this.state.params,
-            ali_payment_qr_code: imageUrl,
-          },
-          loading: false,
-        }),
-      );
-    }
+  handleChange = file => {
+    if(!beforeUpload(file)) return false;
+    getBase64(file, imageUrl =>
+      this.setState({
+        params: {
+          ...this.state.params,
+          ali_payment_qr_code: imageUrl
+        },
+        loading: false,
+      }),
+    );
+    return false;
   }
 
   handleLink = e => {
@@ -229,8 +226,7 @@ class FinanceSettingsAlipay extends Component {
                   name="avatar"
                   listType="picture-card"
                   showUploadList={false}
-                  beforeUpload={beforeUpload}
-                  onChange={this.handleChange}
+                  beforeUpload={this.handleChange}
                   accept={'.jpg,.jpeg,.png'}
                 >
                   { ali_payment_qr_code ? <img width="103" height="103" src={ali_payment_qr_code} /> : uploadButton }
