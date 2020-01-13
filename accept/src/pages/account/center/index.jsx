@@ -45,7 +45,7 @@ class UserBase extends Component {
     dispatch({
       type: 'user/getUserInfo',
     }).then(data => {
-      if(!data || data.status != 1){
+      if(!data){
         return;
       }
       this.setState({
@@ -451,43 +451,49 @@ class UserBase extends Component {
               <Descriptions.Item label={<span className={styles.itemLabel}>绑定手机</span>}>
                 <Input disabled={disabled} onChange={this.handlePhone} style={{width: 385}} placeholder="输入手机号" value={telephone_number} />
               </Descriptions.Item>
-              <Descriptions.Item label={<span className={styles.itemLabel}>手机验证码</span>}>
-                <Input disabled={disabled} onChange={this.handlePhoneCaptcha} style={{width: 385}} placeholder="输入手机验证码" />
-                <Button
-                  disabled={!!phoneCount}
-                  className={styles.getCaptcha}
-                  onClick={this.onGetPhoneCaptcha}
-                  style={{
-                    width: 140,
-                    display: 'inline-block',
-                    marginLeft: 20
-                  }}
-                >
-                  {phoneCount
-                    ? `${phoneCount} s`
-                    : '获取手机验证码'}
-                </Button>
-              </Descriptions.Item>
+              {
+                !disabled &&
+                <Descriptions.Item label={<span className={styles.itemLabel}>手机验证码</span>}>
+                  <Input disabled={disabled} onChange={this.handlePhoneCaptcha} style={{width: 385}} placeholder="输入手机验证码" />
+                  <Button
+                    disabled={!!phoneCount}
+                    className={styles.getCaptcha}
+                    onClick={this.onGetPhoneCaptcha}
+                    style={{
+                      width: 140,
+                      display: 'inline-block',
+                      marginLeft: 20
+                    }}
+                  >
+                    {phoneCount
+                      ? `${phoneCount} s`
+                      : '获取手机验证码'}
+                  </Button>
+                </Descriptions.Item>
+              }
               <Descriptions.Item label={<span className={styles.itemLabel}>绑定邮箱</span>}>
                 <Input disabled={disabled} onChange={this.handleEmail} style={{width: 385}} placeholder="输入邮箱号" value={email_address} />
               </Descriptions.Item>
-              <Descriptions.Item label={<span className={styles.itemLabel}>邮箱验证码</span>}>
-                <Input disabled={disabled} onChange={this.handleEmailCaptcha} style={{width: 385}} placeholder="输入邮箱验证码" />
-                <Button
-                  disabled={!!emailCount}
-                  className={styles.getCaptcha}
-                  onClick={this.onGetEmailCaptcha}
-                  style={{
-                    width: 140,
-                    display: 'inline-block',
-                    marginLeft: 20
-                  }}
-                >
-                  {emailCount
-                    ? `${emailCount} s`
-                    : '获取邮箱验证码'}
-                </Button>
-              </Descriptions.Item>
+              {
+                !disabled &&
+                <Descriptions.Item label={<span className={styles.itemLabel}>邮箱验证码</span>}>
+                  <Input disabled={disabled} onChange={this.handleEmailCaptcha} style={{width: 385}} placeholder="输入邮箱验证码" />
+                  <Button
+                    disabled={!!emailCount}
+                    className={styles.getCaptcha}
+                    onClick={this.onGetEmailCaptcha}
+                    style={{
+                      width: 140,
+                      display: 'inline-block',
+                      marginLeft: 20
+                    }}
+                  >
+                    {emailCount
+                      ? `${emailCount} s`
+                      : '获取邮箱验证码'}
+                  </Button>
+                </Descriptions.Item>
+              }
               <Descriptions.Item label={<span className={styles.itemLabel}>绑定QQ</span>}>
                 <Input disabled={disabled} onChange={this.handleQQ} style={{width: 385}} placeholder="输入QQ号" value={qq_number} />
               </Descriptions.Item>
@@ -497,7 +503,7 @@ class UserBase extends Component {
               <Descriptions.Item label={<span className={styles.itemLabel}>收款链接</span>}>
                 <Input disabled={disabled} onChange={this.handlePaymentLink} style={{width: 385}} value={payment_link} />
                 {
-                  real_name_passed && 
+                  disabled && 
                   <Button
                     onClick={this.handleCopyLink}
                     style={{
@@ -511,7 +517,7 @@ class UserBase extends Component {
                 }
               </Descriptions.Item>
               {
-                !real_name_passed &&
+                !disabled &&
                 <Descriptions.Item className={styles.noneBeforeIcon}>
                   <Button type="primary" loading={submitLoading} onClick={this.submit}>确定提交</Button>
                 </Descriptions.Item>
