@@ -8,8 +8,7 @@ import styles from './style.less';
 const { TextArea } = Input;
 const { Option } = Select;
 const statusType = {
-  0: '0',
-  1: '1',
+  '金额不对': '金额不对',
 };
 
 function getBase64(img, callback) {
