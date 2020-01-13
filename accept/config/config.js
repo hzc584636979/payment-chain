@@ -200,13 +200,13 @@ export default {
               routes: [
                 {
                   name: '出售订单管理',
-                  icon: 'shopping-cart',
+                  icon: 'file-exclamation',
                   path: '/dissentOrder/sellOrder',
                   component: './dissentOrder/sellOrder',
                 },
                 {
                   name: '购买订单管理',
-                  icon: 'shopping-cart',
+                  icon: 'file-exclamation',
                   path: '/dissentOrder/buyOrder',
                   component: './dissentOrder/buyOrder',
                 },
