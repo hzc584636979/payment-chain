@@ -66,7 +66,7 @@ class Message extends Component {
                     type="flex"
                     justify="space-between"
                   >
-                    <Col xs={20} className={styles.title}><Link to={`/message/detail/${item.id}`}>{item.title}</Link></Col>
+                    <Col xs={20} className={styles.title}><Link to={`/Message/detail/${item.id}`}>{item.title}</Link></Col>
                     <Col style={{textAlign: 'right'}} xs={4}>2019-11-01</Col>
                   </Row>
                 </List.Item>

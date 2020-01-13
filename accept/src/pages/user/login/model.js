@@ -35,9 +35,6 @@ const Model = {
         yield put({
         type: 'changeLoginStatus',
           payload: response.data ? {
-            rate: response.data.rate,
-            success_order_percent: response.data.success_order_percent,
-            token_price: response.data.token_price,
             ...response.data.accountInfo,
             ...response.data.userInfo,
             walletInfo: response.data.walletInfo,
@@ -81,9 +78,6 @@ const Model = {
         yield put({
           type: 'changeLoginStatus',
           payload: response.data ? {
-            rate: response.data.rate,
-            success_order_percent: response.data.success_order_percent,
-            token_price: response.data.token_price,
             ...response.data.accountInfo,
             ...response.data.userInfo,
             walletInfo: response.data.walletInfo,

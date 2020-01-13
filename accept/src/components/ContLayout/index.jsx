@@ -112,7 +112,7 @@ class ContLayout extends Component {
   render() {
     const { children, loading } = this.props;
     const getBreadcrumb = this.getBreadcrumb();
-    const isMessagePage = this.props.location.pathname.indexOf('/message/') > -1;
+    const isMessagePage = this.props.location.pathname.indexOf('/Message/') > -1;
 
     return (
       <Spin spinning={!!loading}>

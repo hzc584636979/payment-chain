@@ -8,7 +8,7 @@ const Model = {
   },
   effects: {
     *fetch({ payload }, { call, put }) {
-      const match = pathToRegexp('/message/detail/:id').exec(window.location.pathname);
+      const match = pathToRegexp('/Message/detail/:id').exec(window.location.pathname);
       const payload1 = { message_id: match[1] };
       const response = yield call(messageContent, payload1);
       yield put({

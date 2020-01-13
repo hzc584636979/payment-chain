@@ -137,8 +137,8 @@ export default {
               authority: ['admin', 'user'],
             },
             {
-              path: '/message',
-              redirect: '/message/list',
+              path: '/Message',
+              redirect: '/Message/list',
               authority: ['admin', 'user'],
             },
             {
@@ -281,19 +281,19 @@ export default {
               ],
             },
             {
-              path: '/message',
+              path: '/Message',
               name: '消息中心',
               routes: [
                 {
                   name: '消息列表',
                   icon: 'shopping-cart',
-                  path: '/message/list',
+                  path: '/Message/list',
                   component: './message',
                 },
                 {
                   name: '消息详情',
-                  path: '/message/detail/:id',
-                  component: './message/detail',
+                  path: '/Message/detail/:id',
+                  component: './Message/detail',
                   hideInMenu: true,
                   expandPath: '/message/list',
                 },

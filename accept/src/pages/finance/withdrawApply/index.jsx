@@ -167,13 +167,12 @@ class WithdrawApply extends Component {
               <Descriptions.Item label={<span className={styles.itemLabel}>提币</span>}>
                 <Select placeholder="选择币种" style={{width: 385}} onChange={this.handleType}>
                   {
-                    /*Object.keys(coinType).map((value, index) => {
+                    Object.keys(coinType).map((value, index) => {
                       if(index != 0) {
                         return <Option value={value} key={value}>{coinType[value]}</Option>
                       }
-                    })*/
+                    })
                   }
-                  <Option value={"1"} key={1}>USDT</Option>
                 </Select>
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>提币地址</span>}>
