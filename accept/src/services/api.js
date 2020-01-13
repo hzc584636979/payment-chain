@@ -5,7 +5,7 @@ let apiAddress = '';
 if(process.env.NODE_ENV == 'development') {
   apiAddress = '/server/api';
 }else {
-  apiAddress = 'https://www.boq.hk/api/api/v1';
+  apiAddress = 'https://www.boq.hk/acceptance/';
 }
 console.log(process.env.NODE_ENV)
 
