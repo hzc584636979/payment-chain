@@ -78,6 +78,7 @@ class Login extends Component {
             <Mobile
               name="phoneUsername"
               placeholder={'请输入手机号'}
+              maxLength={11}
               rules={[
                 {
                   required: true,
@@ -92,6 +93,7 @@ class Login extends Component {
             <Password
               name="phonePassword"
               placeholder={`请输入登录密码`}
+              maxLength={8}
               rules={[
                 {
                   required: true,
@@ -129,6 +131,7 @@ class Login extends Component {
             <Password
               name="emailPassword"
               placeholder={`请输入登录密码`}
+              maxLength={8}
               rules={[
                 {
                   required: true,

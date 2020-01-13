@@ -143,7 +143,7 @@ class SellDissentOrderDetail extends Component {
             <div className={styles.layerWrap} style={{width: '70%', margin: '0 auto'}}>
               <Descriptions column={1}>
                 <Descriptions.Item label={<span className={styles.itemLabel}>联系方式</span>}>
-                  <Input placeholder="输入联系方式" style={{width: '100%'}} onChange={this.handleContact} />
+                  <Input placeholder="输入联系方式" style={{width: '100%'}} maxLength={11} onChange={this.handleContact} />
                 </Descriptions.Item>
                 <Descriptions.Item label={<span className={styles.itemLabel}>申诉描述</span>} className={styles.textTop}>
                   <TextArea placeholder="请输入申诉描述" onChange={this.handleContent} style={{width: '100%', height: 162}} />

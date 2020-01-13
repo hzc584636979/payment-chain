@@ -51,20 +51,16 @@ class Home extends Component {
 
   handlePayVisible = () => {
     if(!getRealNamePassed()) return;
-    if(this.checkUserAuth()) {
-      this.setState({
-        payVisible: !this.state.payVisible,
-      })
-    }
+    this.setState({
+      payVisible: !this.state.payVisible,
+    })
   }
 
   handleMortgageVisible = () => {
     if(!getRealNamePassed()) return;
-    if(this.checkUserAuth()) {
-      this.setState({
-        mortgageVisible: !this.state.mortgageVisible,
-      })
-    }
+    this.setState({
+      mortgageVisible: !this.state.mortgageVisible,
+    })
   }
 
   toggleManagement = (type, status) => {

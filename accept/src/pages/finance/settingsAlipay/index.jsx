@@ -237,10 +237,10 @@ class FinanceSettingsAlipay extends Component {
                 <Input onChange={this.handleLink} style={{width: 385}} placeholder="输入收码链接" value={ali_pay_payment_link} />
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>手机号码</span>}>
-                <Input onChange={this.handlePhone} style={{width: 385}} placeholder="输入手机号码" value={telephone_number} />
+                <Input onChange={this.handlePhone} style={{width: 385}} placeholder="输入手机号码" maxLength={11} value={telephone_number} />
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>手机验证码</span>}>
-                <Input onChange={this.handleCaptcha} style={{width: 385}} placeholder="输入手机验证码" value={telephone_verify_code} />
+                <Input onChange={this.handleCaptcha} style={{width: 385}} placeholder="输入手机验证码" maxLength={6} value={telephone_verify_code} />
                 <Button
                   disabled={!!count}
                   onClick={this.onGetCaptcha}

@@ -132,8 +132,8 @@ class Register extends Component {
 
   checkPassword = (rule, value, callback) => {
     console.log(value)
-    if (value.length < 6 || value.length > 9) {
-      callback('请输入6位~9位之间的密码');
+    if (value.length < 6 || value.length > 8) {
+      callback('请输入6位~8位之间的密码');
     } else {
       const { form } = this.props;
 
@@ -323,7 +323,7 @@ class Register extends Component {
                 style={{
                   width: 156,
                 }}
-                maxLength={8}
+                maxLength={6}
                 placeholder={'验证码'}
                 onKeyUp={ this.hanldeCaptcha }
               />,
@@ -376,7 +376,7 @@ class Register extends Component {
               <Input
                 size="large"
                 type="password"
-                maxLength={9}
+                maxLength={8}
                 style={{
                   width: 360
                 }}
@@ -399,7 +399,7 @@ class Register extends Component {
               <Input
                 size="large"
                 type="password"
-                maxLength={9}
+                maxLength={8}
                 style={{
                   width: 360
                 }}
@@ -557,7 +557,7 @@ class Register extends Component {
                 style={{
                   width: 156,
                 }}
-                maxLength={8}
+                maxLength={6}
                 placeholder={'验证码'}
                 onKeyUp={ this.hanldeCaptcha }
               />,
@@ -610,7 +610,7 @@ class Register extends Component {
               <Input
                 size="large"
                 type="password"
-                maxLength={9}
+                maxLength={8}
                 style={{
                   width: 360
                 }}
@@ -633,7 +633,7 @@ class Register extends Component {
               <Input
                 size="large"
                 type="password"
-                maxLength={9}
+                maxLength={8}
                 style={{
                   width: 360
                 }}

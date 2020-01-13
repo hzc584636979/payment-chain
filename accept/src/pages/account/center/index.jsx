@@ -449,12 +449,12 @@ class UserBase extends Component {
                 </Row>
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>绑定手机</span>}>
-                <Input disabled={disabled} onChange={this.handlePhone} style={{width: 385}} placeholder="输入手机号" value={telephone_number} />
+                <Input disabled={disabled} onChange={this.handlePhone} style={{width: 385}} placeholder="输入手机号" maxLength={11} value={telephone_number} />
               </Descriptions.Item>
               {
                 !disabled &&
                 <Descriptions.Item label={<span className={styles.itemLabel}>手机验证码</span>}>
-                  <Input disabled={disabled} onChange={this.handlePhoneCaptcha} style={{width: 385}} placeholder="输入手机验证码" />
+                  <Input disabled={disabled} onChange={this.handlePhoneCaptcha} style={{width: 385}} placeholder="输入手机验证码" maxLength={6} />
                   <Button
                     disabled={!!phoneCount}
                     className={styles.getCaptcha}
@@ -477,7 +477,7 @@ class UserBase extends Component {
               {
                 !disabled &&
                 <Descriptions.Item label={<span className={styles.itemLabel}>邮箱验证码</span>}>
-                  <Input disabled={disabled} onChange={this.handleEmailCaptcha} style={{width: 385}} placeholder="输入邮箱验证码" />
+                  <Input disabled={disabled} onChange={this.handleEmailCaptcha} style={{width: 385}} placeholder="输入邮箱验证码" maxLength={6} />
                   <Button
                     disabled={!!emailCount}
                     className={styles.getCaptcha}
