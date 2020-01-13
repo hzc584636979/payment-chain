@@ -391,7 +391,7 @@ class UserBase extends Component {
       <ContLayout loading={fetchLoading}>
         <div className={styles.wrap}>
           {
-            !real_name_passed && 
+            !disabled && 
             <div className={styles.topTz}>平台为了用户资金安全，实行实名认证制度，用户必须通过商户信息审核后方可使用平台的功能。</div>
           }
           <div className={styles.inner}>
