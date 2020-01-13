@@ -16,6 +16,10 @@ window.g_setLocalStorage = (params, key="paymentChain") => {
   return localStorage.setItem(key, JSON.stringify(params));
 };
 
+window.wei2USDT = (val) => {
+  return Number(val) / Math.pow(10, 6);
+}
+
 import weixin from '@/assets/icon_saoma_weixin.png';
 import yinlian from '@/assets/icon_saoma_yinlian.png';
 import zhifubao from '@/assets/icon_saoma_zhifubao.png';
