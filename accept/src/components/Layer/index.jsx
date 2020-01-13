@@ -4,11 +4,7 @@ import { connect } from 'dva';
 import { Scrollbars } from 'react-custom-scrollbars';
 import styles from './style.less';
 
-@connect(({ user }) => ({
-  currentUser: user.currentUser,
-}))
-
-class Pay extends Component {
+class Layer extends Component {
   state = {
     
   };
@@ -27,7 +23,7 @@ class Pay extends Component {
   }
 
   render() {
-    const { currentUser, hiddenVisible, title, children } = this.props;
+    const { hiddenVisible, title, children } = this.props;
     let contentHeight = this.content && this.content.clientHeight;
     if(contentHeight && contentHeight + 50 > document.documentElement.clientHeight){
       contentHeight = document.documentElement.clientHeight - 50;
@@ -50,4 +46,4 @@ class Pay extends Component {
   }
 }
 
-export default Pay;
+export default Layer;

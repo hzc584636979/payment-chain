@@ -15,8 +15,7 @@ import styles from './style.less';
 
 const { Item } = Menu;
 
-@connect(({ user, router: { location } }) => ({
-  currentUser: user.currentUser,
+@connect(({ router: { location } }) => ({
   location,
 }))
 class ContLayout extends Component {

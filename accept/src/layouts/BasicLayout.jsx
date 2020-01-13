@@ -95,10 +95,7 @@ const footerRender = () => {
 
 const BasicLayout = props => {
   const {
-    currentUser = {
-      avatar: '',
-      name: '',
-    },
+    currentUser,
     dispatch,
     children,
     settings,
