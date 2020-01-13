@@ -60,6 +60,9 @@ if (isAntDesignProPreview) {
 
 export default {
   plugins,
+  //非根目录配置
+  /*base: '/payment/',
+  publicPath: '/payment/',*/
   hash: true,
   targets: {
     ie: 11,
