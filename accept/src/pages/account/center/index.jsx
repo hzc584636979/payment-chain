@@ -16,11 +16,11 @@ function getBase64(img, callback) {
 function beforeUpload(file) {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
   if (!isJpgOrPng) {
-    message.error('You can only upload JPG/PNG file!');
+    message.error('只能上传JPG/PNG文件!');
   }
   const isLt2M = file.size / 1024 / 1024 < 5;
   if (!isLt2M) {
-    message.error('Image must smaller than 5MB!');
+    message.error('图片超过5MB!');
   }
   return isJpgOrPng && isLt2M;
 }
@@ -417,6 +417,7 @@ class UserBase extends Component {
                   beforeUpload={beforeUpload}
                   onChange={this.handleChange}
                   disabled={disabled}
+                  accept={'.jpg,.jpeg,.png'}
                 >
                   { logo_path ? <img width="103" height="103" src={logo_path} /> : uploadButton }
                 </Upload>
@@ -438,6 +439,7 @@ class UserBase extends Component {
                       beforeUpload={beforeUpload}
                       onChange={this.handleChangeIdentityZ}
                       disabled={disabled}
+                      accept={'.jpg,.jpeg,.png'}
                     >
                       { id_card_front_path ? <img width="150" height="90" src={id_card_front_path} /> : uploadZButton }
                     </Upload>
@@ -451,6 +453,7 @@ class UserBase extends Component {
                       beforeUpload={beforeUpload}
                       onChange={this.handleChangeIdentityF}
                       disabled={disabled}
+                      accept={'.jpg,.jpeg,.png'}
                     >
                       { id_card_back_path ? <img width="150" height="90" src={id_card_back_path} /> : uploadFButton }
                     </Upload>
