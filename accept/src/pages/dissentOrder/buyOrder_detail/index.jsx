@@ -118,6 +118,7 @@ class BuyDissentOrderDetail extends Component {
           <Descriptions column={1}>
             <Descriptions.Item label="异议时间">{ moment(buyDissentOrderDetail.issue_create_time).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
             <Descriptions.Item label="问题类型">{ buyDissentOrderDetail.issue_type }</Descriptions.Item>
+            <Descriptions.Item label="问题描述">{ buyDissentOrderDetail.issue_desc }</Descriptions.Item>
             <Descriptions.Item label="平台订单号">{ buyDissentOrderDetail.order_id }</Descriptions.Item>
             <Descriptions.Item label="商户订单号">{ buyDissentOrderDetail.out_order_id }</Descriptions.Item>
             <Descriptions.Item label="商户昵称">{ buyDissentOrderDetail.pay_type }</Descriptions.Item>
