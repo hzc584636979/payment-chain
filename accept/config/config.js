@@ -240,7 +240,7 @@ export default {
                   component: './finance/settings',
                 },
                 {
-                  name: '提币记录',
+                  name: '提币/充币记录',
                   icon: 'transaction',
                   path: '/finance/withdrawList',
                   component: './finance/withdrawList',

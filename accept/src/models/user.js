@@ -26,12 +26,16 @@ const UserModel = {
           ...response.data.accountInfo,
           ...response.data.userInfo,
           walletInfo: response.data.walletInfo[0],
+          erc20: response.data.walletInfo[0],
+          omni: response.data.walletInfo[1],
         } : null,
       });
       return response.data ? {
         ...response.data.accountInfo,
         ...response.data.userInfo,
         walletInfo: response.data.walletInfo[0],
+        erc20: response.data.walletInfo[0],
+        omni: response.data.walletInfo[1],
       } : null
     },
     *changeWalletInfo({ payload }, { call, put }) {
@@ -49,6 +53,8 @@ const UserModel = {
           ...response.data.accountInfo,
           ...response.data.userInfo,
           walletInfo: response.data.walletInfo[payload.walletType],
+          erc20: response.data.walletInfo[0],
+          omni: response.data.walletInfo[1],
         } : null,
       });
       return response;

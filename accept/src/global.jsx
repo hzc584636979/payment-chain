@@ -8,12 +8,12 @@ window.EXHIBITION = '/';
 window.EXHIBITION2 = '--';
 window.DEFAULTAVATAR = 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png';
 
-window.g_getLocalStorage = () => {
-  return localStorage.getItem('paymentChain') ? JSON.parse(localStorage.getItem('paymentChain')) : null;
+window.g_getLocalStorage = (key="paymentChain") => {
+  return localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key)) : null;
 };
 
-window.g_setLocalStorage = (params) => {
-  return localStorage.setItem('paymentChain', JSON.stringify(params));
+window.g_setLocalStorage = (params, key="paymentChain") => {
+  return localStorage.setItem(key, JSON.stringify(params));
 };
 
 import weixin from '@/assets/icon_saoma_weixin.png';

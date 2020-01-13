@@ -147,7 +147,7 @@ class WithdrawApply extends Component {
   onGetAll = () => {
     const { withdrawApply } = this.props;
     this.setState({
-      coin_number: withdrawApply.balance
+      coin_number: withdrawApply.all_balance
     })
   }
 
@@ -167,12 +167,13 @@ class WithdrawApply extends Component {
               <Descriptions.Item label={<span className={styles.itemLabel}>提币</span>}>
                 <Select placeholder="选择币种" style={{width: 385}} onChange={this.handleType}>
                   {
-                    Object.keys(coinType).map((value, index) => {
+                    /*Object.keys(coinType).map((value, index) => {
                       if(index != 0) {
                         return <Option value={value} key={value}>{coinType[value]}</Option>
                       }
-                    })
+                    })*/
                   }
+                  <Option value={"1"} key={1}>USDT</Option>
                 </Select>
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>提币地址</span>}>
@@ -181,7 +182,7 @@ class WithdrawApply extends Component {
               <Descriptions.Item label={<span className={styles.itemLabel}>提币数量</span>} className={styles.textTop}>
                 <Input onChange={this.handleCoin} style={{width: 385}} placeholder="请输入提币数量" value={coin_number} />
                 {
-                  withdrawApply.type && 
+                  withdrawApply.all_balance && 
                   <Fragment>
                     <Button
                       onClick={this.onGetAll}
@@ -194,7 +195,7 @@ class WithdrawApply extends Component {
                       全部提币
                     </Button>
                     <p style={{fontSize: 14, color: '#333'}}>
-                      <span style={{paddingRight: 10}}>手续费:{ withdrawApply.gas } USDT</span><span>可用余额:{ withdrawApply.balance } USDT</span>
+                      <span style={{paddingRight: 10}}>手续费:{ withdrawApply.gas } USDT</span><span>可用余额:{ withdrawApply.all_balance } USDT</span>
                     </p>
                   </Fragment>
                 }

@@ -27,6 +27,11 @@ const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
+const orderType = {
+  0: '全部',
+  1: '充币账单',
+  2: '提币账单',
+};
 const statusType = {
   0: '全部',
   1: '提起交易',
@@ -120,7 +125,7 @@ class WithdrawList extends Component {
             </FormItem>
           </Col>
           <Col xl={6} lg={12} sm={24}>
-            <FormItem label="提币状态">
+            <FormItem label="状态">
               {getFieldDecorator('state',{ initialValue: history.state+'' })(
                 <Select placeholder="请选择">
                   {
@@ -133,7 +138,7 @@ class WithdrawList extends Component {
             </FormItem>
           </Col>
           <Col xl={6} lg={12} sm={24}>
-            <FormItem label="申请时间">
+            <FormItem label="时间">
               {getFieldDecorator('time',{ initialValue: history.time })(
                 <RangePicker
                   style={{ width: '100%' }}
@@ -184,10 +189,11 @@ class WithdrawList extends Component {
         data.data.rows.map((i) => {
           let dataWObj = {
               "币种": coinType[i.token_id],
-              "提币金额 (USDT)": i.count,
-              "提币地址": i.to_address,
-              "提币状态": statusType[i.state],
-              "申请时间": moment(i.create_time*1000).local().format('YYYY-MM-DD HH:mm:ss'),
+              "分类": orderType[order_type],
+              "金额 (USDT)": i.count,
+              "地址": i.to_address,
+              "状态": statusType[i.state],
+              "时间": moment(i.create_time*1000).local().format('YYYY-MM-DD HH:mm:ss'),
               "Txhash": i.txid,
           };
           dataWCN.push(dataWObj);
@@ -211,19 +217,28 @@ class WithdrawList extends Component {
         },
       },
       {
-        title: '提币金额 (USDT)',
+        title: '分类',
+        dataIndex: 'order_type',
+        key: 'order_type',
+        align: 'center',
+        render:(val,record)=>{
+          return orderType[val];
+        },
+      },
+      {
+        title: '金额 (USDT)',
         dataIndex: 'count',
         key: 'count',
         align: 'center',
       },
       {
-        title: '提币地址',
+        title: '地址',
         dataIndex: 'to_address',
         key: 'to_address',
         align: 'center',
       },
       {
-        title: '提币状态',
+        title: '状态',
         dataIndex: 'state',
         key: 'state',
         align: 'center',
@@ -232,7 +247,7 @@ class WithdrawList extends Component {
         },
       },
       {
-        title: '申请时间',
+        title: '时间',
         dataIndex: 'create_time',
         key: 'create_time',
         align: 'center',

@@ -41,6 +41,8 @@ const Model = {
             ...response.data.accountInfo,
             ...response.data.userInfo,
             walletInfo: response.data.walletInfo,
+            erc20: response.data.walletInfo[0],
+            omni: response.data.walletInfo[1],
           } : null,
         });
 
@@ -85,6 +87,8 @@ const Model = {
             ...response.data.accountInfo,
             ...response.data.userInfo,
             walletInfo: response.data.walletInfo,
+            erc20: response.data.walletInfo[0],
+            omni: response.data.walletInfo[1],
           } : null,
         });
         

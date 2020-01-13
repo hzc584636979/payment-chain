@@ -21,9 +21,9 @@ const { Option } = Select;
 }))
 class Home extends Component {
   state = {
-    accountBalance1: false,
-    tokenBalance1: false,
-    tokenBalance2: false,
+    accountBalance1: g_getLocalStorage('accountBalance1') || false,
+    tokenBalance1: g_getLocalStorage('tokenBalance1') || false,
+    tokenBalance2: g_getLocalStorage('tokenBalance2') || false,
     payVisible: false,
     mortgageVisible: false,
     buyStatus: 'out',
@@ -44,9 +44,12 @@ class Home extends Component {
   }
 
   eyeVisible = type => {
+    if(!getRealNamePassed()) return;
     this.setState({
       [type]: !this.state[type],
     })
+
+    g_setLocalStorage(!this.state[type], type)
   }
 
   handlePayVisible = () => {
@@ -86,9 +89,8 @@ class Home extends Component {
     })
   }
 
-  handleClipBoard = () => {
-    const { currentUser } = this.props;
-    if(copy(currentUser.walletInfo.address)){
+  handleClipBoard = address => {
+    if(copy(address)){
       message.success('复制成功') 
     }else{
       message.error('复制失败，请重试') 
@@ -173,6 +175,12 @@ class Home extends Component {
     })
   }
 
+  changeWallet1 = (walletType) => {
+    this.setState({
+      walletType
+    })
+  }
+
   render() {
     const { accountBalance1, tokenBalance1, tokenBalance2, payVisible, mortgageVisible, buyStatus, sellStatus, mortgageValue, walletType } = this.state;
     const { currentUser, home, loading } = this.props;
@@ -190,9 +198,9 @@ class Home extends Component {
                   <div className={styles.avatar}><img src={ currentUser.logo_path || DEFAULTAVATAR } /></div>
                   <div className={styles.user}>
                     { currentUser.user_name || <Link to="/account">设置名称</Link> } | <span style={{color: '#2194FF'}}>{ Number(currentUser.success_order_percent) * 100 }%</span><br/>
-                    <div style={{margin: '5px 0'}}>
+                    {/*<div style={{margin: '5px 0'}}>
                       <label style={{fontSize: 16}}>USDT币种：</label>
-                      <Select value={walletType+""} onChange={this.changeWallet}>
+                      <Select value={walletType || "1"} onChange={this.changeWallet}>
                         {
                           Object.keys(coinType).map((value, index) => {
                             if(index != 0){
@@ -201,7 +209,7 @@ class Home extends Component {
                           })
                         }
                       </Select>
-                    </div>
+                    </div>*/}
                     <span style={{fontSize: 12}}>{ currentUser.telephone_number }</span>
                   </div>
                   <div className={styles.bottom}>
@@ -282,7 +290,7 @@ class Home extends Component {
                           <div className={styles.item}>
                             <span style={{display: 'inline-block', width: 160}}>可用余额（USDT）</span>
                             {tokenBalance1 ? 
-                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>{ currentUser.walletInfo.balance }</span>
+                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>{ currentUser.all_balance }</span>
                               : 
                               <span style={{display: 'inline-block', minWidth: 100, color: '#333333'}}>****</span>
                             }
@@ -291,7 +299,7 @@ class Home extends Component {
                           <div className={styles.item}>
                             <span style={{display: 'inline-block', width: 160}}>不可用余额（USDT）</span>
                             {tokenBalance2 ? 
-                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>{ currentUser.walletInfo.lock_balance }</span>
+                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>{ currentUser.all_lock_balance }</span>
                               : 
                               <span style={{display: 'inline-block', minWidth: 100, color: '#333333'}}>****</span>
                             }
@@ -309,7 +317,7 @@ class Home extends Component {
                           <div className={styles.item}>
                             <span style={{display: 'inline-block', width: 160}}>抵押资金（USDT）</span>
                             {accountBalance1 ? 
-                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>{ currentUser.pledge_amount }</span>
+                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>{ currentUser.pledge_amount || 0 }</span>
                               : 
                               <span style={{display: 'inline-block', minWidth: 100, color: '#333333'}}>****</span>
                             }
@@ -440,21 +448,28 @@ class Home extends Component {
             hiddenVisible={this.handlePayVisible}
           >
             <div className={styles.payLayout}>
+              <div style={{margin: '5px 0'}}>
+                <label style={{fontSize: 16}}>USDT币种：</label>
+                <Select value={walletType+""} onChange={this.changeWallet1}>
+                  <Option value={"1"} key={1}>USDT(erc20)</Option>
+                  <Option value={"2"} key={2}>USDT(omni)</Option>
+                </Select>
+              </div>
               {
                 currentUser.walletInfo.address &&
                 <div style={{textAlign: 'center'}}>
                   <div className={styles.ewm}>
-                    <QRCode id='qrid' value={currentUser.walletInfo.address} size={220} style={{margin: '0 auto'}} /> 
+                    <QRCode id='qrid' value={walletType == 1 ? currentUser.erc20.address : currentUser.omni.address} size={220} style={{margin: '0 auto'}} /> 
                   </div>
                   <Button type="primary" style={{width: 130}}>
                     <a download id='aId' onClick={this.clickDownLoad}>保存二维码</a>
                   </Button>
-                  <div className={styles.address}>{currentUser.walletInfo.address}</div>
-                  <Button type="primary" style={{width: 130}} onClick={this.handleClipBoard}>复制地址</Button>
+                  <div className={styles.address}>{walletType == 1 ? currentUser.erc20.address : currentUser.omni.address}</div>
+                  <Button type="primary" style={{width: 130}} onClick={() => this.handleClipBoard(walletType == 1 ? currentUser.erc20.address : currentUser.omni.address)}>复制地址</Button>
                 </div>
               }
               <div className={styles.desc}>
-                温馨提示：<br/>充值USDT需要6个区块确认，请耐心等待。此地址只接受{coinType[currentUser.walletInfo.type]}协议的USDT，请勿往地址元值其他协议的USDT发送其他币种到此地址将无法找回，平台也不承担带来的损失。
+                温馨提示：<br/>充值USDT需要6个区块确认，请耐心等待。此地址只接受{walletType == 1 ? 'erc20' : 'omni'}协议的USDT，请勿往地址元值其他协议的USDT发送其他币种到此地址将无法找回，平台也不承担带来的损失。
               </div>
             </div>
           </Layer>
@@ -486,8 +501,8 @@ class Home extends Component {
               </div>
               <div className={styles.desc}>
                 温馨提示：<br/>
-                1.充值USDT需要6个区块确认，请耐心等待。 此地址 只接受{ coinType[walletType] }协议的USDT，请勿往地址元值其他协议的USDT发送其他币种到此<br/>
-                2.地址将无法找回，平台也不承担带来的损失。充值USDT需要6个区块确认，请耐心等待。 此地址 只接受OMNI协议的USDT，请勿往地址元值其他协议的USDT发送其他币种到此地址将无法找回，平台也不承担带来的损失。
+                1.充值USDT需要6个区块确认，请耐心等待。 此地址 只接受erc20协议的USDT，请勿往地址元值其他协议的USDT发送其他币种到此<br/>
+                2.地址将无法找回，平台也不承担带来的损失。充值USDT需要6个区块确认，请耐心等待。 此地址 只接受erc20协议的USDT，请勿往地址元值其他协议的USDT发送其他币种到此地址将无法找回，平台也不承担带来的损失。
               </div>
               <div style={{textAlign: 'center'}}>
                 <Button type="primary" style={{width: 120}} onClick={this.handleMortgage}>确定抵押</Button>
