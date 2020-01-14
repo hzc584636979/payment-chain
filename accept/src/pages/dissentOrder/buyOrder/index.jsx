@@ -122,7 +122,7 @@ class BuyDissentOrder extends Component {
               )}
             </FormItem>
           </Col>
-          <Col xl={6} lg={12} sm={24}>
+          <Col xl={8} lg={12} sm={24}>
             <FormItem label="异议时间">
               {getFieldDecorator('time',{ initialValue: history.time })(
                 <RangePicker
@@ -131,7 +131,7 @@ class BuyDissentOrder extends Component {
               )}
             </FormItem>
           </Col>
-          <Col xl={6} lg={12} sm={24}>
+          <Col xl={4} lg={12} sm={24}>
             <span className={styles.submitButtons} style={{paddingTop: 4, display: 'inline-block'}}>
               <Button type="primary" htmlType="submit">
                 查询

@@ -193,6 +193,7 @@ class Home extends Component {
   render() {
     const { accountBalance1, tokenBalance1, tokenBalance2, payVisible, mortgageVisible, buyStatus, sellStatus, mortgageValue, walletType } = this.state;
     const { currentUser, home, loading } = this.props;
+    const payLayerAddress = currentUser.id ? (walletType == '1' ? currentUser.erc20.address : currentUser.omni.address) : null;
 
     return (
       <GridContent>
@@ -470,16 +471,16 @@ class Home extends Component {
                 </Select>
               </div>
               {
-                currentUser.walletInfo.address &&
+                payLayerAddress &&
                 <div style={{textAlign: 'center'}}>
                   <div className={styles.ewm}>
-                    <QRCode id='qrid' value={walletType == 1 ? currentUser.erc20.address : currentUser.omni.address} size={220} style={{margin: '0 auto'}} /> 
+                    <QRCode id='qrid' value={payLayerAddress} size={220} style={{margin: '0 auto'}} /> 
                   </div>
                   <Button type="primary" style={{width: 130}}>
                     <a download id='aId' onClick={this.clickDownLoad}>保存二维码</a>
                   </Button>
-                  <div className={styles.address}>{walletType == 1 ? currentUser.erc20.address : currentUser.omni.address}</div>
-                  <Button type="primary" style={{width: 130}} onClick={() => this.handleClipBoard(walletType == 1 ? currentUser.erc20.address : currentUser.omni.address)}>复制地址</Button>
+                  <div className={styles.address}>{payLayerAddress}</div>
+                  <Button type="primary" style={{width: 130}} onClick={() => this.handleClipBoard(payLayerAddress)}>复制地址</Button>
                 </div>
               }
               <div className={styles.desc}>

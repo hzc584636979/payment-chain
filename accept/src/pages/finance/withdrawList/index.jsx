@@ -61,6 +61,7 @@ class WithdrawList extends Component {
         page:0,
         state: 0,
         token_id: 0,
+        order_type: 0,
         time: [moment().startOf('day'), moment().endOf('day')],
       },
     });
@@ -110,20 +111,33 @@ class WithdrawList extends Component {
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={24}>
-          <Col xl={6} lg={12} sm={24}>
+          <Col xl={4} lg={12} sm={24}>
             <FormItem label="币种">
               {getFieldDecorator('token_id',{ initialValue: history.token_id+'' })(
                 <Select placeholder="请选择">
                   {
-                    Object.keys(coinType).map(value => {
-                      return <Option value={value} key={value}>{coinType[value]}</Option>
+                    Object.keys(coinType2).map(value => {
+                      return <Option value={value} key={value}>{coinType2[value]}</Option>
                     })
                   }
                 </Select>
               )}
             </FormItem>
           </Col>
-          <Col xl={6} lg={12} sm={24}>
+          <Col xl={5} lg={12} sm={24}>
+            <FormItem label="订单分类">
+              {getFieldDecorator('order_type',{ initialValue: history.order_type+'' })(
+                <Select placeholder="请选择">
+                  {
+                    Object.keys(orderType).map(value => {
+                      return <Option value={value} key={value}>{orderType[value]}</Option>
+                    })
+                  }
+                </Select>
+              )}
+            </FormItem>
+          </Col>
+          <Col xl={5} lg={12} sm={24}>
             <FormItem label="状态">
               {getFieldDecorator('state',{ initialValue: history.state+'' })(
                 <Select placeholder="请选择">
@@ -145,7 +159,7 @@ class WithdrawList extends Component {
               )}
             </FormItem>
           </Col>
-          <Col xl={6} lg={12} sm={24}>
+          <Col xl={4} lg={12} sm={24}>
             <span className={styles.submitButtons} style={{paddingTop: 4, display: 'inline-block'}}>
               <Button type="primary" htmlType="submit">
                 查询
@@ -187,11 +201,11 @@ class WithdrawList extends Component {
         let dataWCN = [];
         data.data.rows.map((i) => {
           let dataWObj = {
-              "币种": coinType[i.token_id],
-              "分类": orderType[order_type],
+              "币种": coinType2[i.token_id],
+              "订单分类": orderType[i.type],
               "金额 (USDT)": wei2USDT(i.count),
               "地址": i.to_address,
-              "状态": statusType[i.state],
+              "状态": statusType[Number(i.state)+1],
               "时间": moment(i.create_time*1000).local().format('YYYY-MM-DD HH:mm:ss'),
               "Txhash": i.txid,
           };
@@ -212,13 +226,13 @@ class WithdrawList extends Component {
         key: 'token_id',
         align: 'center',
         render:(val,record)=>{
-          return coinType[val];
+          return coinType2[val];
         },
       },
       {
-        title: '分类',
-        dataIndex: 'order_type',
-        key: 'order_type',
+        title: '订单分类',
+        dataIndex: 'type',
+        key: 'type',
         align: 'center',
         render:(val,record)=>{
           return orderType[val];
@@ -245,7 +259,7 @@ class WithdrawList extends Component {
         key: 'state',
         align: 'center',
         render:(val,record)=>{
-          return statusType[val];
+          return statusType[Number(val)+1];
         },
       },
       {

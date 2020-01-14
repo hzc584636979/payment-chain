@@ -84,7 +84,7 @@ class SellOrder extends Component {
     });
   };
 
-  handleSearch = e => {
+  handleSearch = (e, pagination={}) => {
     e && e.preventDefault();
     const { dispatch, form } = this.props;
     form.validateFields((err, fieldsValue) => {
@@ -92,8 +92,8 @@ class SellOrder extends Component {
 
       const values = {
         ...fieldsValue,
-        page:0,
-        pageSize:10,
+        page: pagination.page || 0,
+        pageSize: pagination.pageSize || 10,
       };
       dispatch({
         type: 'sellOrder/search',
@@ -113,7 +113,7 @@ class SellOrder extends Component {
               {getFieldDecorator('order_id',{ initialValue: history.order_id })(<Input placeholder="平台订单号" />)}
             </FormItem>
           </Col>
-          <Col xl={5} lg={12} sm={24}>
+          <Col xl={3} lg={12} sm={24}>
             <FormItem label="币种">
               {getFieldDecorator('token_id',{ initialValue: history.token_id+'' })(
                 <Select placeholder="请选择">
@@ -139,7 +139,7 @@ class SellOrder extends Component {
               )}
             </FormItem>
           </Col>
-          <Col xl={5} lg={12} sm={24}>
+          <Col xl={7} lg={12} sm={24}>
             <FormItem label="创建时间">
               {getFieldDecorator('time',{ initialValue: history.time })(
                 <RangePicker
@@ -164,6 +164,14 @@ class SellOrder extends Component {
   }
 
   receipt = id => {
+    const { dispatch } = this.props;
+    const { pagination } = this.props.sellOrder.data;
+
+    const params = {
+      page: pagination.current -1,
+      pageSize: pagination.pageSize,
+    };
+
     dispatch({
       type: 'sellOrder/receipt',
       payload: {
@@ -176,11 +184,19 @@ class SellOrder extends Component {
       }else {
         message.success('操作成功');
       }
-      this.handleSearch();
+      this.handleSearch(null, params);
     })
   }
 
   noReceipt = id => {
+    const { dispatch } = this.props;
+    const { pagination } = this.props.sellOrder.data;
+
+    const params = {
+      page: pagination.current -1,
+      pageSize: pagination.pageSize,
+    };
+    
     dispatch({
       type: 'sellOrder/noReceipt',
       payload: {
@@ -193,7 +209,7 @@ class SellOrder extends Component {
       }else {
         message.success('操作成功');
       }
-      this.handleSearch();
+      this.handleSearch(null, params);
     })
   }
 

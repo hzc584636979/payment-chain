@@ -29,23 +29,38 @@ class SellOrderDetail extends Component {
 
   }
 
-  receipt = () => {
-    dispatch({
-      type: 'sellOrderDetail/receipt',
-      payload: {id},
-    });
-  }
-
   receipt = id => {
+    const { dispatch } = this.props;
     dispatch({
       type: 'sellOrderDetail/receipt',
-    });
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      dispatch({
+        type: 'sellOrderDetail/fetch',
+      });
+    })
   }
 
   noReceipt = id => {
+    const { dispatch } = this.props;
     dispatch({
       type: 'sellOrderDetail/noReceipt',
-    });
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      dispatch({
+        type: 'sellOrderDetail/fetch',
+      });
+    })
   }
 
   render() {

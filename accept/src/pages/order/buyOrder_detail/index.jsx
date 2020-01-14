@@ -30,15 +30,37 @@ class SellOrderDetail extends Component {
   }
 
   transfer = id => {
+    const { dispatch } = this.props;
     dispatch({
       type: 'buyOrderDetail/transfer',
-    });
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      dispatch({
+        type: 'buyOrderDetail/fetch',
+      });
+    })
   }
 
   receipt = id => {
+    const { dispatch } = this.props;
     dispatch({
       type: 'buyOrderDetail/receipt',
-    });
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      dispatch({
+        type: 'buyOrderDetail/fetch',
+      });
+    })
   }
 
   render() {

@@ -77,7 +77,7 @@ class DepositList extends Component {
     });
   };
 
-  handleSearch = e => {
+  handleSearch = (e, pagination={}) => {
     e && e.preventDefault();
     const { dispatch, form } = this.props;
     form.validateFields((err, fieldsValue) => {
@@ -85,8 +85,8 @@ class DepositList extends Component {
 
       const values = {
         ...fieldsValue,
-        page:0,
-        pageSize:10,
+        page: pagination.page || 0,
+        pageSize: pagination.pageSize || 10,
       };
       dispatch({
         type: 'depositList/search',
@@ -140,6 +140,13 @@ class DepositList extends Component {
 
   frozen = id => {
     const { dispatch } = this.props;
+    const { pagination } = this.props.depositList.data;
+
+    const params = {
+      page: pagination.current -1,
+      pageSize: pagination.pageSize,
+    };
+
     dispatch({
       type: 'depositList/frozen',
       payload: {
@@ -152,7 +159,7 @@ class DepositList extends Component {
       }else {
         message.success('操作成功');
       }
-      this.handleSearch();
+      this.handleSearch(null, params);
     })
   }
 
