@@ -94,7 +94,6 @@ class WithdrawList extends Component {
 
       const values = {
         ...fieldsValue,
-        state: fieldsValue.state || 0,
         page:0,
         pageSize:10,
       };
@@ -190,7 +189,7 @@ class WithdrawList extends Component {
           let dataWObj = {
               "币种": coinType[i.token_id],
               "分类": orderType[order_type],
-              "金额 (USDT)": i.count,
+              "金额 (USDT)": wei2USDT(i.count),
               "地址": i.to_address,
               "状态": statusType[i.state],
               "时间": moment(i.create_time*1000).local().format('YYYY-MM-DD HH:mm:ss'),
@@ -230,6 +229,9 @@ class WithdrawList extends Component {
         dataIndex: 'count',
         key: 'count',
         align: 'center',
+        render: (val, record) => {
+          return wei2USDT(val)
+        }
       },
       {
         title: '地址',

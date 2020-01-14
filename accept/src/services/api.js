@@ -127,6 +127,14 @@ export async function emailForget(params) {
   });
 }
 
+/*退出登录*/
+export async function loginOut(params) {
+  return request(`${apiAddress}/home/quitLogin`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
 /*首页-获取用户信息*/
 export async function getUserInfo(params) {
   return request(`${apiAddress}/home/getUserInfo`, {
@@ -535,11 +543,11 @@ export async function financeSettingsWXSubmit(params) {
   });
 }
 
-/*财务管理-提币记录-请求*/
+/*财务管理-提币/充币记录-请求*/
 export async function withdrawList(params) {
   let time = params.time && formatMomentTime(params.time);
-  let begin_time = time[0];
-  let end_time = time[1];
+  let begin_time = parseInt(time[0] / 1000)+'';
+  let end_time = parseInt(time[1] / 1000)+'';
   return request(`${apiAddress}/financial/getCashOutRecord`, {
     method: 'POST',
     data: {
@@ -550,11 +558,11 @@ export async function withdrawList(params) {
   });
 }
 
-/*财务管理-提币记录-搜索*/
+/*财务管理-提币/充币记录-搜索*/
 export async function withdrawListSearchAll(params) {
   let time = params.time && formatMomentTime(params.time);
-  let begin_time = time[0];
-  let end_time = time[1];
+  let begin_time = parseInt(time[0] / 1000)+'';
+  let end_time = parseInt(time[1] / 1000)+'';
   return request(`${apiAddress}/financial/getCashOutRecord`, {
     method: 'POST',
     data: {
@@ -654,6 +662,14 @@ export async function userBaseGetEmailCode(params) {
 /*账户管理-商户信息-提交信息*/
 export async function userBaseSubmit(params) {
   return request(`${apiAddress}/account/realNameAuthentication`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*账户管理-安全设置-更改LOGO*/
+export async function userSafeModifyLogo(params) {
+  return request(`${apiAddress}/account/modifyLogo`, {
     method: 'POST',
     data: params,
   });

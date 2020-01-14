@@ -115,7 +115,7 @@ class WithdrawApply extends Component {
       return;
     }
 
-    if(coin_number > withdrawApply.balance) {
+    if(coin_number > wei2USDT(withdrawApply.all_balance)) {
       message.error('超过最大金额');
       return;
     }
@@ -147,7 +147,7 @@ class WithdrawApply extends Component {
   onGetAll = () => {
     const { withdrawApply } = this.props;
     this.setState({
-      coin_number: withdrawApply.all_balance
+      coin_number: wei2USDT(withdrawApply.all_balance)
     })
   }
 
@@ -167,9 +167,9 @@ class WithdrawApply extends Component {
               <Descriptions.Item label={<span className={styles.itemLabel}>提币</span>}>
                 <Select placeholder="选择币种" style={{width: 385}} onChange={this.handleType}>
                   {
-                    Object.keys(coinType).map((value, index) => {
+                    Object.keys(coinType2).map((value, index) => {
                       if(index != 0) {
-                        return <Option value={value} key={value}>{coinType[value]}</Option>
+                        return <Option value={value} key={value}>{coinType2[value]}</Option>
                       }
                     })
                   }
@@ -194,7 +194,7 @@ class WithdrawApply extends Component {
                       全部提币
                     </Button>
                     <p style={{fontSize: 14, color: '#333'}}>
-                      <span style={{paddingRight: 10}}>手续费:{ withdrawApply.gas } USDT</span><span>可用余额:{ withdrawApply.all_balance } USDT</span>
+                      <span style={{paddingRight: 10}}>手续费:{ withdrawApply.gas } USDT</span><span>可用余额:{ wei2USDT(withdrawApply.all_balance) } USDT</span>
                     </p>
                   </Fragment>
                 }

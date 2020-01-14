@@ -89,7 +89,6 @@ class SellDissentOrder extends Component {
 
       const values = {
         ...fieldsValue,
-        state: fieldsValue.state || 0,
         page:0,
         pageSize:10,
       };
@@ -163,7 +162,6 @@ class SellDissentOrder extends Component {
 
       const values = {
         ...fieldsValue,
-        state: fieldsValue.state || 0,
         page:0,
         pageSize:10,
       };
@@ -190,7 +188,8 @@ class SellDissentOrder extends Component {
               "商户订单号": i.out_order_id,
               "付款用户": i.payee_name,
               "付款方式": payName[i.pay_type],
-              "币种": coinType[i.token_id],
+              "付款金额(USDT)": i.pay_amount,
+              "付款金额(CNY)": i.pay_amount_cny,
               "收币商户": i.m_user_name,
               "订单状态": sellStatusType[i.state],
               "订单创建时间": moment(i.created_at).local().format('YYYY-MM-DD HH:mm:ss'),
@@ -252,13 +251,16 @@ class SellDissentOrder extends Component {
         },
       },
       {
-        title: '币种',
-        dataIndex: 'token_id',
-        key: 'token_id',
+        title: '付款金额(USDT)',
+        dataIndex: 'pay_amount',
+        key: 'pay_amount',
         align: 'center',
-        render: (val,record) => {
-          return coinType[val];
-        }
+      },
+      {
+        title: '付款金额(CNY)',
+        dataIndex: 'pay_amount_cny',
+        key: 'pay_amount_cny',
+        align: 'center',
       },
       {
         title: '收币商户',

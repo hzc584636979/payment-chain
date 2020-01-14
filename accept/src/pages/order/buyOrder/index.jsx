@@ -85,7 +85,7 @@ class BuyOrder extends Component {
   };
 
   handleSearch = e => {
-    e.preventDefault();
+    e && e.preventDefault();
     const { dispatch, form } = this.props;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -170,7 +170,15 @@ class BuyOrder extends Component {
       payload: {
         order_id: id
       },
-    });
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      this.handleSearch();
+    })
   }
 
   receipt = id => {
@@ -179,7 +187,15 @@ class BuyOrder extends Component {
       payload: {
         order_id: id
       },
-    });
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      this.handleSearch();
+    })
   }
 
   exportOk = fieldsValue => {
@@ -189,7 +205,6 @@ class BuyOrder extends Component {
 
       const values = {
         ...fieldsValue,
-        state: fieldsValue.state || 0,
         page:0,
         pageSize:10,
       };

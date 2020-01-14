@@ -35,7 +35,7 @@ class ContLayout extends Component {
   }
 
   componentWillUnmount() {
-
+    
   }
 
   hashRoutes = (routes=config.routes[0].routes[1].routes, parent, index) => {

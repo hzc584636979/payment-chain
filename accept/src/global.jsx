@@ -17,7 +17,7 @@ window.g_setLocalStorage = (params, key="paymentChain") => {
 };
 
 window.wei2USDT = (val) => {
-  return Number(val) / Math.pow(10, 6);
+  return Number(val) ? Number(val) / Math.pow(10, 6) : 0;
 }
 
 import weixin from '@/assets/icon_saoma_weixin.png';
@@ -55,8 +55,12 @@ window.buyStatusType = {
 };
 window.coinType = {
   0: '全部',
+  1: 'USDT',
+}
+window.coinType2 = {
+  0: '全部',
   1: 'USDT(erc20)',
-  /*2: 'USDT(omni)',*/
+  2: 'USDT(omni)',
 }
 
 if (pwa) {

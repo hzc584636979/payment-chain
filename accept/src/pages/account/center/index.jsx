@@ -61,20 +61,6 @@ class UserBase extends Component {
     clearInterval(this.interval2);
   }
 
-  handleChange = file => {
-    if(!beforeUpload(file)) return false;
-    getBase64(file, imageUrl =>
-      this.setState({
-        params: {
-          ...this.state.params,
-          logo_path: imageUrl
-        },
-        loading: false,
-      }),
-    );
-    return false;
-  }
-
   handleChangeIdentityZ = file => {
     if(!beforeUpload(file)) return false;
     getBase64(file, imageUrl =>
@@ -126,6 +112,15 @@ class UserBase extends Component {
       params: {
         ...this.state.params,
         id_number: e.target.value
+      },
+    })
+  }
+
+  handleTx = e => {
+    this.setState({
+      params: {
+        ...this.state.params,
+        payment_pwd: e.target.value
       },
     })
   }
@@ -284,16 +279,16 @@ class UserBase extends Component {
       id_number,
       id_card_front_path,
       id_card_back_path,
+      payment_pwd,
       telephone_number,
       email_address,
       qq_number,
       wechat_number,
       payment_link,
-      logo_path,
       telephone_verify_code,
       email_verify_code,
     } = this.state.params;
-    if(!user_name || !real_name || !id_number || !id_card_front_path || !id_card_back_path || !telephone_number || !email_address || !qq_number || !wechat_number || !payment_link || !email_verify_code || !telephone_verify_code){
+    if(!user_name || !real_name || !id_number || !id_card_front_path || !id_card_back_path || !payment_pwd || !telephone_number || !email_address || !qq_number || !wechat_number || !payment_link || !email_verify_code || !telephone_verify_code){
       message.error('请填写完整信息后提交');
       return;
     }
@@ -309,12 +304,12 @@ class UserBase extends Component {
         id_number,
         id_card_front: id_card_front_path,
         id_card_back: id_card_back_path,
+        payment_pwd,
         telephone_number,
         email_address,
         qq_number,
         wechat_number,
         payment_link,
-        logo: logo_path,
         telephone_verify_code,
         email_verify_code,
       },
@@ -349,23 +344,18 @@ class UserBase extends Component {
       id_number,
       id_card_front_path,
       id_card_back_path,
+      payment_pwd,
       telephone_number,
       email_address,
       qq_number,
       wechat_number,
       payment_link,
-      logo_path,
       telephone_verify_code,
       email_verify_code,
     } = this.state.params;
 
     const disabled = real_name_passed || false;
 
-    const uploadButton = (
-      <div>
-        <Icon type={loading ? 'loading' : 'plus'} />
-      </div>
-    );
     const uploadZButton = (
       <div>
         {
@@ -398,19 +388,6 @@ class UserBase extends Component {
             <Descriptions column={1}>
               <Descriptions.Item label={<span className={styles.itemLabel}>承兑商名称</span>}>
                 <Input disabled={disabled} onChange={this.handleNickname} style={{width: 385}} placeholder="输入名称" value={user_name} />
-              </Descriptions.Item>
-              <Descriptions.Item label={<span>承兑商logo</span>} className={`${styles.noneBeforeIcon} ${styles.textTop}`}>
-                <Upload
-                  name="avatar"
-                  listType="picture-card"
-                  showUploadList={false}
-                  beforeUpload={this.handleChange}
-                  disabled={disabled}
-                  accept={'.jpg,.jpeg,.png'}
-                >
-                  { logo_path ? <img width="103" height="103" src={logo_path} /> : uploadButton }
-                </Upload>
-                <div className={styles.upImgDesc}>图片上传限制:最大5M</div>
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>真实姓名</span>}>
                 <Input disabled={disabled} onChange={this.handleName} style={{width: 385}} placeholder="输入真实姓名" value={real_name} />
@@ -447,6 +424,9 @@ class UserBase extends Component {
                     <div className={styles.upImgDesc}>上传身份证 <span style={{color: '#2194FF'}}>国徽面</span></div>
                   </Col>
                 </Row>
+              </Descriptions.Item>
+              <Descriptions.Item label={<span className={styles.itemLabel}>交易密码</span>}>
+                <Input disabled={disabled} onChange={this.handleTx} style={{width: 385}} placeholder="输入交易密码" value={payment_pwd} maxLength={8} />
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>绑定手机</span>}>
                 <Input disabled={disabled} onChange={this.handlePhone} style={{width: 385}} placeholder="输入手机号" maxLength={11} value={telephone_number} />

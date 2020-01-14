@@ -4,7 +4,8 @@ import {
   userSafeRevisePhone, 
   userSafeReviseEmail, 
   userSafeReviseTP, 
-  userSafeReviseLP 
+  userSafeReviseLP,
+  userSafeModifyLogo, 
 } from '@/services/api';
 
 const Model = {
@@ -13,6 +14,10 @@ const Model = {
     data: {},
   },
   effects: {
+    *modifyLogo({ payload }, { call, put }) {
+      const response = yield call(userSafeModifyLogo, payload);
+      return response;
+    },
     *getPhoneCode({ payload }, { call, put }) {
       const response = yield call(userSafeGetPhoneCode, payload);
       return response;

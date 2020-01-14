@@ -60,8 +60,9 @@ class SellOrderDetail extends Component {
             <Descriptions.Item label="平台订单号">{ sellOrderDetail.order_id }</Descriptions.Item>
             <Descriptions.Item label="商户订单号">{ sellOrderDetail.out_order_id }</Descriptions.Item>
             <Descriptions.Item label="付款用户">{ sellOrderDetail.payee_name }</Descriptions.Item>
-            <Descriptions.Item label="付款方式">{ payIcon[sellOrderDetail.pay_type] }</Descriptions.Item>
-            <Descriptions.Item label="币种">{ coinType[sellOrderDetail.token_id] }</Descriptions.Item>
+            <Descriptions.Item label="付款方式"><img src={payIcon[sellOrderDetail.pay_type]} /></Descriptions.Item>
+            <Descriptions.Item label="付款金额(USDT)">{ sellOrderDetail.pay_amount }</Descriptions.Item>
+            <Descriptions.Item label="付款金额(CNY)">{ sellOrderDetail.pay_amount_cny }</Descriptions.Item>
             <Descriptions.Item label="收币商户">{ sellOrderDetail.m_user_name }</Descriptions.Item>
             <Descriptions.Item label="创建时间">{ moment(sellOrderDetail.created_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
             <Descriptions.Item label="付款时间">{ sellOrderDetail.transfer_time ? moment(sellOrderDetail.transfer_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>

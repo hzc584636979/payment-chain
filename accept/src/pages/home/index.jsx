@@ -35,6 +35,10 @@ class Home extends Component {
     const { dispatch } = this.props;
 
     dispatch({
+      type: 'user/getUserInfo',
+    });
+
+    dispatch({
       type: 'home/fetch',
     });
   }
@@ -122,16 +126,21 @@ class Home extends Component {
   handleMortgageAll = e => {
     const { currentUser } = this.props;
     this.setState({
-      mortgageValue: currentUser.walletInfo.balance,
+      mortgageValue: wei2USDT(currentUser.erc20.balance),
     })
   }
 
   handleMortgage = () => {
-    const { dispatch } = this.props;
+    const { dispatch, currentUser } = this.props;
     const { walletType } = this.state;
 
     if(!this.state.mortgageValue || this.state.mortgageValue == 0) {
       message.error('请输入金额');
+      return;
+    }
+
+    if(this.state.mortgageValue > wei2USDT(currentUser.erc20.balance)) {
+      message.error('超过最大金额');
       return;
     }
 
@@ -290,7 +299,7 @@ class Home extends Component {
                           <div className={styles.item}>
                             <span style={{display: 'inline-block', width: 160}}>可用余额（USDT）</span>
                             {tokenBalance1 ? 
-                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>{ currentUser.all_balance }</span>
+                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>{ wei2USDT(currentUser.all_balance) }</span>
                               : 
                               <span style={{display: 'inline-block', minWidth: 100, color: '#333333'}}>****</span>
                             }
@@ -299,7 +308,7 @@ class Home extends Component {
                           <div className={styles.item}>
                             <span style={{display: 'inline-block', width: 160}}>不可用余额（USDT）</span>
                             {tokenBalance2 ? 
-                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>{ currentUser.all_lock_balance }</span>
+                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>{ wei2USDT(currentUser.all_lock_balance) }</span>
                               : 
                               <span style={{display: 'inline-block', minWidth: 100, color: '#333333'}}>****</span>
                             }
@@ -317,7 +326,7 @@ class Home extends Component {
                           <div className={styles.item}>
                             <span style={{display: 'inline-block', width: 160}}>抵押资金（USDT）</span>
                             {accountBalance1 ? 
-                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>{ currentUser.pledge_amount || 0 }</span>
+                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>{ currentUser.pledge_amount }</span>
                               : 
                               <span style={{display: 'inline-block', minWidth: 100, color: '#333333'}}>****</span>
                             }
@@ -451,8 +460,13 @@ class Home extends Component {
               <div style={{margin: '5px 0'}}>
                 <label style={{fontSize: 16}}>USDT币种：</label>
                 <Select value={walletType+""} onChange={this.changeWallet1}>
-                  <Option value={"1"} key={1}>USDT(erc20)</Option>
-                  <Option value={"2"} key={2}>USDT(omni)</Option>
+                  {
+                    Object.keys(coinType2).map((value, index) => {
+                      if(index != 0){
+                        return <Option value={value} key={value}>{coinType2[value]}</Option>
+                      }
+                    })
+                  }
                 </Select>
               </div>
               {
@@ -495,7 +509,7 @@ class Home extends Component {
                 <Row>
                   <Col xl={4} md={5} sm={0} xs={0} style={{lineHeight: '32px', fontSize: 16, color: '#666666'}}></Col>
                   <Col xl={14} md={13} sm={24} xs={24} style={{color: '#333333', textAlign: 'left'}}>
-                    可用余额:{ currentUser.walletInfo.balance } USDT
+                    可用余额:{ wei2USDT(currentUser.erc20.balance) } USDT
                   </Col>
                 </Row>
               </div>

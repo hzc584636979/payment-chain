@@ -103,9 +103,6 @@ const BasicLayout = props => {
       pathname: '/',
     },
   } = props;
-  /**
-   * constructor
-   */
 
   !g_getLocalStorage() && dispatch(routerRedux.push('/user/login'));
 

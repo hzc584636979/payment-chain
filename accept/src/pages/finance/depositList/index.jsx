@@ -78,7 +78,7 @@ class DepositList extends Component {
   };
 
   handleSearch = e => {
-    e.preventDefault();
+    e && e.preventDefault();
     const { dispatch, form } = this.props;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -139,12 +139,21 @@ class DepositList extends Component {
   }
 
   frozen = id => {
+    const { dispatch } = this.props;
     dispatch({
       type: 'depositList/frozen',
       payload: {
         order_id: id,
       },
-    });
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      this.handleSearch();
+    })
   }
 
   exportOk = fieldsValue => {
@@ -154,7 +163,6 @@ class DepositList extends Component {
 
       const values = {
         ...fieldsValue,
-        state: fieldsValue.state || 0,
         page:0,
         pageSize:10,
       };
@@ -180,7 +188,7 @@ class DepositList extends Component {
               "抵押状态": statusType[i.state],
               "抵押时间": moment(i.pledge_time).local().format('YYYY-MM-DD HH:mm:ss'),
               "退款金额(USDT)": i.refund_amount,
-              "退款时间": moment(i.refund_time).local().format('YYYY-MM-DD HH:mm:ss'),
+              "退款时间": i.refund_time && moment(i.refund_time).local().format('YYYY-MM-DD HH:mm:ss'),
           };
           dataWCN.push(dataWObj);
         })
@@ -235,7 +243,7 @@ class DepositList extends Component {
         key: 'refund_time',
         align: 'center',
         render: (val, record) => {
-          return moment(val).local().format('YYYY-MM-DD HH:mm:ss')
+          return val && moment(val).local().format('YYYY-MM-DD HH:mm:ss')
         }
       },
       {
@@ -247,9 +255,12 @@ class DepositList extends Component {
         render: (val, record) => {
           return(
             <span>
-              <Popconfirm title="是否要申请解冻？" onConfirm={() => this.frozen(record.id)}>
-                <Button>申请解冻</Button>
-              </Popconfirm>
+              {
+                record.state == 1 &&
+                <Popconfirm title="是否要申请解冻？" onConfirm={() => this.frozen(record.id)}>
+                  <Button>申请解冻</Button>
+                </Popconfirm>
+              }
             </span>
           );
         },

@@ -2,6 +2,8 @@ import { stringify } from 'querystring';
 import router from 'umi/router';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
+import { loginOut } from '@/services/api';
+import { message } from 'antd';
 
 const Model = {
   namespace: 'login',
@@ -10,6 +12,7 @@ const Model = {
   },
   effects: {
     *logout({ payload }, { call, put }) {
+      const response = yield call(loginOut);
       yield put({
         type: 'changeLoginStatus',
         payload: {},

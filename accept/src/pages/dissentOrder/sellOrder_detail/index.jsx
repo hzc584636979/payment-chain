@@ -122,8 +122,9 @@ class SellDissentOrderDetail extends Component {
             <Descriptions.Item label="平台订单号">{ sellDissentOrderDetail.order_id }</Descriptions.Item>
             <Descriptions.Item label="商户订单号">{ sellDissentOrderDetail.out_order_id }</Descriptions.Item>
             <Descriptions.Item label="付款用户">{ sellDissentOrderDetail.payee_name }</Descriptions.Item>
-            <Descriptions.Item label="付款方式">{ payIcon[sellDissentOrderDetail.pay_type] }</Descriptions.Item>
-            <Descriptions.Item label="币种">{ coinType[sellDissentOrderDetail.token_id] }</Descriptions.Item>
+            <Descriptions.Item label="付款方式"><img src={payIcon[sellDissentOrderDetail.pay_type]} /></Descriptions.Item>
+            <Descriptions.Item label="付款金额(USDT)">{ sellDissentOrderDetail.pay_amount }</Descriptions.Item>
+            <Descriptions.Item label="付款金额(CNY)">{ sellDissentOrderDetail.pay_amount_cny }</Descriptions.Item>
             <Descriptions.Item label="收币商户">{ sellDissentOrderDetail.m_user_name }</Descriptions.Item>
             <Descriptions.Item label="订单状态">{ sellStatusType[sellDissentOrderDetail.state] }</Descriptions.Item>
             <Descriptions.Item label="订单创建时间">{ moment(sellDissentOrderDetail.created_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>

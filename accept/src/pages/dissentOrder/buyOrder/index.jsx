@@ -80,7 +80,6 @@ class BuyDissentOrder extends Component {
 
       const values = {
         ...fieldsValue,
-        state: fieldsValue.state || 0,
         page:0,
         pageSize:10,
       };
@@ -154,7 +153,6 @@ class BuyDissentOrder extends Component {
 
       const values = {
         ...fieldsValue,
-        state: fieldsValue.state || 0,
         page:0,
         pageSize:10,
       };

@@ -293,9 +293,9 @@ export default {
                 {
                   name: '消息详情',
                   path: '/Message/detail/:id',
-                  component: './Message/detail',
+                  component: './message/detail',
                   hideInMenu: true,
-                  expandPath: '/message/list',
+                  expandPath: '/Message/list',
                 },
               ],
             },

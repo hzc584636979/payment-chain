@@ -5,6 +5,25 @@ import ContLayout from '@/components/ContLayout';
 import styles from './style.less';
 
 const FormItem = Form.Item;
+function getBase64(img, callback) {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => callback(reader.result));
+  reader.readAsDataURL(img);
+}
+
+function beforeUpload(file) {
+  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+  if (!isJpgOrPng) {
+    message.error('只能上传JPG/PNG文件!');
+    return false;
+  }
+  const isLt2M = file.size / 1024 / 1024 < 5;
+  if (!isLt2M) {
+    message.error('图片超过5MB!');
+    return false;
+  }
+  return true;
+}
 
 const CreatePhoneForm = Form.create()(props => {
   const { modalVisible, form, submit, cancel, count, onGetCaptcha } = props;
@@ -273,6 +292,39 @@ class UserSafe extends Component {
     clearInterval(this.interval);
   }
 
+  handleChange = file => {
+    const { dispatch } = this.props;
+
+    if(!beforeUpload(file)) return false;
+
+    this.setState({
+      loading: true,
+    })
+
+    getBase64(file, imageUrl =>
+      dispatch({
+        type: 'userSafe/modifyLogo',
+        payload: {
+          logo: imageUrl
+        },
+      }).then(data => {
+        if(data.status != 1) {
+          message.error(data.msg);
+          return;
+        }else {
+          message.success('操作成功');
+        }
+        dispatch({
+          type: 'user/getUserInfo',
+        })
+        this.setState({
+          loading: false,
+        })
+      })
+    );
+    return false;
+  }
+
   handleModalVisible = (type) => {
     this.setState({
       [type]: !this.state[type],
@@ -449,7 +501,13 @@ class UserSafe extends Component {
 
   render() {
     const { currentUser, fetchLoading } = this.props;
-    const { count, phoneVisible, emailVisible, TPVisible, LPVisible, toggleMD5 } = this.state;
+    const { count, phoneVisible, emailVisible, TPVisible, LPVisible, toggleMD5, loading, logo_path } = this.state;
+
+    const uploadButton = (
+      <div>
+        <Icon type={loading ? 'loading' : 'plus'} />
+      </div>
+    );
 
     const phoneMethods = {
       submit: this.phoneOk,
@@ -480,6 +538,19 @@ class UserSafe extends Component {
         <div className={styles.wrap}>
           <div className={styles.inner}>
             <Descriptions column={1}>
+              <Descriptions.Item label="承兑商logo" className={`${styles.textTop}`}>
+                <Upload
+                  name="avatar"
+                  listType="picture-card"
+                  showUploadList={false}
+                  beforeUpload={this.handleChange}
+                  disabled={loading}
+                  accept={'.jpg,.jpeg,.png'}
+                >
+                  { currentUser.logo_path ? <img width="103" height="103" src={currentUser.logo_path} /> : uploadButton }
+                </Upload>
+                <div className={styles.upImgDesc}>图片上传限制:最大5M</div>
+              </Descriptions.Item>
               <Descriptions.Item label="绑定手机号">
                 <Input disabled={true} style={{width: 385}} value={currentUser.telephone_number} />
                 <Button
