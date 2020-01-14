@@ -1,4 +1,4 @@
-import { withdrawList, withdrawListSearchAll, fakeBuyOrderExport } from '@/services/api';
+import { withdrawList, withdrawListSearchAll } from '@/services/api';
 
 const Model = {
   namespace: 'withdrawList',
@@ -40,8 +40,7 @@ const Model = {
       });
     },
     *export({ payload }, { call, put }) {
-      console.log(payload)
-      const response = yield call(fakeBuyOrderExport, payload);
+      const response = yield call(withdrawListSearchAll, payload);
       return response;
     },
   },

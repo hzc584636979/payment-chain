@@ -138,6 +138,7 @@ class WithdrawApply extends Component {
       }else {
         message.success('操作成功');
       }
+      this.handleType(token_id);
       this.setState({
         submitLoading: false,
       })
