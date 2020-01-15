@@ -199,7 +199,7 @@ class WithdrawList extends Component {
           return;
         }
         let dataWCN = [];
-        data.data.rows.map((i) => {
+        data.data.list.map((i) => {
           let dataWObj = {
               "币种": coinType2[i.token_id],
               "订单分类": orderType[i.type],
@@ -211,7 +211,7 @@ class WithdrawList extends Component {
           };
           dataWCN.push(dataWObj);
         })
-        exportXLSX('提币记录', dataWCN);
+        exportXLSX('提币、充币记录', dataWCN);
       })
     });
   }
@@ -292,6 +292,7 @@ class WithdrawList extends Component {
             scroll={list && list.length > 0 ? { x: 1400 } : {}}
           />
         </div>
+        <a style={{display: 'none'}} href="" download id="hf">导出</a>
       </ContLayout>
     );
   }
