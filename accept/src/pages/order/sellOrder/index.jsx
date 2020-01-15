@@ -92,6 +92,7 @@ class SellOrder extends Component {
 
       const values = {
         ...fieldsValue,
+        order_id: fieldsValue.order_id || null,
         page: pagination.page || 0,
         pageSize: pagination.pageSize || 10,
       };
@@ -220,6 +221,7 @@ class SellOrder extends Component {
 
       const values = {
         ...fieldsValue,
+        order_id: fieldsValue.order_id || null,
         page:0,
         pageSize:10,
       };
