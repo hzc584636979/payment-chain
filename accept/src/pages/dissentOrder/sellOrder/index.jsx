@@ -132,7 +132,7 @@ class SellDissentOrder extends Component {
             </FormItem>
           </Col>
           <Col xl={8} lg={12} sm={24}>
-            <FormItem label="异议时间">
+            <FormItem label="创建时间">
               {getFieldDecorator('time',{ initialValue: history.time })(
                 <RangePicker
                   style={{ width: '100%' }}
@@ -182,6 +182,7 @@ class SellDissentOrder extends Component {
         let dataWCN = [];
         data.data.rows.map((i) => {
           let dataWObj = {
+              "订单创建时间": moment(i.created_at).local().format('YYYY-MM-DD HH:mm:ss'),
               "异议时间": moment(i.issue_create_time).local().format('YYYY-MM-DD HH:mm:ss'),
               "问题类型": i.issue_type,
               "平台订单号": i.order_id,
@@ -192,7 +193,6 @@ class SellDissentOrder extends Component {
               "付款金额(CNY)": i.pay_amount_cny,
               "收币商户": i.m_user_name,
               "订单状态": sellStatusType[i.state],
-              "订单创建时间": moment(i.created_at).local().format('YYYY-MM-DD HH:mm:ss'),
           };
           dataWCN.push(dataWObj);
         })
@@ -205,6 +205,15 @@ class SellDissentOrder extends Component {
     const { loading } = this.props;
     const { history, list, pagination } = this.props.sellDissentOrder.data;
     const columns = [
+      {
+        title: '订单创建时间',
+        dataIndex: 'created_at',
+        key: 'created_at',
+        align: 'center',
+        render: (val, record) => {
+          return moment(val).local().format('YYYY-MM-DD HH:mm:ss')
+        }
+      },
       {
         title: '异议时间',
         dataIndex: 'issue_create_time',
@@ -275,15 +284,6 @@ class SellDissentOrder extends Component {
         align: 'center',
         render: (val, record) => {
           return sellStatusType[val];
-        }
-      },
-      {
-        title: '订单创建时间',
-        dataIndex: 'created_at',
-        key: 'created_at',
-        align: 'center',
-        render: (val, record) => {
-          return moment(val).local().format('YYYY-MM-DD HH:mm:ss')
         }
       },
       {

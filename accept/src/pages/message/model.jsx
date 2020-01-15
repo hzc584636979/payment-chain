@@ -15,9 +15,7 @@ const Model = {
         const his = yield select(state => state.message.data.history);
         payload = { ...his, page: his.page || payload.page, pageSize: his.pageSize || payload.pageSize };
       }
-      
       const response = yield call(messageData, payload);
-      
       let { rows, count } = response.data || {};
       let page = payload && payload.page;
       let pageSize = payload && payload.pageSize;

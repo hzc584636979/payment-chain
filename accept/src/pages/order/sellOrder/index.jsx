@@ -248,12 +248,34 @@ class SellOrder extends Component {
               "付款金额(CNY)": i.pay_amount_cny,
               "收币商户": i.m_user_name,
               "订单状态": sellStatusType[i.state],
+              "创建时间": moment(i.created_at).local().format('YYYY-MM-DD HH:mm:ss'),
+              "订单更新时间": moment(i.updated_at).local().format('YYYY-MM-DD HH:mm:ss'),
           };
           dataWCN.push(dataWObj);
         })
         exportXLSX('出售订单', dataWCN);
       })
     });
+  }
+
+  getAging = record => {
+    const time1 = new Date().getTime() - moment(record.updated_at).local().format('x');
+    const time2 = Number(record.aging) * 60 * 1000;
+    const lessTime = moment.duration(time2 - time1 > 0 ? time2 - time1 : 0);
+    const hoursTime = 60 * 60 * 1000;
+    if(lessTime <= 0) {
+      /*const { pagination } = this.props.sellOrder.data;
+
+      const params = {
+        page: pagination.current -1,
+        pageSize: pagination.pageSize,
+      };
+
+      this.handleSearch(null, params);*/
+      return false;
+    }else {
+      return <span style={{color: '#EA0000'}}>{lessTime >= hoursTime ? `${lessTime.hours()} : ${lessTime.minutes()} : ${lessTime.seconds()}` : `${lessTime.minutes()} : ${lessTime.seconds()}`}</span>;
+    }
   }
 
   render() {
@@ -267,11 +289,11 @@ class SellOrder extends Component {
         key: 'aging',
         align: 'center',
         render: (val, record) => {
-          const time1 = new Date().getTime() - moment(record.updated_at).local().format('x');
-          const time2 = Number(val) * 60 * 1000;
-          const lessTime = moment.duration(time2 - time1 > 0 ? time2 - time1 : 0);
-          const hoursTime = 60 * 60 * 1000;
-          return <span style={{color: '#EA0000'}}>{lessTime >= hoursTime ? `${lessTime.hours()} : ${lessTime.minutes()} : ${lessTime.seconds()}` : `${lessTime.minutes()} : ${lessTime.seconds()}`}</span>;
+          if(record.state == 2) {
+            return this.getAging(record) || <span style={{color: '#EA0000'}}>0 : 0</span>;
+          }else {
+            return EXHIBITION2;
+          }
         },
       },
       {
@@ -329,6 +351,24 @@ class SellOrder extends Component {
         },
       },
       {
+        title: '创建时间',
+        dataIndex: 'created_at',
+        key: 'created_at',
+        align: 'center',
+        render: (val, record) => {
+          return moment(val).local().format('YYYY-MM-DD HH:mm:ss');
+        },
+      },
+      {
+        title: '订单更新时间',
+        dataIndex: 'updated_at',
+        key: 'updated_at',
+        align: 'center',
+        render: (val, record) => {
+          return moment(val).local().format('YYYY-MM-DD HH:mm:ss');
+        },
+      },
+      {
         title: '操作',
         key: 'action',
         fixed: 'right',
@@ -339,7 +379,7 @@ class SellOrder extends Component {
           return(
             <span>
               {
-                record.state == 2 &&
+                this.getAging(record) && record.state == 2 &&
                 <Fragment>
                   <Popconfirm title="是否要确认收款？" onConfirm={() => this.receipt(record.order_id)}>
                     <Button>确认收款</Button>
@@ -379,7 +419,7 @@ class SellOrder extends Component {
             data={{ list, pagination }}
             columns={columns}
             onChange={this.handleStandardTableChange}
-            scroll={list && list.length > 0 ? { x: 1400 } : {}}
+            scroll={list && list.length > 0 ? { x: 2000 } : {}}
           />
         </div>
         <a style={{display: 'none'}} href="" download id="hf">导出</a>

@@ -24,7 +24,7 @@ const codeMessage = {
 /**
  * 异常处理程序
  */
-
+let loginOutStatus = false;
 const errorHandler = error => {
   const { response } = error;
 
@@ -35,10 +35,15 @@ const errorHandler = error => {
       message: `请求错误 ${status}: ${url}`,
       description: errorText,
     });
-    if(status == 504) {
+    if(status == 504 && !loginOutStatus) {
+      loginOutStatus = true;
       window.g_app._store.dispatch({
         type: 'login/logout',
-      });
+      }).then(data => {
+        setTimeout(() => {
+          loginOutStatus = false;
+        }, 1000) 
+      })
     }
   } else if (!response) {
     notification.error({

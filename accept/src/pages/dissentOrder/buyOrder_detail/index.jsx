@@ -1,4 +1,4 @@
-import { Button, Descriptions, Popconfirm, Input } from 'antd';
+import { Button, Descriptions, Popconfirm, Input, message } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
@@ -124,9 +124,12 @@ class BuyDissentOrderDetail extends Component {
             <Descriptions.Item label="商户昵称">{ buyDissentOrderDetail.pay_type }</Descriptions.Item>
             <Descriptions.Item label="币种">{ coinType[buyDissentOrderDetail.token_id] }</Descriptions.Item>
             <Descriptions.Item label="商户出售金额（USDT）">{ buyDissentOrderDetail.payee_name }</Descriptions.Item>
-            <Descriptions.Item label="等值（CNY）">{ buyOrderDetail.payee_account }</Descriptions.Item>
+            <Descriptions.Item label="等值（CNY）">{ buyDissentOrderDetail.payee_account }</Descriptions.Item>
             <Descriptions.Item label="订单状态">{ buyStatusType[buyDissentOrderDetail.state] }</Descriptions.Item>
-            <Descriptions.Item label="订单创建时间">{ moment(buyDissentOrderDetail.created_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
+            <Descriptions.Item label="创建时间">{ moment(buyDissentOrderDetail.created_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
+            <Descriptions.Item label="订单更新时间">{ moment(buyDissentOrderDetail.updated_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
+            <Descriptions.Item label="接单时间">{ buyDissentOrderDetail.transfer_time ? moment(buyDissentOrderDetail.transfer_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
+            <Descriptions.Item label="转款时间">{ buyDissentOrderDetail.confirm_time ? moment(buyDissentOrderDetail.confirm_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
             <Descriptions.Item label="操作">
               <Button type="primary" onClick={this.handleKF}>客服介入</Button>
               <span style={{display: 'inline-block', width: '10px'}}></span>
@@ -149,7 +152,7 @@ class BuyDissentOrderDetail extends Component {
                   <TextArea placeholder="请输入申诉描述" onChange={this.handleContent} style={{width: '100%', height: 162}} />
                 </Descriptions.Item>
                 <Descriptions.Item className={styles.noneBeforeIcon}>
-                  <Button type="primary" loading={submitLock} onClick={this.submit} >确定提交</Button>
+                  <Button type="primary" loading={submitLock} onClick={this.handleOk} >确定提交</Button>
                 </Descriptions.Item>
               </Descriptions>
             </div>

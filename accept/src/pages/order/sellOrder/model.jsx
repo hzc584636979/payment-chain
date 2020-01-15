@@ -12,8 +12,8 @@ const Model = {
   effects: {
     *fetch({ payload }, { select,call, put }) {
       let response = {};
-      if(window.location.href.indexOf('?history') > -1){
-        const his = yield select(state => state.sellOrder.data.history);
+      const his = yield select(state => state.sellOrder.data.history);
+      if(window.location.href.indexOf('?history') > -1 && Object.keys(his).length != 0){
         payload = { ...his, page: his.page || payload.page, pageSize: his.pageSize || payload.pageSize };
         response = yield call(sellOrderSearchAll, payload);
       }else{

@@ -1,4 +1,4 @@
-import { Button, Descriptions, Popconfirm, Input } from 'antd';
+import { Button, Descriptions, Popconfirm, Input, message } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
@@ -18,15 +18,25 @@ class SellOrderDetail extends Component {
     
   };
 
+  interval = undefined;
+
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
       type: 'buyOrderDetail/fetch',
-    });
+    }).then(data => {
+      let count = 0;
+      this.interval = window.setInterval(() => {
+        count += 1;
+        this.setState({
+          count,
+        });
+      }, 1000);
+    })
   }
 
   componentWillUnmount() {
-
+    clearInterval(this.interval);
   }
 
   transfer = id => {
@@ -63,13 +73,46 @@ class SellOrderDetail extends Component {
     })
   }
 
+  getAging = buyOrderDetail => {
+    const time1 = new Date().getTime() - moment(buyOrderDetail.updated_at).local().format('x');
+    const time2 = Number(buyOrderDetail.aging) * 60 * 1000;
+    const lessTime = moment.duration(time2 - time1 > 0 ? time2 - time1 : 0);
+
+    if(lessTime <= 0) {
+      /*const { dispatch } = this.props;
+      dispatch({
+        type: 'buyOrderDetail/fetch',
+      }).then(data => {
+        clearInterval(this.interval);
+        if(data.data.state == 4 || data.data.state == 3) {
+          let count = 0;
+          this.interval = window.setInterval(() => {
+            count += 1;
+            this.setState({
+              count,
+            });
+          }, 1000);
+        }
+      })*/
+      return lessTime;
+    }else {
+      return lessTime;
+    }
+  }
+
   render() {
     const { buyOrderDetail, loading } = this.props;
-                                               
+    const lessTime = this.getAging(buyOrderDetail);
+    const hoursTime = 60 * 60 * 1000;
+                     
     return (
       <ContLayout>
         <div className={styles.wrap}>
           <Descriptions column={1}>
+            {
+              (buyOrderDetail.state == 4 || buyOrderDetail.state == 3) &&
+              <Descriptions.Item label="时效"><span style={{color: '#EA0000'}}>{lessTime >= hoursTime ? `${lessTime.hours()} : ${lessTime.minutes()} : ${lessTime.seconds()}` : `${lessTime.minutes()} : ${lessTime.seconds()}`}</span></Descriptions.Item>
+            }
             <Descriptions.Item label="订单状态">{ buyStatusType[buyOrderDetail.state] }</Descriptions.Item>
             <Descriptions.Item label="平台订单号">{ buyOrderDetail.order_id }</Descriptions.Item>
             <Descriptions.Item label="商户订单号">{ buyOrderDetail.out_order_id }</Descriptions.Item>
@@ -79,23 +122,27 @@ class SellOrderDetail extends Component {
             <Descriptions.Item label="商户出售金额 (USDT)">{ buyOrderDetail.pay_amount }</Descriptions.Item>
             <Descriptions.Item label="等值 (CNY)">{ buyOrderDetail.pay_amount_cny }</Descriptions.Item>
             <Descriptions.Item label="创建时间">{ moment(buyOrderDetail.created_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
+            <Descriptions.Item label="订单更新时间">{ moment(buyOrderDetail.updated_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
             <Descriptions.Item label="接单时间">{ buyOrderDetail.transfer_time ? moment(buyOrderDetail.transfer_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
-            <Descriptions.Item label="确认时间">{ buyOrderDetail.confirm_time ? moment(buyOrderDetail.confirm_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
-            <Descriptions.Item label="操作">
-              {
-                buyOrderDetail.state == 5 ?
-                <Popconfirm title="是否要确认转款？" onConfirm={this.transfer}>
-                  <Button type="primary">确认转款</Button>
-                </Popconfirm>
-                :
-                buyOrderDetail.state == 4 ?
-                <Popconfirm title="是否要确认接单？" onConfirm={this.receipt}>
-                  <Button type="primary">确认接单</Button>
-                </Popconfirm>
-                :
-                null
-              }
-            </Descriptions.Item>
+            <Descriptions.Item label="转款时间">{ buyOrderDetail.confirm_time ? moment(buyOrderDetail.confirm_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
+            {
+              lessTime > 0 && (buyOrderDetail.state == 4 || buyOrderDetail.state == 3) && 
+              <Descriptions.Item label="操作">
+                {
+                  buyOrderDetail.state == 4 ?
+                  <Popconfirm title="是否要确认转款？" onConfirm={this.receipt}>
+                    <Button type="primary">确认转款</Button>
+                  </Popconfirm>
+                  :
+                  buyOrderDetail.state == 3 ?
+                  <Popconfirm title="是否要确认接单？" onConfirm={this.transfer}>
+                    <Button type="primary">确认接单</Button>
+                  </Popconfirm>
+                  :
+                  null
+                }
+              </Descriptions.Item>
+            }
           </Descriptions>
         </div>
       </ContLayout>

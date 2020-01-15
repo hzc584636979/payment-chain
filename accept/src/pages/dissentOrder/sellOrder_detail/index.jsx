@@ -127,7 +127,10 @@ class SellDissentOrderDetail extends Component {
             <Descriptions.Item label="付款金额(CNY)">{ sellDissentOrderDetail.pay_amount_cny }</Descriptions.Item>
             <Descriptions.Item label="收币商户">{ sellDissentOrderDetail.m_user_name }</Descriptions.Item>
             <Descriptions.Item label="订单状态">{ sellStatusType[sellDissentOrderDetail.state] }</Descriptions.Item>
-            <Descriptions.Item label="订单创建时间">{ moment(sellDissentOrderDetail.created_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
+            <Descriptions.Item label="创建时间">{ moment(sellDissentOrderDetail.created_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
+            <Descriptions.Item label="订单更新时间">{ moment(sellDissentOrderDetail.updated_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
+            <Descriptions.Item label="付款时间">{ sellDissentOrderDetail.transfer_time ? moment(sellDissentOrderDetail.transfer_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
+            <Descriptions.Item label="承兑商确认时间">{ sellDissentOrderDetail.confirm_time ? moment(sellDissentOrderDetail.confirm_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
             <Descriptions.Item label="操作">
               <Button type="primary" onClick={this.handleKF}>客服介入</Button>
               <span style={{display: 'inline-block', width: '10px'}}></span>
@@ -150,7 +153,7 @@ class SellDissentOrderDetail extends Component {
                   <TextArea placeholder="请输入申诉描述" onChange={this.handleContent} style={{width: '100%', height: 162}} />
                 </Descriptions.Item>
                 <Descriptions.Item className={styles.noneBeforeIcon}>
-                  <Button type="primary" loading={submitLock} onClick={this.submit}>确定提交</Button>
+                  <Button type="primary" loading={submitLock} onClick={this.handleOk}>确定提交</Button>
                 </Descriptions.Item>
               </Descriptions>
             </div>
