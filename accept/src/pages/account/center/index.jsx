@@ -481,7 +481,7 @@ class UserBase extends Component {
                 <Input disabled={disabled} onChange={this.handleWX} style={{width: 385}} placeholder="输入微信号" value={wechat_number} />
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>收款链接</span>}>
-                <Input disabled={disabled} onChange={this.handlePaymentLink} style={{width: 385}} value={payment_link} />
+                <Input disabled={disabled} onChange={this.handlePaymentLink} style={{width: 385}} placeholder="输入收款链接" value={payment_link} />
                 {
                   disabled && 
                   <Button

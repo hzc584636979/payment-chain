@@ -33,9 +33,9 @@ class MessageDetail extends Component {
       <ContLayout>
         <div className={styles.wrap}>
           <div className={styles.inner}>
-            <div className={styles.title}>{messageDetail.data.title}</div>
-            <div className={styles.time}>{moment(messageDetail.data.time).local().format('YYYY-MM-DD HH:mm:ss')}</div>
-            <div className={styles.content}>{messageDetail.data.content}</div>
+            <div className={styles.title}>{messageDetail.title}</div>
+            <div className={styles.time}>{moment(messageDetail.time).local().format('YYYY-MM-DD HH:mm:ss')}</div>
+            <div className={styles.content} dangerouslySetInnerHTML={{__html: messageDetail.content || ''}}></div>
           </div>
         </div>
       </ContLayout>

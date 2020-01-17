@@ -1,38 +1,7 @@
 # 开发屏蔽逻辑，上线需开启
 
 
-pages/home/index
 
-```
-!getRealNamePassed() &&
-<div className={styles.passedLayer}>用户必须通过实名认证后方可使用平台的功能 <span onClick={this.checkUserAuth} style={{color: '#EA0000', cursor: 'pointer'}}>去认证</span></div>
-```
-
-components/ContLayout
-
-```
-componentDidMount() {
-	this.path = this.props.location.pathname;
-	this.hashRoutes();
-	this.path != '/account/center' && !getRealNamePassed() && this.props.dispatch(routerRedux.push('/account'));
-}
-```
-
-layouts/BasicLayout
-
-```
-!g_getLocalStorage() && dispatch(routerRedux.push('/user/login'));
-```
-
-utils/request
-
-```
-if(status == 504) {
-  window.g_app._store.dispatch({
-    type: 'login/logout',
-  });
-}
-```
 
 # Ant Design Pro
 

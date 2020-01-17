@@ -1,6 +1,7 @@
 import { Button, Descriptions, Input, Upload, Icon, message, Row, Col, Select, } from 'antd';
 import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
+import BigNumber from 'bignumber.js';
 import ContLayout from '@/components/ContLayout';
 import styles from './style.less';
 
@@ -115,7 +116,14 @@ class WithdrawApply extends Component {
       return;
     }
 
-    if(coin_number > wei2USDT(withdrawApply.all_balance)) {
+    if(coin_number <= 0) {
+      message.error('金额不能小于0');
+      return;
+    }
+
+    const x = new BigNumber(coin_number);
+    const y = new BigNumber(withdrawApply.gas);
+    if(x.plus(y).toNumber() > wei2USDT(withdrawApply.all_balance)) {
       message.error('超过最大金额');
       return;
     }

@@ -22,6 +22,7 @@ const UserModel = {
         payload: response.data ? {
           ...response.data.accountInfo,
           ...response.data.userInfo,
+          gas: response.data.walletInfo[0].gas,
           walletInfo: response.data.walletInfo[0],
           erc20: response.data.walletInfo[0],
           omni: response.data.walletInfo[1],
@@ -46,6 +47,7 @@ const UserModel = {
         payload: response.data ? {
           ...response.data.accountInfo,
           ...response.data.userInfo,
+          gas: response.data.walletInfo[0].gas,
           walletInfo: response.data.walletInfo[payload.walletType],
           erc20: response.data.walletInfo[0],
           omni: response.data.walletInfo[1],
