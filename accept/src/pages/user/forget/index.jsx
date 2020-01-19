@@ -223,7 +223,7 @@ class Forget extends Component {
               login_pwd: values.password,
             },
           }).then(data => {
-            if(!data) {
+            if(data.status != 1) {
               message.error(data.msg);
               return;
             }else {
