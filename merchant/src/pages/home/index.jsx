@@ -128,7 +128,7 @@ class Home extends Component {
     dispatch({
       type: 'home/getCode',
     }).then(data => {
-      if(!data) {
+      if(data.status != 1) {
         message.error('短信验证码发送失败，请重试！');
         return;
       }
