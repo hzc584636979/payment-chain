@@ -1,0 +1,73 @@
+.wrap {
+  .topTz {
+    height: 50px;
+    line-height: 50px;
+    background-color: rgba(33, 148, 255, 0.05);
+    color: #EA0000;
+    font-size: 16px;
+    padding-left: 20px;
+  }
+  
+  .inner {
+    padding-top: 40px;
+  }
+
+  .noneBeforeIcon:before {
+    content: ''!important;
+  }
+
+  .textTop {
+
+    :global {
+
+      .ant-descriptions-item-colon {
+        vertical-align: top;
+        padding-top: 3px;
+      }
+    }
+  }
+
+  .upImgDesc {
+    color: #999999;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .getCaptcha {
+    display: block;
+    width: 100%;
+  }
+
+  .itemLabel:before {
+    display: inline-block;
+    content: '*';
+    position: relative;
+    left: -5px;
+    top: 2px;
+    color: red;
+  }
+  
+  :global {
+
+    .ant-upload-list-picture-card .ant-upload-list-item-info::before {
+      background-color: transparent!important;
+    }
+
+    .ant-upload-list-item-actions {
+      display: none!important;
+    }
+    
+    .ant-descriptions-item-label {
+      width: 180px;
+      font-size: 16px;
+      color: #999999;
+      padding-left: 10px;
+      text-align: right;
+    }
+
+    .ant-descriptions-item-content {
+      font-size: 16px;
+      color: #333333;
+    }
+  }
+}

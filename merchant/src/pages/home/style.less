@@ -1,0 +1,252 @@
+.wrap {
+  :global {
+    .ant-row-flex {
+      margin: 0!important;
+    }
+
+    .ant-col {
+      padding: 0!important;
+    }
+  }
+}
+
+.layoutLeft, 
+.layoutRight {
+  margin-right: 10px;
+  background: #fff;
+  color: #666;
+}
+
+.userInfo {
+  text-align: center;
+  height: 568px;
+
+  .avatar img {
+    margin: 30px 0;
+    width: 88px;
+    height: 88px;
+  }
+
+  .user {
+    font-size: 18px;
+    
+  }
+
+  .bottom {
+    margin-top: 255px;
+    .button {
+      margin-bottom: 20px;
+      font-size: 16px;
+
+      a {
+        display: inline-block;
+        width: 218px;
+        height: 36px;
+        line-height: 36px;
+        color: #666;
+        border: 1px solid #ECECEC;
+      }
+    }
+  }
+}
+
+.messageWrap {
+  background: none;
+
+  .message1 {
+    font-size: 16px;
+    background: #FFF7E7;
+    border: 1px solid #FFCE74;
+    height: 68px;
+    line-height: 68px;
+    padding: 0 17px 0 57px;
+    position: relative;
+    margin-bottom: 10px!important;
+  }
+
+  .message1:before {
+    display: inline-block;
+    content: ' ';
+    width: 16px;
+    height: 16px;
+    .message1error;
+    position: absolute;
+    left: 22px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .message1.passed {
+    font-size: 16px;
+    background: #d4ffd6;
+    border: 1px solid #77dc62;
+    height: 68px;
+    line-height: 68px;
+    padding: 0 17px 0 57px;
+    position: relative;
+    margin-bottom: 10px!important;
+  }
+
+  .message1.passed:before {
+    content: none;
+  }
+
+  .message1error {
+    background: url('@/assets/icon_warning.png');
+  }
+
+  .message2 {
+    margin-bottom: 10px;
+
+    img{
+      width: 100%;
+    }
+  }
+
+  .message3 {
+    background: #fff;
+
+    .itemBox {
+      position: relative;
+      padding: 30px 30px 30px 62px;
+      font-size: 16px;
+
+      .title {
+        font-size: 18px;
+        color: #333333;
+        font-weight: 600;
+      }
+
+      .item {
+        color: #999999;
+        margin-top: 20px;
+      }
+
+      .but {
+        margin-top: 20px;
+        color: #2194FF;
+
+        a {
+          margin-right: 19px;
+        }
+      }
+    }
+
+    .itemBox:before {
+      display: inline-block;
+      content: ' ';
+      width: 20px;
+      height: 20px;
+      background: url('@/assets/icon_daibi1.png');
+      position: absolute;
+      left: 30px;
+      top: 34px;
+    }
+
+    .itemBoxBg2:before {
+      background: url('@/assets/icon_daibi2.png');
+    }
+  }
+}
+
+.otherWrap {
+  height: 400px;
+  padding: 29px 38px;
+
+  .title {
+    color: #333333;
+    font-size: 18px;
+  }
+
+  .item {
+    margin-top: 47px;
+
+    p {
+      color: #333333;
+      font-size: 18px;
+    }
+  }
+}
+
+.orderWrap {
+  .itemBox {
+    padding: 30px;
+
+    .title {
+      font-size: 18px;
+      color: #333333;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .item {
+      padding: 0 20px;
+    }
+
+    .name {
+      margin-bottom: 15px;
+      color: #999999;
+      font-size: 16px;
+    }
+
+    .num {
+      color: #2194FF;
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .but {
+      margin-top: 9px;
+    }
+  }
+}
+
+.payLayout {
+  padding: 5% 10%;
+
+  .ewm {
+    margin-bottom: 30px;
+
+    img {
+      width: 220px;
+      height: 220px;
+    }
+  }
+
+  .address {
+    color: #333333;
+    font-size: 24px;
+    font-weight: 600;
+    margin: 80px 0 30px 0;
+  }
+
+  .desc {
+    margin-top: 80px;
+    color: #999999;
+  }
+}
+
+.withdrawApplyLayout {
+  padding: 5% 20%;
+
+  .desc {
+    margin: 68px 0;
+    color: #999999;
+  }
+}
+
+.passedLayer {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  line-height: 100vh;
+  color: #fff;
+  font-size: 20px;
+  background: rgba(0, 0, 0, .5);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  border-radius: 5px;
+  z-index: 999;
+}
