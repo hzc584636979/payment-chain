@@ -10,6 +10,7 @@ import {
   Divider,
   Popconfirm,
   message,
+  Alert,
 } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'dva';
@@ -17,6 +18,7 @@ import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
 import StandardTable from '@/components/StandardTable';
 import exportXLSX from '@/utils/exportXLSX';
+import copy from 'copy-to-clipboard';
 import moment from 'moment';
 import styles from './style.less';
 
@@ -62,7 +64,7 @@ class WithdrawList extends Component {
         state: 0,
         token_id: 0,
         order_type: 0,
-        time: [moment().startOf('day'), moment().endOf('day')],
+        time: [moment().startOf('month'), moment().endOf('month')],
       },
     });
   }
@@ -203,7 +205,7 @@ class WithdrawList extends Component {
           let dataWObj = {
               "币种": coinType2[i.token_id],
               "订单分类": orderType[i.type],
-              "金额 (USDT)": wei2USDT(i.count),
+              "金额 (USDT)": wei2USDT(i.count, i.token_id == 1 ? 'erc20' : 'omni'),
               "地址": i.to_address,
               "状态": statusType[Number(i.state)+1],
               "时间": moment(i.create_time*1000).local().format('YYYY-MM-DD HH:mm:ss'),
@@ -214,6 +216,14 @@ class WithdrawList extends Component {
         exportXLSX('提币、充币记录', dataWCN);
       })
     });
+  }
+
+  handleClipBoard = val => {
+    if(copy(val)){
+      message.success('复制成功') 
+    }else{
+      message.error('复制失败，请重试') 
+    }
   }
 
   render() {
@@ -244,7 +254,7 @@ class WithdrawList extends Component {
         key: 'count',
         align: 'center',
         render: (val, record) => {
-          return wei2USDT(val)
+          return wei2USDT(val, record.token_id == 1 ? 'erc20' : 'omni')
         }
       },
       {
@@ -252,6 +262,10 @@ class WithdrawList extends Component {
         dataIndex: 'to_address',
         key: 'to_address',
         align: 'center',
+        ellipsis: true,
+        render:(val,record)=>{
+          return <a onClick={() => this.handleClipBoard(val)}>{ val }</a>;
+        },
       },
       {
         title: '状态',
@@ -276,6 +290,10 @@ class WithdrawList extends Component {
         dataIndex: 'txid',
         key: 'txid',
         align: 'center',
+        ellipsis: true,
+        render:(val,record)=>{
+          return <a onClick={() => this.handleClipBoard(val)}>{ val }</a>;
+        },
       },
     ];
 

@@ -17,7 +17,7 @@ const Model = {
       }
       yield put({
         type: 'save',
-        payload: response.data ? {...response.data.walletInfo[payload.walletType], gas: response.data.walletInfo[0].gas, all_balance: response.data.userInfo.all_balance} : null,
+        payload: response.data ? {...response.data.walletInfo[payload.walletType], gas: response.data.walletInfo[0].gas, loading: true} : null,
       });
       return response;
     },

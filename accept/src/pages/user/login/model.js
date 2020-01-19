@@ -33,7 +33,7 @@ const Model = {
         }
 
         yield put({
-        type: 'changeLoginStatus',
+          type: 'changeLoginStatus',
           payload: response.data ? {
             ...response.data.accountInfo,
             ...response.data.userInfo,
@@ -46,12 +46,13 @@ const Model = {
 
         yield put(routerRedux.replace(redirect || '/'));
       }else {
-        notification.error({
+        /*notification.error({
           message: `登录失败，请重试`,
           description: response.msg,
-        });
-        return;
+        });*/
       }
+
+      return response;
     },
     *emailLogin({ payload }, { call, put }) {
       const response = yield call(emailAccountLogin, payload);
@@ -89,12 +90,13 @@ const Model = {
         
         yield put(routerRedux.replace(redirect || '/'));
       }else {
-        notification.error({
+        /*notification.error({
           message: `登录失败，请重试`,
           description: response.msg,
-        });
-        return;
+        });*/
       }
+
+      return response;
     },
   },
   reducers: {

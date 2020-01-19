@@ -56,7 +56,7 @@ class SellDissentOrder extends Component {
         page:0,
         state: 0,
         token_id: 0,
-        time: [moment().startOf('day'), moment().endOf('day')],
+        time: [moment().startOf('month'), moment().endOf('month')],
       },
     });
   }

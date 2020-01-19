@@ -52,7 +52,7 @@ class DepositList extends Component {
         pageSize:10,
         page:0,
         state: 0,
-        time: [moment().startOf('day'), moment().endOf('day')],
+        time: [moment().startOf('month'), moment().endOf('month')],
       },
     });
   }

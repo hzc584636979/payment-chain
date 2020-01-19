@@ -8,6 +8,7 @@ import copy from 'copy-to-clipboard';
 import { getRealNamePassed } from '@/utils/utils';
 import moment from 'moment';
 import QRCode  from 'qrcode.react';
+import BigNumber from 'bignumber.js';
 import styles from './style.less';
 import banner1 from '@/assets/img_home_banner.png';
 import ewm from '@/assets/icon_qianbi.png';
@@ -126,7 +127,7 @@ class Home extends Component {
   handleMortgageAll = e => {
     const { currentUser } = this.props;
     this.setState({
-      mortgageValue: wei2USDT(currentUser.erc20.balance),
+      mortgageValue: wei2USDT(currentUser.erc20.balance - currentUser.erc20.lock_balance),
     })
   }
 
@@ -139,7 +140,7 @@ class Home extends Component {
       return;
     }
 
-    if(this.state.mortgageValue > wei2USDT(currentUser.erc20.balance)) {
+    if(this.state.mortgageValue > wei2USDT(currentUser.erc20.balance - currentUser.erc20.lock_balance)) {
       message.error('超过最大金额');
       return;
     }
@@ -194,6 +195,8 @@ class Home extends Component {
     const { accountBalance1, tokenBalance1, tokenBalance2, payVisible, mortgageVisible, buyStatus, sellStatus, mortgageValue, walletType } = this.state;
     const { currentUser, home, loading } = this.props;
     const payLayerAddress = currentUser.id ? (walletType == '1' ? currentUser.erc20.address : currentUser.omni.address) : null;
+    const allBalance = currentUser.id ? new BigNumber(wei2USDT(currentUser.erc20.balance)).plus(new BigNumber(wei2USDT(currentUser.omni.balance, 'omni'))).toNumber() : 0;
+    const allLockBalance = currentUser.id ? new BigNumber(wei2USDT(currentUser.erc20.lock_balance)).plus(new BigNumber(wei2USDT(currentUser.omni.lock_balance, 'omni'))).toNumber() : 0;
 
     return (
       <GridContent>
@@ -300,7 +303,7 @@ class Home extends Component {
                           <div className={styles.item}>
                             <span style={{display: 'inline-block', width: 160}}>可用余额（USDT）</span>
                             {tokenBalance1 ? 
-                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>{ wei2USDT(currentUser.all_balance) }</span>
+                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>{ allBalance - allLockBalance }</span>
                               : 
                               <span style={{display: 'inline-block', minWidth: 100, color: '#333333'}}>****</span>
                             }
@@ -309,7 +312,7 @@ class Home extends Component {
                           <div className={styles.item}>
                             <span style={{display: 'inline-block', width: 160}}>不可用余额（USDT）</span>
                             {tokenBalance2 ? 
-                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>{ wei2USDT(currentUser.all_lock_balance) }</span>
+                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>{ allLockBalance }</span>
                               : 
                               <span style={{display: 'inline-block', minWidth: 100, color: '#333333'}}>****</span>
                             }
@@ -510,7 +513,7 @@ class Home extends Component {
                 <Row>
                   <Col xl={4} md={5} sm={0} xs={0} style={{lineHeight: '32px', fontSize: 16, color: '#666666'}}></Col>
                   <Col xl={14} md={13} sm={24} xs={24} style={{color: '#333333', textAlign: 'left'}}>
-                    可用余额:{ wei2USDT(currentUser.erc20.balance) } USDT
+                    可用余额:{ wei2USDT(currentUser.erc20.balance - currentUser.erc20.lock_balance) } USDT
                   </Col>
                 </Row>
               </div>

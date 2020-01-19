@@ -16,8 +16,8 @@ window.g_setLocalStorage = (params, key="paymentChain") => {
   return localStorage.setItem(key, JSON.stringify(params));
 };
 
-window.wei2USDT = (val) => {
-  return Number(val) ? Number(val) / Math.pow(10, 6) : 0;
+window.wei2USDT = (val, type='erc20') => {
+  return Number(val) ? Number(val) / Math.pow(10, type == 'erc20' ? 6 : 8) : 0;
 }
 
 import weixin from '@/assets/icon_saoma_weixin.png';

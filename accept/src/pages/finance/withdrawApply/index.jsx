@@ -7,7 +7,8 @@ import styles from './style.less';
 
 const { Option } = Select;
 
-@connect(({ withdrawApply, loading }) => ({
+@connect(({ user, withdrawApply, loading }) => ({
+  currentUser: user.currentUser,
   withdrawApply,
   fetchLoading: loading.effects['withdrawApply/fetch'],
 }))
@@ -51,7 +52,10 @@ class WithdrawApply extends Component {
         message.success('操作成功');
       }
       this.setState({
-        token_id: e
+        token_id: e,
+        to_address: null,
+        coin_number: null,
+        telephone_verify_code: null,
       })
     })
   }
@@ -103,7 +107,7 @@ class WithdrawApply extends Component {
     })
   }
 
-  submit = () => {
+  submit = maxBalance => {
     const { withdrawApply } = this.props;
     const { 
       token_id, 
@@ -123,7 +127,7 @@ class WithdrawApply extends Component {
 
     const x = new BigNumber(coin_number);
     const y = new BigNumber(withdrawApply.gas);
-    if(x.plus(y).toNumber() > wei2USDT(withdrawApply.all_balance)) {
+    if(x.plus(y).toNumber() > maxBalance) {
       message.error('超过最大金额');
       return;
     }
@@ -153,15 +157,16 @@ class WithdrawApply extends Component {
     })
   }
 
-  onGetAll = () => {
-    const { withdrawApply } = this.props;
+  onGetAll = maxBalance => {
     this.setState({
-      coin_number: wei2USDT(withdrawApply.all_balance)
+      coin_number: maxBalance
     })
   }
 
   render() {
-    const { withdrawApply, fetchLoading } = this.props;
+    const { currentUser, withdrawApply, fetchLoading } = this.props;
+    const allBalance = currentUser.id ? new BigNumber(wei2USDT(currentUser.erc20.balance)).plus(new BigNumber(wei2USDT(currentUser.omni.balance, 'omni'))).toNumber() : 0;
+    const allLockBalance = currentUser.id ? new BigNumber(wei2USDT(currentUser.erc20.lock_balance)).plus(new BigNumber(wei2USDT(currentUser.omni.lock_balance, 'omni'))).toNumber() : 0;
     const { 
       coin_number,
       submitLoading,
@@ -190,10 +195,10 @@ class WithdrawApply extends Component {
               <Descriptions.Item label={<span className={styles.itemLabel}>提币数量</span>} className={styles.textTop}>
                 <Input onChange={this.handleCoin} style={{width: 385}} placeholder="请输入提币数量" value={coin_number} />
                 {
-                  withdrawApply.all_balance && 
+                  withdrawApply.loading && 
                   <Fragment>
                     <Button
-                      onClick={this.onGetAll}
+                      onClick={() => this.onGetAll(allBalance - allLockBalance)}
                       style={{
                         width: 140,
                         display: 'inline-block',
@@ -203,7 +208,7 @@ class WithdrawApply extends Component {
                       全部提币
                     </Button>
                     <p style={{fontSize: 14, color: '#333'}}>
-                      <span style={{paddingRight: 10}}>手续费:{ withdrawApply.gas } USDT</span><span>可用余额:{ wei2USDT(withdrawApply.all_balance) } USDT</span>
+                      <span style={{paddingRight: 10}}>手续费:{ withdrawApply.gas } USDT</span><span>可用余额:{ allBalance - allLockBalance } USDT</span>
                     </p>
                   </Fragment>
                 }
@@ -225,7 +230,7 @@ class WithdrawApply extends Component {
                 </Button>
               </Descriptions.Item>
               <Descriptions.Item className={styles.noneBeforeIcon}>
-                <Button type="primary" loading={submitLoading} onClick={this.submit}>确定提交</Button>
+                <Button type="primary" loading={submitLoading} onClick={() => this.submit(allBalance - allLockBalance)}>确定提交</Button>
               </Descriptions.Item>
             </Descriptions>
           </div>
