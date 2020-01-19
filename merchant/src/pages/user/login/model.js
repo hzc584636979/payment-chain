@@ -47,12 +47,13 @@ const Model = {
 
         yield put(routerRedux.replace(redirect || '/'));
       }else {
-        notification.error({
+        /*notification.error({
           message: `登录失败，请重试`,
           description: response.msg,
-        });
-        return;
+        });*/
       }
+
+      return response;
     },
     *emailLogin({ payload }, { call, put }) {
       const response = yield call(emailAccountLogin, payload);
@@ -92,12 +93,13 @@ const Model = {
 
         yield put(routerRedux.replace(redirect || '/'));
       }else {
-        notification.error({
+        /*notification.error({
           message: `登录失败，请重试`,
           description: response.msg,
-        });
-        return;
+        });*/
       }
+
+      return response;
     },
   },
   reducers: {

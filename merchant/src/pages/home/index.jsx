@@ -112,7 +112,7 @@ class Home extends Component {
 
   handleWithdrawApplyAll = withdrawApplyBalance => {
     this.setState({
-      withdrawApplyValue: wei2USDT(withdrawApplyBalance),
+      withdrawApplyValue: withdrawApplyBalance,
     })
   }
 
@@ -165,7 +165,7 @@ class Home extends Component {
 
     const x = new BigNumber(withdrawApplyValue);
     const y = new BigNumber(currentUser.gas);
-    if(x.plus(y).toNumber() > wei2USDT(maxCoin)) {
+    if(x.plus(y).toNumber() > maxCoin) {
       message.error('超过最大金额');
       return;
     }
@@ -235,6 +235,8 @@ class Home extends Component {
     //const payLayerAddress = currentUser.id ? (payType == 'erc20' ? currentUser.erc20.address : currentUser.omni.address) : null;
     //const withdrawApplyBalance = currentUser.id ? (withdrawApplyType == 'erc20' ? currentUser.erc20.balance : currentUser.omni.balance) : null;
     const payLayerAddress = currentUser.id ? (walletType == '1' ? currentUser.erc20.address : currentUser.omni.address) : null;
+    const allBalance = currentUser.id ? new BigNumber(wei2USDT(currentUser.erc20.balance)).plus(new BigNumber(wei2USDT(currentUser.omni.balance, 'omni'))).toNumber() : 0;
+    const allLockBalance = currentUser.id ? new BigNumber(wei2USDT(currentUser.erc20.lock_balance)).plus(new BigNumber(wei2USDT(currentUser.omni.lock_balance, 'omni'))).toNumber() : 0;
 
     return (
       <GridContent>
@@ -341,13 +343,13 @@ class Home extends Component {
                           <div className={styles.item}>
                             <span style={{display: 'inline-block', width: 160}}>可用余额（USDT）</span>
                             {tokenBalance1 ? 
-                              <span style={{display: 'inline-block', minWidth: 50,color: '#2194FF', textAlign: 'center'}}>{ wei2USDT(currentUser.all_balance) }</span>
+                              <span style={{display: 'inline-block', minWidth: 50,color: '#2194FF', textAlign: 'center'}}>{ allBalance }</span>
                               : 
                               <span style={{display: 'inline-block', minWidth: 50, color: '#333333', textAlign: 'center'}}>****</span>
                             }
                             <span style={{padding: '0 5px'}}>≈</span>
                             {tokenBalance1 ? 
-                              <span style={{display: 'inline-block', minWidth: 50, textAlign: 'center'}}>{ (wei2USDT(currentUser.all_balance) * currentUser.token_price * currentUser.rate).toFixed(2) }</span>
+                              <span style={{display: 'inline-block', minWidth: 50, textAlign: 'center'}}>{ (allBalance * currentUser.token_price * currentUser.rate).toFixed(2) }</span>
                               : 
                               <span style={{display: 'inline-block', minWidth: 50, textAlign: 'center'}}>****</span>
                             }
@@ -357,13 +359,13 @@ class Home extends Component {
                           <div className={styles.item}>
                             <span style={{display: 'inline-block', width: 160}}>不可用余额（USDT）</span>
                             {tokenBalance2 ? 
-                              <span style={{display: 'inline-block', minWidth: 50,color: '#2194FF', textAlign: 'center'}}>{ wei2USDT(currentUser.all_lock_balance) }</span>
+                              <span style={{display: 'inline-block', minWidth: 50,color: '#2194FF', textAlign: 'center'}}>{ allLockBalance }</span>
                               : 
                               <span style={{display: 'inline-block', minWidth: 50, color: '#333333', textAlign: 'center'}}>****</span>
                             }
                             <span style={{padding: '0 5px'}}>≈</span>
                             {tokenBalance2 ? 
-                              <span style={{display: 'inline-block', minWidth: 50, textAlign: 'center'}}>{ (wei2USDT(currentUser.all_lock_balance) * currentUser.token_price * currentUser.rate).toFixed(2) }</span>
+                              <span style={{display: 'inline-block', minWidth: 50, textAlign: 'center'}}>{ (allLockBalance * currentUser.token_price * currentUser.rate).toFixed(2) }</span>
                               : 
                               <span style={{display: 'inline-block', minWidth: 50, textAlign: 'center'}}>****</span>
                             }
@@ -654,14 +656,14 @@ class Home extends Component {
                     <Input placeholder="输入提币数量" onChange={this.handleWithdrawApplyNumber} value={withdrawApplyValue} />
                   </Col>
                   <Col xl={5} md={5} sm={24} xs={24}>
-                    <Button style={{width: 128}} onClick={() => this.handleWithdrawApplyAll(currentUser.all_balance)}>全部</Button>
+                    <Button style={{width: 128}} onClick={() => this.handleWithdrawApplyAll(allBalance - allLockBalance)}>全部</Button>
                   </Col>
                 </Row>
                 <Row style={{marginBottom: 40}}>
                   <Col xl={4} md={5} sm={0} xs={0} style={{lineHeight: '32px', fontSize: 16, color: '#666666'}}></Col>
                   <Col xl={14} md={13} sm={24} xs={24} style={{color: '#333333', textAlign: 'left'}}>
                     <span style={{paddingRight: 10}}>手续费:{ currentUser.gas } USDT</span>
-                    <span>可用余额:{ wei2USDT(currentUser.all_balance) } USDT</span>
+                    <span>可用余额:{ allBalance - allLockBalance } USDT</span>
                   </Col>
                 </Row>
                 <Row>
@@ -693,7 +695,7 @@ class Home extends Component {
                 2.请务必确保提币地址的正确性，若由于地址填写错误导致资金丢失，不属于平台责任。
               </div>
               <div style={{textAlign: 'center'}}>
-                <Button loading={withdrawApplyStatus} type="primary" style={{width: 120}} onClick={() => this.handleWithdrawApply(currentUser.all_balance)}>确定</Button>
+                <Button loading={withdrawApplyStatus} type="primary" style={{width: 120}} onClick={() => this.handleWithdrawApply(allBalance - allLockBalance)}>确定</Button>
               </div>
             </div>
           </Layer>

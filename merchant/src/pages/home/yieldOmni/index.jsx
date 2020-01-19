@@ -49,7 +49,7 @@ class YieldOmni extends Component {
         state: 5,
         token_id: 2,
         order_id: null,
-        time: [moment().startOf('day'), moment().endOf('day')],
+        time: [moment().startOf('month'), moment().endOf('month')],
       },
     });
   }

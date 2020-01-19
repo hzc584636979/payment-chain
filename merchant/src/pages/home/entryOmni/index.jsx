@@ -47,7 +47,7 @@ class EntryOmni extends Component {
         state: 3,
         token_id: 2,
         order_id: null,
-        time: [moment().startOf('day'), moment().endOf('day')],
+        time: [moment().startOf('month'), moment().endOf('month')],
       },
     });
   }

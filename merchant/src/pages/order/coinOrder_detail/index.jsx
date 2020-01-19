@@ -54,7 +54,7 @@ class CoinOrderDetail extends Component {
             <Descriptions.Item label="订单号">{ coinOrderDetail.id }</Descriptions.Item>
             <Descriptions.Item label="订单分类">{ orderType[coinOrderDetail.type] }</Descriptions.Item>
             <Descriptions.Item label="币种">{ coinType2[coinOrderDetail.token_id] }</Descriptions.Item>
-            <Descriptions.Item label="订单金额（USDT）">{ wei2USDT(coinOrderDetail.count) }</Descriptions.Item>
+            <Descriptions.Item label="订单金额（USDT）">{ wei2USDT(coinOrderDetail.count, coinOrderDetail.token_id == 1 ? 'erc20' : 'omni') }</Descriptions.Item>
             <Descriptions.Item label="地址">{ coinOrderDetail.to_address }</Descriptions.Item>
             <Descriptions.Item label="Txhash">{ coinOrderDetail.txid }</Descriptions.Item>
             <Descriptions.Item label="创建时间">{ moment(coinOrderDetail.create_time*1000).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>

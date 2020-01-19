@@ -18,6 +18,7 @@ import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
 import StandardTable from '@/components/StandardTable';
 import exportXLSX from '@/utils/exportXLSX';
+import copy from 'copy-to-clipboard';
 import moment from 'moment';
 import styles from './style.less';
 
@@ -65,7 +66,7 @@ class CoinOrder extends Component {
         state: 0,
         order_type: 0,
         token_id: 0,
-        time: [moment().startOf('day'), moment().endOf('day')],
+        time: [moment().startOf('month'), moment().endOf('month')],
       },
     }).then(data => {
       let count = 0;
@@ -213,7 +214,7 @@ class CoinOrder extends Component {
               "订单号": i.id,
               "订单分类": orderType[i.type],
               "币种": coinType2[i.token_id],
-              "订单金额（USDT）": wei2USDT(i.count),
+              "订单金额（USDT）": wei2USDT(i.count, i.token_id == 1 ? 'erc20' : 'omni'),
               "地址": i.to_address,
               "订单状态": statusType[Number(i.state)+1],
               "Txhash": i.txid,
@@ -224,6 +225,14 @@ class CoinOrder extends Component {
         exportXLSX('提币、充币订单', dataWCN);
       })
     });
+  }
+
+  handleClipBoard = val => {
+    if(copy(val)){
+      message.success('复制成功') 
+    }else{
+      message.error('复制失败，请重试') 
+    }
   }
 
   render() {
@@ -260,7 +269,7 @@ class CoinOrder extends Component {
         key: 'count',
         align: 'center',
         render:(val,record)=>{
-          return wei2USDT(val);
+          return wei2USDT(val, record.token_id == 1 ? 'erc20' : 'omni');
         },
       },
       {
@@ -268,6 +277,10 @@ class CoinOrder extends Component {
         dataIndex: 'to_address',
         key: 'to_address',
         align: 'center',
+        ellipsis: true,
+        render:(val,record)=>{
+          return <a onClick={() => this.handleClipBoard(val)}>{ val }</a>;
+        },
       },
       {
         title: '订单状态',
@@ -283,6 +296,10 @@ class CoinOrder extends Component {
         dataIndex: 'txid',
         key: 'txid',
         align: 'center',
+        ellipsis: true,
+        render:(val,record)=>{
+          return <a onClick={() => this.handleClipBoard(val)}>{ val }</a>;
+        },
       },
       {
         title: '创建时间',

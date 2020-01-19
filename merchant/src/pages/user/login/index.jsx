@@ -16,6 +16,8 @@ class Login extends Component {
 
   state = {
     type: 'mobile',
+    loginErrorStatus: false,
+    loginErrorMsg: null,
   };
 
   handleSubmit = (err, values) => {
@@ -30,7 +32,14 @@ class Login extends Component {
       dispatch({
         type: type == 'mobile' ? 'userAndlogin/phoneLogin' : 'userAndlogin/emailLogin',
         payload,
-      });
+      }).then(data => {
+        if(data.status != 1) {
+          this.setState({
+            loginErrorMsg: data.msg,
+            loginErrorStatus: true,
+          })
+        }
+      })
     }
   };
 
@@ -51,10 +60,35 @@ class Login extends Component {
     />
   );
 
+  onClose = e => {
+    this.setState({
+      loginErrorMsg: null,
+      loginErrorStatus: false,
+    })
+  };
+
+  renderLoginError = content => (
+    <Alert
+      message="登录失败，请重试"
+      description={content}
+      type="error"
+      closable
+      onClose={this.onClose}
+      showIcon
+      style={{
+        position: 'fixed',
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: 999
+      }}
+    />
+  );
+
   render() {
     const { userAndlogin, submitting } = this.props;
     const { status, type: loginType } = userAndlogin;
-    const { type } = this.state;
+    const { type, loginErrorStatus, loginErrorMsg } = this.state;
     return (
       <div className={styles.main}>
         <div className={styles.top}>支付链开启支付的新时代</div>
@@ -156,6 +190,7 @@ class Login extends Component {
             </Link>
           </div>
         </LoginComponents>
+        { loginErrorStatus && this.renderLoginError(loginErrorMsg) }
       </div>
     );
   }
