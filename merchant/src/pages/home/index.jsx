@@ -623,7 +623,7 @@ class Home extends Component {
             <div className={styles.withdrawApplyLayout}>
               <div style={{textAlign: 'center'}}>
                 <Row>
-                  <Col xl={4} md={5} sm={24} xs={24} style={{marginBottom: 40}}>
+                  <Col xl={4} md={5} sm={24} xs={24} style={{lineHeight: '32px', fontSize: 16, color: '#666666', marginBottom: 40}}>
                     USDT币种：
                   </Col>
                   <Col xl={14} md={13} sm={24} xs={24} style={{marginRight: 10}}>
@@ -639,7 +639,7 @@ class Home extends Component {
                   </Col>
                 </Row>
                 <Row>
-                  <Col xl={4} md={5} sm={24} xs={24} style={{marginBottom: 40}}>
+                  <Col xl={4} md={5} sm={24} xs={24} style={{lineHeight: '32px', fontSize: 16, color: '#666666', marginBottom: 40}}>
                     提币地址：
                   </Col>
                   <Col xl={14} md={13} sm={24} xs={24} style={{marginRight: 10}}>
@@ -647,7 +647,7 @@ class Home extends Component {
                   </Col>
                 </Row>
                 <Row>
-                  <Col xl={4} md={5} sm={24} xs={24} style={{marginBottom: 10}}>
+                  <Col xl={4} md={5} sm={24} xs={24} style={{lineHeight: '32px', fontSize: 16, color: '#666666', marginBottom: 10}}>
                     提币数量：
                   </Col>
                   <Col xl={14} md={13} sm={24} xs={24} style={{marginRight: 10}}>
@@ -689,7 +689,7 @@ class Home extends Component {
               </div>
               <div className={styles.desc}>          
                 温馨提示：<br/>
-                1.提币所需手续费，手续费为所提数量的千分之六；<br/>
+                1.提币所需手续费，手续费为{ currentUser.gas } USDT；<br/>
                 2.请务必确保提币地址的正确性，若由于地址填写错误导致资金丢失，不属于平台责任。
               </div>
               <div style={{textAlign: 'center'}}>
