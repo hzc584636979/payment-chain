@@ -63,6 +63,7 @@ export default {
   //非根目录配置
   /*base: '/payment/',
   publicPath: '/payment/',*/
+  publicPath: '/',
   hash: true,
   targets: {
     ie: 11,
@@ -368,12 +369,12 @@ export default {
                   name: '消息列表',
                   icon: 'shopping-cart',
                   path: '/Message/list',
-                  component: './message',
+                  component: './Message',
                 },
                 {
                   name: '消息详情',
                   path: '/Message/detail/:id',
-                  component: './message/detail',
+                  component: './Message/detail',
                   hideInMenu: true,
                   expandPath: '/Message/list',
                 },
