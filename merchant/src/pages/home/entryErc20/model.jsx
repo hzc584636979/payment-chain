@@ -1,4 +1,4 @@
-import { fakeHomeEntryErc20 } from '@/services/api';
+import { homeEntryErc20 } from '@/services/api';
 
 const Model = {
   namespace: 'entryErc20',
@@ -7,7 +7,7 @@ const Model = {
   },
   effects: {
     *entry({ payload }, { call, put }) {
-      const response = yield call(fakeHomeEntryErc20, payload);
+      const response = yield call(homeEntryErc20, payload);
       return response;
     },
   },

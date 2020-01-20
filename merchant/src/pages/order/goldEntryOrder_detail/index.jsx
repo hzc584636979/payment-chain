@@ -38,7 +38,7 @@ class GoldEntryOrderDetail extends Component {
           <Descriptions column={1}>
             <Descriptions.Item label="订单状态">{ sellStatusType[goldEntryOrderDetail.state] }</Descriptions.Item>
             <Descriptions.Item label="平台订单号">{ goldEntryOrderDetail.order_id }</Descriptions.Item>
-            <Descriptions.Item label="平台订单号">{ goldEntryOrderDetail.out_order_id }</Descriptions.Item>
+            <Descriptions.Item label="商户订单号">{ goldEntryOrderDetail.out_order_id }</Descriptions.Item>
             <Descriptions.Item label="承兑商姓名">{ goldEntryOrderDetail.a_user_name }</Descriptions.Item>
             <Descriptions.Item label="币种">{ coinType[goldEntryOrderDetail.token_id] }</Descriptions.Item>
             <Descriptions.Item label="订单金额(USDT)">{ goldEntryOrderDetail.pay_amount }</Descriptions.Item>

@@ -159,7 +159,7 @@ class Home extends Component {
     }else if(!withdrawApplyAddress) {
       message.error('请填写提币地址后提交');
       return;
-    }else if(!withdrawApplyValue || withdrawApplyValue == 0) {
+    }else if(!Number(withdrawApplyValue) || withdrawApplyValue == 0) {
       message.error('请填写提币数量后提交');
       return;
     }else if(!withdrawApplyCaptcha) {

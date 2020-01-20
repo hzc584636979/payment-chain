@@ -4,6 +4,7 @@ import { connect } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
 import QRCode  from 'qrcode.react';
+import BigNumber from 'bignumber.js';
 import styles from './style.less';
 
 @connect(({ user, entryErc20, loading }) => ({
@@ -13,9 +14,8 @@ import styles from './style.less';
 }))
 class EntryErc20 extends Component {
   state = {
-    payType: 0,
+    payType: 1,
     imageUrl: null,
-    params: {},
   };
 
   componentDidMount() {
@@ -28,8 +28,7 @@ class EntryErc20 extends Component {
 
   submit = () => {
     const { currentUser } = this.props;
-    const { payType, payment_amount } = this.state;
-    const { payment_name } = this.state.params;
+    const { payType, payment_amount, payment_name } = this.state;
     let values = {};
 
     if(!Number(payment_amount) || payment_amount == 0) {
@@ -50,9 +49,9 @@ class EntryErc20 extends Component {
     dispatch({
       type: 'entryErc20/entry',
       payload: {
-        payment_name,
-        payment_amount,
-        gas: currentUser.gas,
+        pay_name: payment_name,
+        pay_amount: payment_amount,
+        pay_type: payType,
       },
     }).then(data => {
       if(data.status != 1) {
@@ -66,12 +65,9 @@ class EntryErc20 extends Component {
     })
   }
 
-  handleUpKey = (e, key) => {
+  paymentName = (e, key) => {
     this.setState({
-      params: {
-        ...this.state.params,
-        [key]: e.target.value
-      }
+      payment_name: e.target.value
     })
   }
 
@@ -84,13 +80,13 @@ class EntryErc20 extends Component {
   changeType = payType => {
     this.setState({
       payType,
-      params: {},
     })
   }
 
   render() {
     const { currentUser, fetchLoading } = this.props;
-    const { submitLock, payType } = this.state;
+    const { submitLock, payType, payment_amount } = this.state;
+    const gas = new BigNumber(payment_amount).multipliedBy(new BigNumber(currentUser.gas_percent)).toNumber();
 
     return (
       <ContLayout>
@@ -103,7 +99,7 @@ class EntryErc20 extends Component {
               </p>
             </Descriptions.Item>
             <Descriptions.Item label={<span className={styles.itemLabel}>手续费</span>}>
-              {currentUser.gas} USDT 
+              { gas || 0 } USDT 
             </Descriptions.Item>
             <Descriptions.Item label={<span className={styles.itemLabel}>支付方式</span>}>
               <Button style={{marginRight: 20}} type={payType == 1 ? "primary" : null} onClick={() => this.changeType(1)}>银行卡</Button>
@@ -113,7 +109,7 @@ class EntryErc20 extends Component {
               <Button type={payType == 5 ? "primary" : null} onClick={() => this.changeType(5)}>Paypal</Button>
             </Descriptions.Item>
             <Descriptions.Item label={<span className={styles.itemLabel}>付款人姓名</span>}>
-              <Input placeholder="请输入付款人姓名" onChange={e => this.handleUpKey(e, 'payment_name')} style={{width: 385, maxWidth: '100%'}} />
+              <Input placeholder="请输入付款人姓名" onChange={this.paymentName} style={{width: 385, maxWidth: '100%'}} maxLength={30} />
             </Descriptions.Item>
             <Descriptions.Item className={styles.noneBeforeIcon}>
               <Button type="primary" loading={submitLock} onClick={this.submit}>确定提交</Button>

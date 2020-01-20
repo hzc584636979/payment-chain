@@ -4,6 +4,7 @@ import { connect } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
 import QRCode  from 'qrcode.react';
+import BigNumber from 'bignumber.js';
 import styles from './style.less';
 
 function getBase64(img, callback) {
@@ -49,7 +50,7 @@ class YieldErc20 extends Component {
   submit = () => {
     const { currentUser } = this.props;
     const { payType, imageUrl, payment_amount } = this.state;
-    const { bank_name, bank_number, bank_real_name, visa_name, visa_number, visa_real_name, paypal_number } = this.state.params;
+    const { bank_name, bank_number, bank_real_name, ali_real_name, we_real_name, paypal_real_name, visa_name, visa_number, visa_real_name, paypal_number } = this.state.params;
     let values = {};
 
     if(!Number(payment_amount) || payment_amount == 0) {
@@ -69,9 +70,9 @@ class YieldErc20 extends Component {
         return;
       }
       values = {
-        bank_real_name,
-        bank_number,
-        bank_name,
+        pay_name: bank_real_name,
+        pay_account: bank_number,
+        account_bank_name: bank_name,
       }
     }else if(payType == 2) {
       if(!ali_real_name) {
@@ -82,8 +83,8 @@ class YieldErc20 extends Component {
         return;
       }
       values = {
-        ali_real_name,
-        ali_payment_qr_code: imageUrl,
+        pay_name: ali_real_name,
+        pay_code_url: imageUrl,
       }
     }else if(payType == 3) {
       if(!we_real_name) {
@@ -94,8 +95,8 @@ class YieldErc20 extends Component {
         return;
       }
       values = {
-        we_real_name,
-        we_payment_qr_code: imageUrl,
+        pay_name: we_real_name,
+        pay_code_url: imageUrl,
       }
     }else if(payType == 4) {
       if(!visa_real_name) {
@@ -109,9 +110,9 @@ class YieldErc20 extends Component {
         return;
       }
       values = {
-        visa_real_name,
-        visa_number,
-        visa_name,
+        pay_name: visa_real_name,
+        pay_account: visa_number,
+        account_bank_name: visa_name,
       }
     }else if(payType == 5) {
       if(!paypal_real_name) {
@@ -122,8 +123,8 @@ class YieldErc20 extends Component {
         return;
       }
       values = {
-        paypal_real_name,
-        paypal_number,
+        pay_name: paypal_real_name,
+        pay_account: paypal_number,
       }
     }
 
@@ -136,8 +137,8 @@ class YieldErc20 extends Component {
       type: 'yieldErc20/yield',
       payload: {
         ...values,
-        payment_amount,
-        gas: currentUser.gas,
+        pay_type: payType,
+        pay_amount: payment_amount,
       },
     }).then(data => {
       if(data.status != 1) {
@@ -187,7 +188,20 @@ class YieldErc20 extends Component {
 
   render() {
     const { currentUser, fetchLoading } = this.props;
-    const { submitLock, payType, imageUrl, imageUrlLoading } = this.state;
+    const { submitLock, payType, imageUrl, imageUrlLoading, payment_amount } = this.state;
+    const { 
+      bank_name, 
+      bank_number, 
+      bank_real_name, 
+      ali_real_name, 
+      we_real_name, 
+      paypal_real_name, 
+      visa_name, 
+      visa_number, 
+      visa_real_name, 
+      paypal_number 
+    } = this.state.params;
+    const gas = new BigNumber(payment_amount).multipliedBy(new BigNumber(currentUser.gas_percent)).toNumber();
 
     const uploadButton = (
       <div>
@@ -211,7 +225,7 @@ class YieldErc20 extends Component {
               </p>
             </Descriptions.Item>
             <Descriptions.Item label={<span className={styles.itemLabel}>手续费</span>}>
-              {currentUser.gas} USDT  
+              { gas || 0 } USDT 
             </Descriptions.Item>
             <Descriptions.Item label={<span className={styles.itemLabel}>支付方式</span>}>
               <Button style={{marginRight: 20}} type={payType == 1 ? "primary" : null} onClick={() => this.changeType(1)}>银行卡</Button>
@@ -225,13 +239,13 @@ class YieldErc20 extends Component {
               payType == 1 &&
               <Fragment>
                 <Descriptions.Item label={<span className={styles.itemLabel}>持卡人姓名</span>}>
-                  <Input placeholder="请输入持卡人姓名" onChange={e => this.handleUpKey(e, 'bank_real_name')} style={{width: 385, maxWidth: '100%'}} />
+                  <Input value={bank_real_name} placeholder="请输入持卡人姓名" onChange={e => this.handleUpKey(e, 'bank_real_name')} style={{width: 385, maxWidth: '100%'}} maxLength={30} />
                 </Descriptions.Item>
                 <Descriptions.Item label={<span className={styles.itemLabel}>银行卡号</span>}>
-                  <Input placeholder="请输入银行卡号" onChange={e => this.handleUpKey(e, 'bank_number')} style={{width: 385, maxWidth: '100%'}} />
+                  <Input value={bank_number} placeholder="请输入银行卡号" onChange={e => this.handleUpKey(e, 'bank_number')} style={{width: 385, maxWidth: '100%'}} />
                 </Descriptions.Item>
                 <Descriptions.Item label={<span className={styles.itemLabel}>开户行</span>}>
-                  <Input placeholder="请输入开户行" onChange={e => this.handleUpKey(e, 'bank_name')} style={{width: 385, maxWidth: '100%'}} />
+                  <Input value={bank_name} placeholder="请输入开户行" onChange={e => this.handleUpKey(e, 'bank_name')} style={{width: 385, maxWidth: '100%'}} />
                 </Descriptions.Item>
               </Fragment>
             }
@@ -240,7 +254,7 @@ class YieldErc20 extends Component {
               payType == 2 &&
               <Fragment>
                 <Descriptions.Item label={<span className={styles.itemLabel}>姓名</span>}>
-                  <Input placeholder="请输入姓名" onChange={e => this.handleUpKey(e, 'ali_real_name')} style={{width: 385, maxWidth: '100%'}} />
+                  <Input value={ali_real_name} placeholder="请输入姓名" onChange={e => this.handleUpKey(e, 'ali_real_name')} style={{width: 385, maxWidth: '100%'}} maxLength={30} />
                 </Descriptions.Item>
                 <Descriptions.Item label={<span className={styles.itemLabel}>支付宝收款码</span>} className={styles.textTop}>
                   <Upload
@@ -260,7 +274,7 @@ class YieldErc20 extends Component {
               payType == 3 &&
               <Fragment>
                 <Descriptions.Item label={<span className={styles.itemLabel}>姓名</span>}>
-                  <Input placeholder="请输入姓名" onChange={e => this.handleUpKey(e, 'we_real_name')} style={{width: 385, maxWidth: '100%'}} />
+                  <Input value={we_real_name} placeholder="请输入姓名" onChange={e => this.handleUpKey(e, 'we_real_name')} style={{width: 385, maxWidth: '100%'}} maxLength={30} />
                 </Descriptions.Item>
                 <Descriptions.Item label={<span className={styles.itemLabel}>微信收款码</span>} className={styles.textTop}>
                   <Upload
@@ -280,13 +294,13 @@ class YieldErc20 extends Component {
               payType == 4 &&
               <Fragment>
                 <Descriptions.Item label={<span className={styles.itemLabel}>持卡人姓名</span>}>
-                  <Input placeholder="请输入持卡人姓名" onChange={e => this.handleUpKey(e, 'visa_real_name')} style={{width: 385, maxWidth: '100%'}} />
+                  <Input value={visa_real_name} placeholder="请输入持卡人姓名" onChange={e => this.handleUpKey(e, 'visa_real_name')} style={{width: 385, maxWidth: '100%'}} maxLength={30} />
                 </Descriptions.Item>
                 <Descriptions.Item label={<span className={styles.itemLabel}>银行卡号</span>}>
-                  <Input placeholder="请输入银行卡号" onChange={e => this.handleUpKey(e, 'visa_number')} style={{width: 385, maxWidth: '100%'}} />
+                  <Input value={visa_number} placeholder="请输入银行卡号" onChange={e => this.handleUpKey(e, 'visa_number')} style={{width: 385, maxWidth: '100%'}} />
                 </Descriptions.Item>
                 <Descriptions.Item label={<span className={styles.itemLabel}>开户行</span>}>
-                  <Input placeholder="请输入开户行" onChange={e => this.handleUpKey(e, 'visa_name')} style={{width: 385, maxWidth: '100%'}} />
+                  <Input value={visa_name} placeholder="请输入开户行" onChange={e => this.handleUpKey(e, 'visa_name')} style={{width: 385, maxWidth: '100%'}} />
                 </Descriptions.Item>
               </Fragment>
             }
@@ -295,10 +309,10 @@ class YieldErc20 extends Component {
               payType == 5 &&
               <Fragment>
                 <Descriptions.Item label={<span className={styles.itemLabel}>姓名</span>}>
-                  <Input placeholder="请输入姓名" onChange={e => this.handleUpKey(e, 'paypal_real_name')} style={{width: 385, maxWidth: '100%'}} />
+                  <Input value={paypal_real_name} placeholder="请输入姓名" onChange={e => this.handleUpKey(e, 'paypal_real_name')} style={{width: 385, maxWidth: '100%'}} maxLength={30} />
                 </Descriptions.Item>
                 <Descriptions.Item label={<span className={styles.itemLabel}>Paypal账号</span>}>
-                  <Input placeholder="请输入Paypal账号" onChange={e => this.handleUpKey(e, 'paypal_number')} style={{width: 385, maxWidth: '100%'}} />
+                  <Input value={paypal_number} placeholder="请输入Paypal账号" onChange={e => this.handleUpKey(e, 'paypal_number')} style={{width: 385, maxWidth: '100%'}} />
                 </Descriptions.Item>
               </Fragment>
             }

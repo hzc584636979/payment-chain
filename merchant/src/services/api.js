@@ -160,21 +160,19 @@ export async function homeWithdrawApplyErc20(params) {
 }
 
 /*首页-erc20出金-出金*/
-export async function fakeHomeYieldErc20(params) {
-  /*return request(`${apiAddress}/order/goldYield`, {
+export async function homeYieldErc20(params) {
+  return request(`${apiAddress}/order/applyGoldYield`, {
     method: 'POST',
     data: params,
-  });*/
-  return null;
+  });
 }
 
 /*首页-erc20入金-入金*/
-export async function fakeHomeEntryErc20(params) {
-  /*return request(`${apiAddress}/order/goldYield`, {
+export async function homeEntryErc20(params) {
+  return request(`${apiAddress}/order/applyDeposit`, {
     method: 'POST',
     data: params,
-  });*/
-  return null;
+  });
 }
 
 /*首页-omni-提币*/
