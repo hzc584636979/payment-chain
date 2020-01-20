@@ -1,20 +1,57 @@
 .wrap {
-  :global {
-    
-    .ant-form-inline .ant-form-item {
-      display: flex;
-    }
+  padding-top: 40px;
 
-    .ant-form-inline .ant-form-item > .ant-form-item-control-wrapper {
-      flex: 1;
-    }
+  .noneBeforeIcon:before {
+    content: ''!important;
+  }
 
-    .ant-form-inline .ant-form-item > .ant-form-item-label {
-      flex: inherit;
+  .textTop {
+
+    :global {
+
+      .ant-descriptions-item-colon {
+        vertical-align: top;
+        padding-top: 3px;
+      }
     }
   }
 
-  .tableListForm {
-    margin: 20px 0 30px 0;
+  .upImgDesc {
+    color: #999999;
+    font-size: 14px;
+  }
+
+  .itemLabel:before {
+    display: inline-block;
+    content: '*';
+    position: relative;
+    left: -5px;
+    top: 2px;
+    color: red;
+  }
+  
+  :global {
+
+    .ant-upload-list-picture-card .ant-upload-list-item-info::before {
+      background-color: transparent!important;
+    }
+
+    .ant-upload-list-item-actions {
+      display: none!important;
+    }
+    
+    .ant-descriptions-item-label {
+      width: 150px;
+      font-size: 16px;
+      color: #999999;
+      padding-left: 10px;
+      
+    }
+
+    .ant-descriptions-item-content {
+      font-size: 16px;
+      color: #333333;
+      width: calc(100% - 150px);
+    }
   }
 }

@@ -153,8 +153,17 @@ class Home extends Component {
     const { dispatch, currentUser } = this.props;
     const { withdrawApplyType, withdrawApplyValue, withdrawApplyAddress, withdrawApplyCaptcha, walletType } = this.state;
 
-    if(!withdrawApplyValue || withdrawApplyValue == 0 || !withdrawApplyAddress || !withdrawApplyCaptcha){
-      message.error('请填写完整信息后提交');
+    if(!withdrawApplyType) {
+      message.error('请选择币种后提交');
+      return;
+    }else if(!withdrawApplyAddress) {
+      message.error('请填写提币地址后提交');
+      return;
+    }else if(!withdrawApplyValue || withdrawApplyValue == 0) {
+      message.error('请填写提币数量后提交');
+      return;
+    }else if(!withdrawApplyCaptcha) {
+      message.error('请填写手机验证码后提交');
       return;
     }
 
@@ -237,6 +246,7 @@ class Home extends Component {
     const payLayerAddress = currentUser.id ? (walletType == '1' ? currentUser.erc20.address : currentUser.omni.address) : null;
     const allBalance = currentUser.id ? new BigNumber(wei2USDT(currentUser.erc20.balance)).plus(new BigNumber(wei2USDT(currentUser.omni.balance, 'omni'))).toNumber() : 0;
     const allLockBalance = currentUser.id ? new BigNumber(wei2USDT(currentUser.erc20.lock_balance)).plus(new BigNumber(wei2USDT(currentUser.omni.lock_balance, 'omni'))).toNumber() : 0;
+    const confirmations = currentUser.id ? (walletType == '1' ? currentUser.erc20.confirmations : currentUser.omni.confirmations) : null;
 
     return (
       <GridContent>
@@ -357,7 +367,7 @@ class Home extends Component {
                             <span style={{cursor: 'pointer', marginLeft: 5}} onClick={() => this.eyeVisible('tokenBalance1')}>{tokenBalance1 ? <Icon type="eye-invisible" /> : <Icon type="eye" />}</span> 
                           </div>
                           <div className={styles.item}>
-                            <span style={{display: 'inline-block', width: 160}}>不可用余额（USDT）</span>
+                            <span style={{display: 'inline-block', width: 160}}>冻结余额（USDT）</span>
                             {tokenBalance2 ? 
                               <span style={{display: 'inline-block', minWidth: 50,color: '#2194FF', textAlign: 'center'}}>{ allLockBalance }</span>
                               : 
@@ -612,7 +622,7 @@ class Home extends Component {
                 </div>
               }
               <div className={styles.desc}>
-                温馨提示：<br/>充值USDT需要6个区块确认，请耐心等待。此地址只接受{walletType == 1 ? 'erc20' : 'omni'}协议的USDT，请勿往地址元值其他协议的USDT发送其他币种到此地址将无法找回，平台也不承担带来的损失。
+                温馨提示：<br/>充值USDT需要{ confirmations }个区块确认，请耐心等待。此地址只接受{walletType == 1 ? 'erc20' : 'omni'}协议的USDT，请勿往地址元值其他协议的USDT发送其他币种到此地址将无法找回，平台也不承担带来的损失。
               </div>
             </div>
           </Layer>

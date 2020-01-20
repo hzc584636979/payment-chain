@@ -74,8 +74,8 @@ class FinanceSettingsBank extends Component {
     const { dispatch } = this.props;
     const { telephone_number } = this.state.params;
 
-    if(!telephone_number) {
-      message.error('请输入手机号');
+    if(!telephone_number || !regPhone(telephone_number)) {
+      message.error('请输入正确的手机号');
       return;
     }
 
@@ -125,13 +125,28 @@ class FinanceSettingsBank extends Component {
       telephone_number,
       telephone_verify_code,
     } = this.state.params;
-    if(!bank_real_name || !bank_number || !bank_name || !telephone_number || !telephone_verify_code){
-      message.error('请填写完整信息后提交');
+
+    if(!bank_real_name) {
+      message.error('请填写姓名后提交');
+      return;
+    }else if(!bank_number) {
+      message.error('请填写银行卡号后提交');
+      return;
+    }else if(!bank_name) {
+      message.error('请填写开户行后提交');
+      return;
+    }else if(!telephone_number || !regPhone(telephone_number)) {
+      message.error('请填写正确的手机号码后提交');
+      return;
+    }else if(!telephone_verify_code) {
+      message.error('请填写手机验证码后提交');
       return;
     }
+
     this.setState({
       submitLoading: true,
     })
+
     const { dispatch } = this.props;
     dispatch({
       type: 'financeSettingsBank/submit',

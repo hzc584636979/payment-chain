@@ -52,8 +52,12 @@ class CoinDissentOrderDetail extends Component {
   handleOk = () => {
     const { dispatch } = this.props;
     const { contact, content } = this.state;
-    if(contact == '' || content == ''){
-      message.error('请填写完整信息后提交');
+    
+    if(contact == '' || !regPhone(contact)) {
+      message.error('请填写正确的联系方式后提交');
+      return;
+    }else if(content == '') {
+      message.error('请填写联系方式后提交');
       return;
     }
 

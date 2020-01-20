@@ -108,8 +108,8 @@ class FinanceSettingsWX extends Component {
     const { dispatch } = this.props;
     const { telephone_number } = this.state.params;
 
-    if(!telephone_number) {
-      message.error('请输入手机号');
+    if(!telephone_number || !regPhone(telephone_number)) {
+      message.error('请输入正确的手机号');
       return;
     }
 
@@ -160,13 +160,31 @@ class FinanceSettingsWX extends Component {
       telephone_number,
       telephone_verify_code,
     } = this.state.params;
-    if(!we_real_name || !we_number || !we_payment_qr_code || !we_payment_link || !telephone_number || !telephone_verify_code){
-      message.error('请填写完整信息后提交');
+
+    if(!we_real_name) {
+      message.error('请填写姓名后提交');
+      return;
+    }else if(!we_number) {
+      message.error('请填写微信号后提交');
+      return;
+    }else if(!we_payment_qr_code) {
+      message.error('请上传收款码后提交');
+      return;
+    }else if(!we_payment_link) {
+      message.error('请填写收码链接后提交');
+      return;
+    }else if(!telephone_number || !regPhone(telephone_number)) {
+      message.error('请填写正确的手机号码后提交');
+      return;
+    }else if(!telephone_verify_code) {
+      message.error('请填写手机验证码后提交');
       return;
     }
+
     this.setState({
       submitLoading: true,
     })
+
     const { dispatch } = this.props;
     dispatch({
       type: 'financeSettingsWX/submit',
@@ -233,8 +251,8 @@ class FinanceSettingsWX extends Component {
                 </Upload>
                 <div className={styles.upImgDesc}>上传收款码</div>
               </Descriptions.Item>
-              <Descriptions.Item label={<span className={styles.itemLabel}>收码链接</span>}>
-                <Input onChange={this.handleLink} style={{width: 385}} placeholder="输入收码链接" value={we_payment_link} />
+              <Descriptions.Item label={<span className={styles.itemLabel}>收款链接</span>}>
+                <Input onChange={this.handleLink} style={{width: 385}} placeholder="输入收款链接" value={we_payment_link} />
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>手机号码</span>}>
                 <Input onChange={this.handlePhone} style={{width: 385}} placeholder="输入手机号码" maxLength={11} value={telephone_number} />

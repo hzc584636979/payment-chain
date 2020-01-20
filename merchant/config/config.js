@@ -396,7 +396,7 @@ export default {
                   path: '/account/settings',
                   component: './account/settings',
                 },
-                {
+                /*{
                   name: '收款设置',
                   icon: 'credit-card',
                   path: '/account/receiptSettings',
@@ -423,6 +423,7 @@ export default {
                   hideInMenu: true,
                   expandPath: '/account/receiptSettings',
                 },
+                */
               ],
             },
             {

@@ -91,13 +91,28 @@ class WithdrawApply extends Component {
       telephone_verify_code,
       payType,
     } = this.state;
-    if(!payType || !coin_type || !to_address || !coin_number || !telephone_verify_code){
-      message.error('请填写完整信息后提交');
+
+    if(!payType) {
+      message.error('请选择币种后提交');
+      return;
+    }else if(!coin_type) {
+      message.error('请选择币种后提交');
+      return;
+    }else if(!to_address) {
+      message.error('请填写提币地址后提交');
+      return;
+    }else if(!coin_number || coin_number == 0) {
+      message.error('请填写提币数量后提交');
+      return;
+    }else if(!telephone_verify_code) {
+      message.error('请填写手机验证码后提交');
       return;
     }
+
     this.setState({
       submitLoading: true,
     })
+
     const { dispatch } = this.props;
     dispatch({
       type: 'withdrawApply/submit',

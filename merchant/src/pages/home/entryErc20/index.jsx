@@ -1,200 +1,128 @@
-import {
-  Button,
-  DatePicker,
-  Form,
-  Input,
-  Select,
-  Menu,
-  Row,
-  Col,
-  Divider,
-  Popconfirm,
-  message,
-  Icon,
-} from 'antd';
+import { Button, Descriptions, Input, Select, Upload, Icon, message, Popover } from 'antd';
 import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
-import StandardTable from '@/components/StandardTable';
-import moment from 'moment';
+import QRCode  from 'qrcode.react';
 import styles from './style.less';
 
-const FormItem = Form.Item;
-const { Option } = Select;
-const getValue = obj =>
-  Object.keys(obj)
-    .map(key => obj[key])
-    .join(',');
-
-@connect(({ entryErc20, loading }) => ({
+@connect(({ user, entryErc20, loading }) => ({
+  currentUser: user.currentUser,
   entryErc20,
-  loading: loading.effects['entryErc20/fetch'],
+  fetchLoading: loading.effects['entryErc20/fetch'],
 }))
-@Form.create()
 class EntryErc20 extends Component {
   state = {
-    
+    payType: 0,
+    imageUrl: null,
+    params: {},
   };
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'entryErc20/fetch',
-      payload:{
-        pageSize:10,
-        page:0,
-        state: 3,
-        token_id: 1,
-        order_id: null,
-        time: [moment().startOf('month'), moment().endOf('month')],
-      },
-    });
+
   }
 
   componentWillUnmount() {
 
   }
 
-  handleStandardTableChange = (pagination, filtersArg, sorter) => {
+  submit = () => {
+    const { currentUser } = this.props;
+    const { payType, payment_amount } = this.state;
+    const { payment_name } = this.state.params;
+    let values = {};
+
+    if(!Number(payment_amount) || payment_amount == 0) {
+      message.error('请填写入金金额后提交');
+      return;
+    }
+
+    if(!payment_name) {
+      message.error('请填写付款人姓名后提交');
+      return;
+    }
+
+    this.setState({
+      submitLock: true,
+    })
+    
     const { dispatch } = this.props;
-    const { history } = this.props.entryErc20.data;
-
-    const params = {
-      ...history,
-      page: pagination.current -1,
-      pageSize: pagination.pageSize,
-    };
-
-    dispatch({
-      type: 'entryErc20/search',
-      payload: params,
-    });
-  };
-
-  handleSearch = e => {
-    e.preventDefault();
-    const { dispatch, form } = this.props;
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-
-      const values = {
-        ...fieldsValue,
-        page:0,
-        pageSize:10,
-      };
-      dispatch({
-        type: 'entryErc20/search',
-        payload: values,
-      });
-    });
-  };
-
-  renderForm() {
-    /*const { getFieldDecorator } = this.props.form;
-    const { history } = this.props.entryErc20.data;
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={24}>
-          <Col xl={10} lg={12} sm={24}>
-            <FormItem label="支付方式">
-              {getFieldDecorator('state',{ initialValue: history.state+'' })(
-                <Select placeholder="请选择">
-                  {
-                    Object.keys(payName).map(value => {
-                      return <Option value={value} key={value}>{payName[value]}</Option>
-                    })
-                  }
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col xl={4} lg={12} sm={24}>
-            <span className={styles.submitButtons} style={{paddingTop: 4, display: 'inline-block'}}>
-              <Button type="primary" htmlType="submit">
-                查询
-              </Button>
-            </span>
-          </Col>
-        </Row>
-      </Form>
-    );*/
-  }
-
-  entry = id => {
     dispatch({
       type: 'entryErc20/entry',
       payload: {
-        order_id: id
+        payment_name,
+        payment_amount,
+        gas: currentUser.gas,
       },
-    });
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+      }else {
+        message.success('操作成功');
+      }
+      this.setState({
+        submitLock: false,
+      })
+    })
+  }
+
+  handleUpKey = (e, key) => {
+    this.setState({
+      params: {
+        ...this.state.params,
+        [key]: e.target.value
+      }
+    })
+  }
+
+  handlePaymentAmount = e => {
+    this.setState({
+      payment_amount: e.target.value
+    })
+  } 
+
+  changeType = payType => {
+    this.setState({
+      payType,
+      params: {},
+    })
   }
 
   render() {
-    const { loading } = this.props;
-    const { history, list, pagination } = this.props.entryErc20.data;
-    const columns = [
-      {
-        title: '承兑商姓名',
-        dataIndex: 'a_user_name',
-        key: 'a_user_name',
-        align: 'center',
-      },
-      {
-        title: '订单金额(USDT)',
-        dataIndex: 'pay_amount',
-        key: 'pay_amount',
-        align: 'center',
-      },
-      {
-        title: '订单金额(CNY)',
-        dataIndex: 'pay_amount_cny',
-        key: 'pay_amount_cny',
-        align: 'center',
-      },
-      {
-        title: '手续费(USDT)',
-        dataIndex: 'gas',
-        key: 'gas',
-        align: 'center',
-      },
-      {
-        title: '创建时间',
-        dataIndex: 'created_at',
-        key: 'created_at',
-        align: 'center',
-        render: (val, record) => {
-          return moment(val).local().format('YYYY-MM-DD HH:mm:ss')
-        },
-      },
-      {
-        /*title: '操作',
-        key: 'action',
-        fixed: 'right',
-        align: 'center',
-        width: 100,
-        render: (val, record) => {
-          //return <Button><Link to={`/entry/entryErc20/${record.id}`}>入金</Link></Button>;
-          return (
-            <Popconfirm title="是否要确认入金？" onConfirm={() => this.transfer(record.order_id)}>
-              <Button>入金</Button>
-            </Popconfirm>
-          );
-        },*/
-      },
-    ];
+    const { currentUser, fetchLoading } = this.props;
+    const { submitLock, payType } = this.state;
 
     return (
       <ContLayout>
         <div className={styles.wrap}>
-          <div className={styles.tableListForm}>{this.renderForm()}</div>
-          <StandardTable
-            noRowSelection={true}
-            loading={loading}
-            data={{ list, pagination }}
-            columns={columns}
-            onChange={this.handleStandardTableChange}
-          />
+          <Descriptions column={1}>
+            <Descriptions.Item label={<span className={styles.itemLabel}>入金金额</span>} className={styles.textTop}>
+              <Input placeholder="请输入出金金额" onChange={this.handlePaymentAmount} style={{width: 385, maxWidth: '100%'}} />
+              <p style={{fontSize: 14, color: '#333'}}>
+                <span>当前汇率：1USDT≈￥{ (1 * currentUser.token_price * currentUser.rate).toFixed(2) }</span>
+              </p>
+            </Descriptions.Item>
+            <Descriptions.Item label={<span className={styles.itemLabel}>手续费</span>}>
+              {currentUser.gas} USDT 
+            </Descriptions.Item>
+            <Descriptions.Item label={<span className={styles.itemLabel}>支付方式</span>}>
+              <Button style={{marginRight: 20}} type={payType == 1 ? "primary" : null} onClick={() => this.changeType(1)}>银行卡</Button>
+              <Button style={{marginRight: 20}} type={payType == 2 ? "primary" : null} onClick={() => this.changeType(2)}>支付宝</Button>
+              <Button style={{marginRight: 20}} type={payType == 3 ? "primary" : null} onClick={() => this.changeType(3)}>微信</Button>
+              <Button style={{marginRight: 20}} type={payType == 4 ? "primary" : null} onClick={() => this.changeType(4)}>VISA</Button>
+              <Button type={payType == 5 ? "primary" : null} onClick={() => this.changeType(5)}>Paypal</Button>
+            </Descriptions.Item>
+            <Descriptions.Item label={<span className={styles.itemLabel}>付款人姓名</span>}>
+              <Input placeholder="请输入付款人姓名" onChange={e => this.handleUpKey(e, 'payment_name')} style={{width: 385, maxWidth: '100%'}} />
+            </Descriptions.Item>
+            <Descriptions.Item className={styles.noneBeforeIcon}>
+              <Button type="primary" loading={submitLock} onClick={this.submit}>确定提交</Button>
+              <span style={{display: 'inline-block', width: '10px'}}></span>
+              <Button>
+                <Link to="/order/goldEntryOrder?history">返回</Link>
+              </Button>
+            </Descriptions.Item>
+          </Descriptions>
         </div>
       </ContLayout>
     );

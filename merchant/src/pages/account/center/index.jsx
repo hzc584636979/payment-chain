@@ -138,7 +138,7 @@ class UserBase extends Component {
     const { dispatch } = this.props;
     const { telephone_number } = this.state.params;
 
-    if(!telephone_number || !(/^1\d{10}$/.test(telephone_number))) {
+    if(!telephone_number || !regPhone(telephone_number)) {
       message.error('请输入正确的手机号！');
       return;
     }
@@ -194,7 +194,7 @@ class UserBase extends Component {
     const { dispatch } = this.props;
     const { email_address } = this.state.params;
 
-    if(!email_address) {
+    if(!email_address || !(/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(email_address))) {
       message.error('请输入正确的邮箱地址！');
       return;
     }
@@ -284,17 +284,56 @@ class UserBase extends Component {
       email_address,
       qq_number,
       wechat_number,
-      payment_link,
+      // payment_link,
       telephone_verify_code,
       email_verify_code,
     } = this.state.params;
-    if(!user_name || !real_name || !id_number || !id_card_front_path || !id_card_back_path || !payment_pwd || !telephone_number || !email_address || !qq_number || !wechat_number || !payment_link || !email_verify_code || !telephone_verify_code){
-      message.error('请填写完整信息后提交');
+
+    if(!user_name) {
+      message.error('请填写商户名称后提交');
+      return;
+    }else if(!real_name) {
+      message.error('请填写真实姓名后提交');
+      return;
+    }else if(!id_number) {
+      message.error('请填写身份证号后提交');
+      return;
+    }else if(!id_card_front_path) {
+      message.error('请上传身份证人像面后提交');
+      return;
+    }else if(!id_card_back_path) {
+      message.error('请上传身份证国徽面后提交');
+      return;
+    }else if(!payment_pwd) {
+      message.error('请填写交易密码后提交');
+      return;
+    }else if(!telephone_number || !regPhone(telephone_number)) {
+      message.error('请填写正确的绑定手机后提交');
+      return;
+    }else if(!email_address || !(/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(email_address))) {
+      message.error('请填写正确的绑定邮箱后提交');
+      return;
+    }else if(!qq_number) {
+      message.error('请填写绑定QQ后提交');
+      return;
+    }else if(!wechat_number) {
+      message.error('请填写绑定微信后提交');
+      return;
+    }/*else if(!payment_link) {
+      message.error('请填写收款链接后提交');
+      return;
+    }*/else if(!email_verify_code) {
+      message.error('请填写邮箱验证码后提交');
+      return;
+    }else if(!telephone_verify_code) {
+      message.error('请填写手机验证码后提交');
       return;
     }
+
     this.setState({
       submitLoading: true,
     })
+
     const { dispatch } = this.props;
     dispatch({
       type: 'userBase/submit',
@@ -309,13 +348,17 @@ class UserBase extends Component {
         email_address,
         qq_number,
         wechat_number,
-        payment_link,
+        // payment_link,
         telephone_verify_code,
         email_verify_code,
       },
     }).then(data => {
       if(data.status != 1) {
         message.error(data.msg);
+        this.setState({
+          submitLoading: false,
+        })
+        return;
       }else {
         message.success('操作成功');
       }
@@ -387,13 +430,13 @@ class UserBase extends Component {
           <div className={styles.inner}>
             <Descriptions column={1}>
               <Descriptions.Item label={<span className={styles.itemLabel}>商户名称</span>}>
-                <Input disabled={disabled} onChange={this.handleNickname} style={{width: 385}} placeholder="输入名称" value={user_name} />
+                <Input disabled={disabled} onChange={this.handleNickname} style={{width: 385}} placeholder="输入名称" value={user_name} maxLength={30} />
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>真实姓名</span>}>
-                <Input disabled={disabled} onChange={this.handleName} style={{width: 385}} placeholder="输入真实姓名" value={real_name} />
+                <Input disabled={disabled} onChange={this.handleName} style={{width: 385}} placeholder="输入真实姓名" value={real_name} maxLength={50} />
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>身份证号</span>}>
-                <Input disabled={disabled} onChange={this.handleID} style={{width: 385}} placeholder="输入身份证号" value={id_number} />
+                <Input disabled={disabled} onChange={this.handleID} style={{width: 385}} placeholder="输入身份证号" value={id_number} maxLength={30} />
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>上传身份证</span>} className={styles.textTop}>
                 <Row gutter={12}>
@@ -475,12 +518,12 @@ class UserBase extends Component {
                 </Descriptions.Item>
               }
               <Descriptions.Item label={<span className={styles.itemLabel}>绑定QQ</span>}>
-                <Input disabled={disabled} onChange={this.handleQQ} style={{width: 385}} placeholder="输入QQ号" value={qq_number} />
+                <Input disabled={disabled} onChange={this.handleQQ} style={{width: 385}} placeholder="输入QQ号" value={qq_number} maxLength={20} />
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>绑定微信</span>}>
                 <Input disabled={disabled} onChange={this.handleWX} style={{width: 385}} placeholder="输入微信号" value={wechat_number} />
               </Descriptions.Item>
-              <Descriptions.Item label={<span className={styles.itemLabel}>收款链接</span>}>
+              {/*<Descriptions.Item label={<span className={styles.itemLabel}>收款链接</span>}>
                 <Input disabled={disabled} onChange={this.handlePaymentLink} style={{width: 385}} placeholder="输入收款链接" value={payment_link} />
                 {
                   disabled && 
@@ -495,7 +538,7 @@ class UserBase extends Component {
                     复制收款链接
                   </Button>
                 }
-              </Descriptions.Item>
+              </Descriptions.Item>*/}
               {
                 !disabled &&
                 <Descriptions.Item className={styles.noneBeforeIcon}>

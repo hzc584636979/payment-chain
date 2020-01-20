@@ -83,22 +83,26 @@ request.interceptors.request.use((url, options) => {
 });
 
 request.interceptors.response.use(async (response) => {
-  const data = await response.clone().json();
-  if(data.status == 2) {
-    notification.error({
-      message: data.msg,
-    });
-    if(!loginOutStatus) {
-      loginOutStatus = true;
-      window.g_app._store.dispatch({
-        type: 'login/logout',
-      }).then(data => {
-        setTimeout(() => {
-          loginOutStatus = false;
-        }, 1000) 
-      })
+
+  if(response.status == 200) {
+    const data = await response.clone().json();
+    if(data.status == 2) {//白名单拦截
+      notification.error({
+        message: data.msg,
+      });
+      if(!loginOutStatus) {
+        loginOutStatus = true;
+        window.g_app._store.dispatch({
+          type: 'login/logout',
+        }).then(data => {
+          setTimeout(() => {
+            loginOutStatus = false;
+          }, 1000) 
+        })
+      }
     }
   }
+
   return response;
 })
 

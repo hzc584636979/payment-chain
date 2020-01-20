@@ -159,60 +159,22 @@ export async function homeWithdrawApplyErc20(params) {
   });
 }
 
-/*首页-erc20出金-请求*/
-export async function yieldErc20List(params) {
-  return request(`${apiAddress}/order/sellOrder`, {
-    method: 'POST',
-    data: {
-      ...params,
-      begin_time: null,
-      end_time: null,
-    },
-  });
-}
-
-/*首页-erc20出金-搜索*/
-export async function yieldErc20ListSearchAll(params) {
-  return request(`${apiAddress}/order/sellOrder`, {
-    method: 'POST',
-    data: {
-      ...params,
-      begin_time: null,
-      end_time: null,
-    },
-  });
-}
-
 /*首页-erc20出金-出金*/
-export async function yieldErc20(params) {
-  return request(`${apiAddress}/order/goldYield`, {
+export async function fakeHomeYieldErc20(params) {
+  /*return request(`${apiAddress}/order/goldYield`, {
     method: 'POST',
     data: params,
-  });
+  });*/
+  return null;
 }
 
-/*首页-erc20入金-请求*/
-export async function entryErc20List(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
+/*首页-erc20入金-入金*/
+export async function fakeHomeEntryErc20(params) {
+  /*return request(`${apiAddress}/order/goldYield`, {
     method: 'POST',
-    data: {
-      ...params,
-      begin_time: null,
-      end_time: null,
-    },
-  });
-}
-
-/*首页-erc20入金-搜索*/
-export async function entryErc20ListSearchAll(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
-    method: 'POST',
-    data: {
-      ...params,
-      begin_time: null,
-      end_time: null,
-    },
-  });
+    data: params,
+  });*/
+  return null;
 }
 
 /*首页-omni-提币*/
