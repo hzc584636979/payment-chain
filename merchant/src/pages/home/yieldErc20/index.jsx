@@ -9,7 +9,46 @@ import styles from './style.less';
 
 function getBase64(img, callback) {
   const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result));
+  reader.addEventListener('load', () => {
+    let newImage = new Image();
+    let quality = 0.6;    //压缩系数0-1之间，压缩到0.9以上会有bug，注意！（可以自行设置）
+    newImage.src = reader.result;
+    let imgWidth, imgHeight;
+    console.log(newImage)
+    newImage.onload = function () {
+      imgWidth = this.width;
+      imgHeight = this.height;
+      //给生成图片设置一个默认的最大宽/高（可以自行设置）
+      let myWidth = 300;
+      //准备在画布上绘制图片
+      let canvas = document.createElement("canvas");
+      let ctx = canvas.getContext("2d");
+      //判断上传的图片的宽高是否超过设置的默认最大值，以及设置同比例的宽高
+      if (Math.max(imgWidth, imgHeight) > myWidth) {
+        if (imgWidth > imgHeight) {
+          canvas.width = myWidth;
+          canvas.height = myWidth * imgHeight / imgWidth;
+        } else {
+          canvas.height = myWidth;
+          canvas.width = myWidth * imgWidth / imgHeight;
+        }
+      } else {
+        canvas.width = imgWidth;
+        canvas.height = imgHeight;
+      }
+      //清空画布
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      //开始绘制图片到画布上
+      ctx.drawImage(this, 0, 0, canvas.width, canvas.height);
+      let newBase64 = canvas.toDataURL("image/jpeg", quality);//压缩图片大小（重点代码）
+      // 获取到当前的图片的大小，然后调整成自己需要的大小，例如说需要200KB-500KB之间（可以自行设置）
+      while (newBase64.length / 1024 > 5000) {
+        quality -= 0.02;
+        newBase64 = canvas.toDataURL("image/jpeg", quality);
+      }
+      callback(newBase64)
+    }
+  });
   reader.readAsDataURL(img);
 }
 
@@ -47,7 +86,7 @@ class YieldErc20 extends Component {
 
   }
 
-  submit = () => {
+  submit = maxBalance => {
     const { currentUser } = this.props;
     const { payType, imageUrl, payment_amount } = this.state;
     const { bank_name, bank_number, bank_real_name, ali_real_name, we_real_name, paypal_real_name, visa_name, visa_number, visa_real_name, paypal_number } = this.state.params;
@@ -55,6 +94,11 @@ class YieldErc20 extends Component {
 
     if(!Number(payment_amount) || payment_amount == 0) {
       message.error('请填写出金金额后提交');
+      return;
+    }
+
+    if(payment_amount > maxBalance) {
+      message.error('超出最大可出金金额，可提金额为出金金额 减去 手续费');
       return;
     }
 
@@ -177,12 +221,13 @@ class YieldErc20 extends Component {
 
   handleImgChange = file => {
     if(!beforeUpload(file)) return false;
-    getBase64(file, imageUrl =>
+    getBase64(file, imageUrl => {
       this.setState({
         imageUrl,
         imageUrlLoading: false,
-      }),
-    );
+      })
+      
+    });
     return false;
   }
 
@@ -202,6 +247,8 @@ class YieldErc20 extends Component {
       paypal_number 
     } = this.state.params;
     const gas = new BigNumber(payment_amount).multipliedBy(new BigNumber(currentUser.gas_percent)).toNumber();
+    const allBalance = currentUser.id ? new BigNumber(wei2USDT(currentUser.erc20.balance)).plus(new BigNumber(wei2USDT(currentUser.omni.balance, 'omni'))).toNumber() : 0;
+    const allLockBalance = currentUser.id ? new BigNumber(wei2USDT(currentUser.erc20.lock_balance)).plus(new BigNumber(wei2USDT(currentUser.omni.lock_balance, 'omni'))).toNumber() : 0;
 
     const uploadButton = (
       <div>
@@ -221,6 +268,8 @@ class YieldErc20 extends Component {
             <Descriptions.Item label={<span className={styles.itemLabel}>出金金额</span>} className={styles.textTop}>
               <Input placeholder="请输入出金金额" onChange={this.handlePaymentAmount} style={{width: 385, maxWidth: '100%'}} />
               <p style={{fontSize: 14, color: '#333'}}>
+                <span>可出金余额:{ allBalance - allLockBalance } USDT</span>
+                <br/>
                 <span>当前汇率：1USDT≈￥{ (1 * currentUser.token_price * currentUser.rate).toFixed(2) }</span>
               </p>
             </Descriptions.Item>
@@ -318,7 +367,7 @@ class YieldErc20 extends Component {
             }
 
             <Descriptions.Item className={styles.noneBeforeIcon}>
-              <Button type="primary" loading={submitLock} onClick={this.submit}>确定提交</Button>
+              <Button type="primary" loading={submitLock} onClick={() => this.submit(allBalance - allLockBalance  - gas)}>确定提交</Button>
               <span style={{display: 'inline-block', width: '10px'}}></span>
               <Button>
                 <Link to="/order/goldEntryOrder?history">返回</Link>

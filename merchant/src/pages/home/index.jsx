@@ -38,6 +38,10 @@ class Home extends Component {
     const { dispatch } = this.props;
 
     dispatch({
+      type: 'user/getUserInfo',
+    });
+
+    dispatch({
       type: 'home/fetch',
     });
   }
@@ -175,7 +179,7 @@ class Home extends Component {
     const x = new BigNumber(withdrawApplyValue);
     const y = new BigNumber(currentUser.gas);
     if(x.plus(y).toNumber() > maxCoin) {
-      message.error('超过最大金额');
+      message.error('超过最大金额，可提金额为可用余额 减去 手续费');
       return;
     }
 
@@ -666,7 +670,7 @@ class Home extends Component {
                     <Input placeholder="输入提币数量" onChange={this.handleWithdrawApplyNumber} value={withdrawApplyValue} />
                   </Col>
                   <Col xl={5} md={5} sm={24} xs={24}>
-                    <Button style={{width: 128}} onClick={() => this.handleWithdrawApplyAll(allBalance - allLockBalance)}>全部</Button>
+                    <Button style={{width: 128}} onClick={() => this.handleWithdrawApplyAll(allBalance - allLockBalance - currentUser.gas)}>全部</Button>
                   </Col>
                 </Row>
                 <Row style={{marginBottom: 40}}>
@@ -705,7 +709,7 @@ class Home extends Component {
                 2.请务必确保提币地址的正确性，若由于地址填写错误导致资金丢失，不属于平台责任。
               </div>
               <div style={{textAlign: 'center'}}>
-                <Button loading={withdrawApplyStatus} type="primary" style={{width: 120}} onClick={() => this.handleWithdrawApply(allBalance - allLockBalance)}>确定</Button>
+                <Button loading={withdrawApplyStatus} type="primary" style={{width: 120}} onClick={() => this.handleWithdrawApply(allBalance - allLockBalance - currentUser.gas)}>确定</Button>
               </div>
             </div>
           </Layer>
