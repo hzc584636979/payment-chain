@@ -138,7 +138,7 @@ class WithdrawApply extends Component {
     const x = new BigNumber(coin_number);
     const y = new BigNumber(withdrawApply.gas);
     if(x.plus(y).toNumber() > maxBalance) {
-      message.error('超过最大金额');
+      message.error('超过最大金额，可提金额为可用余额 减去 手续费');
       return;
     }
 
@@ -157,6 +157,10 @@ class WithdrawApply extends Component {
     }).then(data => {
       if(data.status != 1){
         message.error(data.msg);
+        this.setState({
+          submitLoading: false,
+        })
+        return;
       }else {
         message.success('操作成功');
       }
@@ -178,6 +182,7 @@ class WithdrawApply extends Component {
     const allBalance = currentUser.id ? new BigNumber(wei2USDT(currentUser.erc20.balance)).plus(new BigNumber(wei2USDT(currentUser.omni.balance, 'omni'))).toNumber() : 0;
     const allLockBalance = currentUser.id ? new BigNumber(wei2USDT(currentUser.erc20.lock_balance)).plus(new BigNumber(wei2USDT(currentUser.omni.lock_balance, 'omni'))).toNumber() : 0;
     const { 
+      to_address,
       coin_number,
       submitLoading,
       count,
@@ -200,7 +205,7 @@ class WithdrawApply extends Component {
                 </Select>
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>提币地址</span>}>
-                <Input onChange={this.handleAddress} style={{width: 385}} placeholder="输入提币地址" />
+                <Input value={to_address} onChange={this.handleAddress} style={{width: 385}} placeholder="输入提币地址" />
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>提币数量</span>} className={styles.textTop}>
                 <Input onChange={this.handleCoin} style={{width: 385}} placeholder="请输入提币数量" value={coin_number} />
@@ -208,7 +213,7 @@ class WithdrawApply extends Component {
                   withdrawApply.loading && 
                   <Fragment>
                     <Button
-                      onClick={() => this.onGetAll(allBalance - allLockBalance)}
+                      onClick={() => this.onGetAll(allBalance - allLockBalance - withdrawApply.gas)}
                       style={{
                         width: 140,
                         display: 'inline-block',
@@ -240,7 +245,7 @@ class WithdrawApply extends Component {
                 </Button>
               </Descriptions.Item>
               <Descriptions.Item className={styles.noneBeforeIcon}>
-                <Button type="primary" loading={submitLoading} onClick={() => this.submit(allBalance - allLockBalance)}>确定提交</Button>
+                <Button type="primary" loading={submitLoading} onClick={() => this.submit(allBalance - allLockBalance - withdrawApply.gas)}>确定提交</Button>
               </Descriptions.Item>
             </Descriptions>
           </div>
