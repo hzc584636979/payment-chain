@@ -322,7 +322,7 @@ class SellOrder extends Component {
         key: 'pay_type',
         align: 'center',
         render:(val,record)=>{
-          return <img src={payIcon[val]} />;
+          return <img src={payIcon[val]} style={{maxWidth: 40}} />;
         },
       },
       {

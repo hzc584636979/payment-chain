@@ -70,7 +70,7 @@ class Login extends Component {
   renderLoginError = content => (
     <Alert
       message="登录失败，请重试"
-      description={content}
+      description={content || '登录失败'}
       type="error"
       closable
       onClose={this.onClose}

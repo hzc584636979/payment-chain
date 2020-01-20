@@ -471,6 +471,38 @@ export async function financeSettingsWXDelete(params) {
   });
 }
 
+/*财务管理-设置-禁用Visa*/
+export async function financeSettingsVisaDisabled(params) {
+  return request(`${apiAddress}/financial/setVisaStatus`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*财务管理-设置-删除Visa*/
+export async function financeSettingsVisaDelete(params) {
+  return request(`${apiAddress}/financial/deleteVisa`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*财务管理-设置-禁用Paypal*/
+export async function financeSettingsPaypalDisabled(params) {
+  return request(`${apiAddress}/financial/setPaypalStatus`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*财务管理-设置-删除Paypal*/
+export async function financeSettingsPaypalDelete(params) {
+  return request(`${apiAddress}/financial/deletePaypal`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
 /*财务管理-银行卡设置-请求*/
 export async function financeSettingsBank(params) {
   return request(`${apiAddress}/financial/getPaymentSetInfo`, {
@@ -538,6 +570,54 @@ export async function financeSettingsWXCode(params) {
 /*财务管理-微信设置-提交*/
 export async function financeSettingsWXSubmit(params) {
   return request(`${apiAddress}/financial/setWeChatInfo`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*财务管理-Visa设置-请求*/
+export async function financeSettingsVisa(params) {
+  return request(`${apiAddress}/financial/getPaymentSetInfo`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*财务管理-Visa设置-验证码*/
+export async function financeSettingsVisaCode(params) {
+  return request(`${apiAddress}/login/getPhoneVerifyCode`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*财务管理-Visa设置-提交*/
+export async function financeSettingsVisaSubmit(params) {
+  return request(`${apiAddress}/financial/setVisaInfo`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*财务管理-Paypal设置-请求*/
+export async function financeSettingsPaypal(params) {
+  return request(`${apiAddress}/financial/getPaymentSetInfo`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*财务管理-Paypal设置-验证码*/
+export async function financeSettingsPaypalCode(params) {
+  return request(`${apiAddress}/login/getPhoneVerifyCode`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*财务管理-Paypal设置-提交*/
+export async function financeSettingsPaypalSubmit(params) {
+  return request(`${apiAddress}/financial/setPaypalInfo`, {
     method: 'POST',
     data: params,
   });

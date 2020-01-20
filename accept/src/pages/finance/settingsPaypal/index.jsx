@@ -5,11 +5,11 @@ import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
 import styles from './style.less';
 
-@connect(({ financeSettingsBank, loading }) => ({
-  financeSettingsBank,
-  fetchLoading: loading.effects['financeSettingsBank/fetch'],
+@connect(({ financeSettingsPaypal, loading }) => ({
+  financeSettingsPaypal,
+  fetchLoading: loading.effects['financeSettingsPaypal/fetch'],
 }))
-class FinanceSettingsBank extends Component {
+class FinanceSettingsPaypal extends Component {
   state = {
     params: {},
   };
@@ -20,7 +20,7 @@ class FinanceSettingsBank extends Component {
     const { dispatch } = this.props;
 
     dispatch({
-      type: 'financeSettingsBank/fetch',
+      type: 'financeSettingsPaypal/fetch',
     }).then(data => {
       this.setState({
         params: {
@@ -34,29 +34,11 @@ class FinanceSettingsBank extends Component {
     clearInterval(this.interval);
   }
 
-  handleName = e => {
-    this.setState({
-      params: {
-        ...this.state.params,
-        bank_real_name: e.target.value,
-      }
-    })
-  }
-
   handleNumber = e => {
     this.setState({
       params: {
         ...this.state.params,
-        bank_number: e.target.value,
-      }
-    })
-  }
-
-  handleBankName = e => {
-    this.setState({
-      params: {
-        ...this.state.params,
-        bank_name: e.target.value,
+        paypal_number: e.target.value,
       }
     })
   }
@@ -80,7 +62,7 @@ class FinanceSettingsBank extends Component {
     }
 
     dispatch({
-      type: 'financeSettingsBank/getCode',
+      type: 'financeSettingsPaypal/getCode',
       payload: {
         telephone_number
       },
@@ -119,21 +101,13 @@ class FinanceSettingsBank extends Component {
 
   submit = () => {
     const { 
-      bank_real_name, 
-      bank_number,
-      bank_name,
+      paypal_number,
       telephone_number,
       telephone_verify_code,
     } = this.state.params;
 
-    if(!bank_real_name) {
-      message.error('请填写姓名后提交');
-      return;
-    }else if(!bank_number) {
-      message.error('请填写银行卡号后提交');
-      return;
-    }else if(!bank_name) {
-      message.error('请填写开户行后提交');
+    if(!paypal_number) {
+      message.error('请填写Paypal账号后提交');
       return;
     }else if(!telephone_number || !(/^1\d{10}$/.test(telephone_number))) {
       message.error('请填写正确的手机号码后提交');
@@ -149,11 +123,9 @@ class FinanceSettingsBank extends Component {
 
     const { dispatch } = this.props;
     dispatch({
-      type: 'financeSettingsBank/submit',
+      type: 'financeSettingsPaypal/submit',
       payload: {
-        bank_real_name, 
-        bank_number,
-        bank_name,
+        paypal_number,
         telephone_number,
         telephone_verify_code,
       },
@@ -173,9 +145,7 @@ class FinanceSettingsBank extends Component {
     const { fetchLoading } = this.props;
     const { submitLoading, count } = this.state;
     const { 
-      bank_real_name, 
-      bank_number,
-      bank_name,
+      paypal_number,
       telephone_number,
       telephone_verify_code,
     } = this.state.params;
@@ -185,15 +155,8 @@ class FinanceSettingsBank extends Component {
         <div className={styles.wrap}>
           <div className={styles.inner}>
             <Descriptions column={1}>
-              <Descriptions.Item label={<span className={styles.itemLabel}>姓名</span>} className={styles.textTop}>
-                <Input onChange={this.handleName} style={{width: 385}} placeholder="输入姓名" value={bank_real_name} />
-                <p style={{fontSize: 14, color: '#EA0000'}}>收款银行卡姓名必须与认证信息姓名一致</p>
-              </Descriptions.Item>
-              <Descriptions.Item label={<span className={styles.itemLabel}>银行卡号</span>}>
-                <Input onChange={this.handleNumber} style={{width: 385}} placeholder="输入银行卡号" value={bank_number} />
-              </Descriptions.Item>
-              <Descriptions.Item label={<span className={styles.itemLabel}>开户行</span>}>
-                <Input onChange={this.handleBankName} style={{width: 385}} placeholder="输入开户行" value={bank_name} />
+              <Descriptions.Item label={<span className={styles.itemLabel}>Paypal账号</span>}>
+                <Input onChange={this.handleNumber} style={{width: 385}} placeholder="输入Paypal账号" value={paypal_number} />
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>手机号码</span>}>
                 <Input onChange={this.handlePhone} style={{width: 385}} placeholder="输入开户预留手机号" maxLength={11} value={telephone_number} />
@@ -229,4 +192,4 @@ class FinanceSettingsBank extends Component {
   }
 }
 
-export default FinanceSettingsBank;
+export default FinanceSettingsPaypal;

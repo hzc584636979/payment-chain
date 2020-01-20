@@ -52,8 +52,12 @@ class BuyDissentOrderDetail extends Component {
   handleOk = () => {
     const { dispatch } = this.props;
     const { contact, content } = this.state;
-    if(contact == '' || content == ''){
-      message.error('请填写完整信息后提交');
+    
+    if(contact == '' || !regPhone(contact)) {
+      message.error('请填写正确的联系方式后提交');
+      return;
+    }else if(content == '') {
+      message.error('请填写联系方式后提交');
       return;
     }
 
@@ -121,7 +125,46 @@ class BuyDissentOrderDetail extends Component {
             <Descriptions.Item label="问题描述">{ buyDissentOrderDetail.issue_desc }</Descriptions.Item>
             <Descriptions.Item label="平台订单号">{ buyDissentOrderDetail.order_id }</Descriptions.Item>
             <Descriptions.Item label="商户订单号">{ buyDissentOrderDetail.out_order_id }</Descriptions.Item>
-            <Descriptions.Item label="商户昵称">{ buyDissentOrderDetail.pay_type }</Descriptions.Item>
+            <Descriptions.Item label="商户昵称">{ buyDissentOrderDetail.m_user_name }</Descriptions.Item>
+            <Descriptions.Item label="客户姓名">{buyDissentOrderDetail.payee_name}</Descriptions.Item>
+
+            {
+              buyDissentOrderDetail.pay_type == 1 && 
+              <Fragment>
+                <Descriptions.Item label="客户银行卡号">{buyDissentOrderDetail.payee_account}</Descriptions.Item>
+                <Descriptions.Item label="客户开户行">{buyDissentOrderDetail.account_bank_name}</Descriptions.Item>
+              </Fragment>
+            }
+
+            {
+              buyDissentOrderDetail.pay_type == 2 && 
+              <Fragment>
+                <Descriptions.Item label="客户支付宝收款码"><img src={buyDissentOrderDetail.pay_code_url} style={{maxWidth: 150}} /></Descriptions.Item>
+              </Fragment>
+            }
+
+            {
+              buyDissentOrderDetail.pay_type == 3 && 
+              <Fragment>
+                <Descriptions.Item label="客户微信收款码"><img src={buyDissentOrderDetail.pay_code_url} style={{maxWidth: 150}} /></Descriptions.Item>
+              </Fragment>
+            }
+
+            {
+              buyDissentOrderDetail.pay_type == 4 && 
+              <Fragment>
+                <Descriptions.Item label="客户银行卡号">{buyDissentOrderDetail.payee_account}</Descriptions.Item>
+                <Descriptions.Item label="客户开户行">{buyDissentOrderDetail.account_bank_name}</Descriptions.Item>
+              </Fragment>
+            }
+
+            {
+              buyDissentOrderDetail.pay_type == 5 && 
+              <Fragment>
+                <Descriptions.Item label="客户Paypal账号">{buyDissentOrderDetail.payee_account}</Descriptions.Item>
+              </Fragment>
+            }
+
             <Descriptions.Item label="币种">{ coinType[buyDissentOrderDetail.token_id] }</Descriptions.Item>
             <Descriptions.Item label="商户出售金额（USDT）">{ buyDissentOrderDetail.payee_name }</Descriptions.Item>
             <Descriptions.Item label="等值（CNY）">{ buyDissentOrderDetail.payee_account }</Descriptions.Item>

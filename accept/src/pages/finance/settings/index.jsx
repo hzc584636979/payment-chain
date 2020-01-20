@@ -99,6 +99,16 @@ class FinanceSettings extends Component {
       params = {
         we_enable: !status
       }
+    }else if(type == 'visa') {
+      url = 'financeSettings/visaDisabled';
+      params = {
+        visa_enable: !status
+      }
+    }else if(type == 'paypal') {
+      url = 'financeSettings/paypalDisabled';
+      params = {
+        paypal_enable: !status
+      }
     }
 
     dispatch({
@@ -127,6 +137,10 @@ class FinanceSettings extends Component {
       url = 'financeSettings/alipayDelete';
     }else if(type == 'wx') {
       url = 'financeSettings/WXDelete';
+    }else if(type == 'visa') {
+      url = 'financeSettings/visaDelete';
+    }else if(type == 'paypal') {
+      url = 'financeSettings/paypalDelete';
     }
 
     dispatch({
@@ -311,6 +325,100 @@ class FinanceSettings extends Component {
                       <Link to="/finance/settingsWX">编辑</Link>
                     </Button>
                     <Popconfirm title="是否要删除？" onConfirm={() => this.delete('wx')}>
+                      <Button
+                        type="danger"
+                        style={{
+                          display: 'inline-block',
+                          marginLeft: 20
+                        }}
+                      >
+                        删除
+                      </Button>
+                    </Popconfirm>
+                  </Descriptions.Item>
+                </Fragment>
+              }
+
+              {
+                !financeSettings.visa_number ? 
+                <Descriptions.Item label="VISA设置">
+                  <Link to="/finance/settingsVisa">前往点击设置</Link>
+                </Descriptions.Item>
+                :
+                <Fragment>
+                  <Descriptions.Item label="VISA设置">
+                    <div style={{width: 385, display: 'inline-block'}}>{ financeSettings.visa_number }</div>
+                  </Descriptions.Item>
+                  <Descriptions.Item>
+                    <div style={{width: 385, display: 'inline-block'}}>{ financeSettings.visa_real_name }</div>
+                  </Descriptions.Item>
+                  <Descriptions.Item>
+                    <div style={{width: 385, display: 'inline-block'}}>{ financeSettings.visa_name }</div>
+                    <Popconfirm title={ financeSettings.visa_enable ? "是否要禁用？" : "是否要启用？" } onConfirm={() => this.enable('visa', financeSettings.visa_enable)}>
+                      <Button
+                        type="primary"
+                        style={{
+                          display: 'inline-block',
+                          marginLeft: 20
+                        }}
+                      >
+                        { financeSettings.visa_enable ? "禁用" : "启用" }
+                      </Button>
+                    </Popconfirm>
+                    <Button
+                      type="primary"
+                      style={{
+                        display: 'inline-block',
+                        marginLeft: 20
+                      }}
+                    >
+                      <Link to="/finance/settingsVisa">编辑</Link>
+                    </Button>
+                    <Popconfirm title="是否要删除？" onConfirm={() => this.delete('visa')}>
+                      <Button
+                        type="danger"
+                        style={{
+                          display: 'inline-block',
+                          marginLeft: 20
+                        }}
+                      >
+                        删除
+                      </Button>
+                    </Popconfirm>
+                  </Descriptions.Item>
+                </Fragment>
+              }
+
+              {
+                !financeSettings.paypal_number ? 
+                <Descriptions.Item label="Paypal设置">
+                  <Link to="/finance/settingsPaypal">前往点击设置</Link>
+                </Descriptions.Item>
+                :
+                <Fragment>
+                  <Descriptions.Item label="Paypal设置">
+                    <div style={{width: 385, display: 'inline-block'}}>{ financeSettings.paypal_number }</div>
+                    <Popconfirm title={ financeSettings.paypal_enable ? "是否要禁用？" : "是否要启用？" } onConfirm={() => this.enable('paypal', financeSettings.paypal_enable)}>
+                      <Button
+                        type="primary"
+                        style={{
+                          display: 'inline-block',
+                          marginLeft: 20
+                        }}
+                      >
+                        { financeSettings.paypal_enable ? "禁用" : "启用" }
+                      </Button>
+                    </Popconfirm>
+                    <Button
+                      type="primary"
+                      style={{
+                        display: 'inline-block',
+                        marginLeft: 20
+                      }}
+                    >
+                      <Link to="/finance/settingsPaypal">编辑</Link>
+                    </Button>
+                    <Popconfirm title="是否要删除？" onConfirm={() => this.delete('paypal')}>
                       <Button
                         type="danger"
                         style={{

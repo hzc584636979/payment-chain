@@ -34,7 +34,7 @@ class Layer extends Component {
           {title}
           <a className={styles.close} onClick={hiddenVisible}><Icon type="close" /></a>
         </div>
-        <div className={styles.content} style={{height: contentHeight}}>
+        <div className={styles.content} style={{height: '80vh'}}>
           <Scrollbars>
             <div ref={content => {this.content = content;}}>
               { children }

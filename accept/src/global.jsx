@@ -20,18 +20,28 @@ window.wei2USDT = (val, type='erc20') => {
   return Number(val) ? Number(val) / Math.pow(10, type == 'erc20' ? 6 : 8) : 0;
 }
 
+window.regPhone = phone => {
+  return /^1\d{10}$/.test(phone);
+}
+
 import weixin from '@/assets/icon_saoma_weixin.png';
 import yinlian from '@/assets/icon_saoma_yinlian.png';
 import zhifubao from '@/assets/icon_saoma_zhifubao.png';
+import visa from '@/assets/icon_saoma_visa.png';
+import paypal from '@/assets/icon_saoma_paypal.png';
 window.payIcon = {
   1: yinlian,
   2: zhifubao,
   3: weixin,
+  4: visa,
+  5: paypal,
 }
 window.payName = {
   1: '银联',
   2: '支付宝',
   3: '微信',
+  4: 'VISA',
+  5: 'Paypal',
 }
 window.sellStatusType = {
   0: '全部',

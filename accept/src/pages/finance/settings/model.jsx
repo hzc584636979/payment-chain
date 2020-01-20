@@ -7,6 +7,10 @@ import {
   financeSettingsAlipayDelete,
   financeSettingsWXDisabled,
   financeSettingsWXDelete,
+  financeSettingsVisaDisabled,
+  financeSettingsVisaDelete,
+  financeSettingsPaypalDisabled,
+  financeSettingsPaypalDelete,
 } from '@/services/api';
 
 const Model = {
@@ -49,6 +53,22 @@ const Model = {
     },
     *WXDelete({ payload }, { call, put }) {
       const response = yield call(financeSettingsWXDelete, payload);
+      return response;
+    },
+    *visaDisabled({ payload }, { call, put }) {
+      const response = yield call(financeSettingsVisaDisabled, payload);
+      return response;
+    },
+    *visaDelete({ payload }, { call, put }) {
+      const response = yield call(financeSettingsVisaDelete, payload);
+      return response;
+    },
+    *paypalDisabled({ payload }, { call, put }) {
+      const response = yield call(financeSettingsPaypalDisabled, payload);
+      return response;
+    },
+    *paypalDelete({ payload }, { call, put }) {
+      const response = yield call(financeSettingsPaypalDelete, payload);
       return response;
     },
   },

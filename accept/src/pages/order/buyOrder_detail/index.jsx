@@ -13,7 +13,7 @@ const { TextArea } = Input;
   buyOrderDetail,
   loading: loading.effects['buyOrderDetail/fetch'],
 }))
-class SellOrderDetail extends Component {
+class buyOrderDetail extends Component {
   state = {
     
   };
@@ -116,8 +116,46 @@ class SellOrderDetail extends Component {
             <Descriptions.Item label="订单状态">{ buyStatusType[buyOrderDetail.state] }</Descriptions.Item>
             <Descriptions.Item label="平台订单号">{ buyOrderDetail.order_id }</Descriptions.Item>
             <Descriptions.Item label="商户订单号">{ buyOrderDetail.out_order_id }</Descriptions.Item>
-            <Descriptions.Item label="商户昵称">{ buyOrderDetail.payee_name }</Descriptions.Item>
-            <Descriptions.Item label="商户账号">{ buyOrderDetail.payee_account }</Descriptions.Item>
+            <Descriptions.Item label="商户昵称">{ buyOrderDetail.m_user_name }</Descriptions.Item>
+            <Descriptions.Item label="客户姓名">{buyOrderDetail.payee_name}</Descriptions.Item>
+
+            {
+              buyOrderDetail.pay_type == 1 && 
+              <Fragment>
+                <Descriptions.Item label="客户银行卡号">{buyOrderDetail.payee_account}</Descriptions.Item>
+                <Descriptions.Item label="客户开户行">{buyOrderDetail.account_bank_name}</Descriptions.Item>
+              </Fragment>
+            }
+
+            {
+              buyOrderDetail.pay_type == 2 && 
+              <Fragment>
+                <Descriptions.Item label="客户支付宝收款码"><img src={buyOrderDetail.pay_code_url} style={{maxWidth: 150}} /></Descriptions.Item>
+              </Fragment>
+            }
+
+            {
+              buyOrderDetail.pay_type == 3 && 
+              <Fragment>
+                <Descriptions.Item label="客户微信收款码"><img src={buyOrderDetail.pay_code_url} style={{maxWidth: 150}} /></Descriptions.Item>
+              </Fragment>
+            }
+
+            {
+              buyOrderDetail.pay_type == 4 && 
+              <Fragment>
+                <Descriptions.Item label="客户银行卡号">{buyOrderDetail.payee_account}</Descriptions.Item>
+                <Descriptions.Item label="客户开户行">{buyOrderDetail.account_bank_name}</Descriptions.Item>
+              </Fragment>
+            }
+
+            {
+              buyOrderDetail.pay_type == 5 && 
+              <Fragment>
+                <Descriptions.Item label="客户Paypal账号">{buyOrderDetail.payee_account}</Descriptions.Item>
+              </Fragment>
+            }
+
             <Descriptions.Item label="币种">{ coinType[buyOrderDetail.token_id] }</Descriptions.Item>
             <Descriptions.Item label="商户出售金额 (USDT)">{ buyOrderDetail.pay_amount }</Descriptions.Item>
             <Descriptions.Item label="等值 (CNY)">{ buyOrderDetail.pay_amount_cny }</Descriptions.Item>
@@ -150,4 +188,4 @@ class SellOrderDetail extends Component {
   }
 }
 
-export default SellOrderDetail;
+export default buyOrderDetail;

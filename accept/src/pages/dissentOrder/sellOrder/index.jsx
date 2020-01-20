@@ -28,15 +28,6 @@ const getValue = obj =>
     .map(key => obj[key])
     .join(',');
 
-import weixin from '@/assets/icon_saoma_weixin.png';
-import yinlian from '@/assets/icon_saoma_yinlian.png';
-import zhifubao from '@/assets/icon_saoma_zhifubao.png';
-const payIcon = {
-  1: yinlian,
-  2: zhifubao,
-  3: weixin,
-}
-
 @connect(({ sellDissentOrder, loading }) => ({
   sellDissentOrder,
   loading: loading.effects['sellDissentOrder/fetch'],
@@ -256,7 +247,7 @@ class SellDissentOrder extends Component {
         key: 'pay_type',
         align: 'center',
         render:(val,record)=>{
-          return <img src={payIcon[val]} />;
+          return <img src={payIcon[val]} style={{maxWidth: 40}} />;
         },
       },
       {

@@ -52,12 +52,12 @@ const CreatePhoneForm = Form.create()(props => {
       <Form>
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="旧手机号">
           {form.getFieldDecorator('old_telephone_number', {
-            rules: [{ required: true, pattern: /^1[34578]\d{9}$/, message: '请输入正确的手机号' }],
+            rules: [{ required: true, pattern: /^1\d{10}$/, message: '请输入正确的手机号' }],
           })(<Input placeholder="请输入新手机号" maxLength={11} />)}
         </FormItem>
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="新手机号">
           {form.getFieldDecorator('new_telephone_number', {
-            rules: [{ required: true, pattern: /^1[34578]\d{9}$/, message: '请输入正确的手机号' }],
+            rules: [{ required: true, pattern: /^1\d{10}$/, message: '请输入正确的手机号' }],
           })(<Input placeholder="请输入新手机号" maxLength={11} />)}
         </FormItem>
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="验证码">
@@ -335,12 +335,12 @@ class UserSafe extends Component {
     const { dispatch } = this.props;
     const { phoneVisible, emailVisible } = this.state;
 
-    if(phoneVisible && (!value || !(/^1\d{10}$/.test(value)))) {
+    if(phoneVisible && (!value || !regPhone(value))) {
       message.error('请输入正确的手机号！');
       return;
     }
 
-    if(emailVisible && !value) {
+    if(emailVisible && (!value || !(/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(value)))) {
       message.error('请输入正确的邮箱地址！');
       return;
     }

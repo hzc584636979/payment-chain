@@ -5,40 +5,22 @@ import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
 import styles from './style.less';
 
-function getBase64(img, callback) {
-  const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result));
-  reader.readAsDataURL(img);
-}
-
-function beforeUpload(file) {
-  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-  if (!isJpgOrPng) {
-    message.error('只能上传JPG/PNG文件!');
-    return false;
-  }
-  const isLt2M = file.size / 1024 / 1024 < 5;
-  if (!isLt2M) {
-    message.error('图片超过5MB!');
-    return false;
-  }
-  return true;
-}
-
-@connect(({ financeSettingsAlipay, loading }) => ({
-  financeSettingsAlipay,
-  fetchLoading: loading.effects['financeSettingsAlipay/fetch'],
+@connect(({ financeSettingsVisa, loading }) => ({
+  financeSettingsVisa,
+  fetchLoading: loading.effects['financeSettingsVisa/fetch'],
 }))
-class FinanceSettingsAlipay extends Component {
+class FinanceSettingsVisa extends Component {
   state = {
     params: {},
   };
+
+  interval = undefined;
 
   componentDidMount() {
     const { dispatch } = this.props;
 
     dispatch({
-      type: 'financeSettingsAlipay/fetch',
+      type: 'financeSettingsVisa/fetch',
     }).then(data => {
       this.setState({
         params: {
@@ -48,8 +30,6 @@ class FinanceSettingsAlipay extends Component {
     })
   }
 
-  interval = undefined;
-
   componentWillUnmount() {
     clearInterval(this.interval);
   }
@@ -58,7 +38,7 @@ class FinanceSettingsAlipay extends Component {
     this.setState({
       params: {
         ...this.state.params,
-        ali_real_name: e.target.value,
+        visa_real_name: e.target.value,
       }
     })
   }
@@ -67,30 +47,16 @@ class FinanceSettingsAlipay extends Component {
     this.setState({
       params: {
         ...this.state.params,
-        ali_pay_number: e.target.value,
+        visa_number: e.target.value,
       }
     })
   }
 
-  handleChange = file => {
-    if(!beforeUpload(file)) return false;
-    getBase64(file, imageUrl =>
-      this.setState({
-        params: {
-          ...this.state.params,
-          ali_payment_qr_code: imageUrl
-        },
-        loading: false,
-      }),
-    );
-    return false;
-  }
-
-  handleLink = e => {
+  handleVisaName = e => {
     this.setState({
       params: {
         ...this.state.params,
-        ali_pay_payment_link: e.target.value,
+        visa_name: e.target.value,
       }
     })
   }
@@ -106,16 +72,15 @@ class FinanceSettingsAlipay extends Component {
 
   onGetCaptcha = () => {
     const { dispatch } = this.props;
-
     const { telephone_number } = this.state.params;
 
-    if(!telephone_number || !(/^1\d{10}$/.test(telephone_number))) {
-      message.error('请输入手机号');
+    if(!telephone_number || !regPhone(telephone_number)) {
+      message.error('请输入正确的手机号');
       return;
     }
 
     dispatch({
-      type: 'financeSettingsAlipay/getCode',
+      type: 'financeSettingsVisa/getCode',
       payload: {
         telephone_number
       },
@@ -154,27 +119,23 @@ class FinanceSettingsAlipay extends Component {
 
   submit = () => {
     const { 
-      ali_real_name, 
-      ali_pay_number,
-      ali_payment_qr_code,
-      ali_pay_payment_link,
+      visa_real_name, 
+      visa_number,
+      visa_name,
       telephone_number,
       telephone_verify_code,
     } = this.state.params;
-    
-    if(!ali_real_name) {
+
+    if(!visa_real_name) {
       message.error('请填写姓名后提交');
       return;
-    }else if(!ali_pay_number) {
-      message.error('请填写支付宝号后提交');
+    }else if(!visa_number) {
+      message.error('请填写银行卡号后提交');
       return;
-    }else if(!ali_payment_qr_code) {
-      message.error('请上传收款码后提交');
+    }else if(!visa_name) {
+      message.error('请填写开户行后提交');
       return;
-    }else if(!ali_pay_payment_link) {
-      message.error('请填写收码链接后提交');
-      return;
-    }else if(!telephone_number || !regPhone(telephone_number)) {
+    }else if(!telephone_number || !(/^1\d{10}$/.test(telephone_number))) {
       message.error('请填写正确的手机号码后提交');
       return;
     }else if(!telephone_verify_code) {
@@ -188,12 +149,11 @@ class FinanceSettingsAlipay extends Component {
 
     const { dispatch } = this.props;
     dispatch({
-      type: 'financeSettingsAlipay/submit',
+      type: 'financeSettingsVisa/submit',
       payload: {
-        ali_real_name, 
-        ali_pay_number,
-        ali_payment_qr_code,
-        ali_pay_payment_link,
+        visa_real_name, 
+        visa_number,
+        visa_name,
         telephone_number,
         telephone_verify_code,
       },
@@ -211,18 +171,11 @@ class FinanceSettingsAlipay extends Component {
 
   render() {
     const { fetchLoading } = this.props;
-    const { submitLoading, count, loading } = this.state;
-    const uploadButton = (
-      <div>
-        <Icon type={loading ? 'loading' : 'plus'} />
-      </div>
-    );
-
+    const { submitLoading, count } = this.state;
     const { 
-      ali_real_name, 
-      ali_pay_number,
-      ali_payment_qr_code,
-      ali_pay_payment_link,
+      visa_real_name, 
+      visa_number,
+      visa_name,
       telephone_number,
       telephone_verify_code,
     } = this.state.params;
@@ -233,29 +186,17 @@ class FinanceSettingsAlipay extends Component {
           <div className={styles.inner}>
             <Descriptions column={1}>
               <Descriptions.Item label={<span className={styles.itemLabel}>姓名</span>} className={styles.textTop}>
-                <Input onChange={this.handleName} style={{width: 385}} placeholder="输入姓名" value={ali_real_name} />
-                <p style={{fontSize: 14, color: '#EA0000'}}>收款支付宝姓名必须与认证信息姓名一致</p>
+                <Input onChange={this.handleName} style={{width: 385}} placeholder="输入姓名" value={visa_real_name} />
+                <p style={{fontSize: 14, color: '#EA0000'}}>收款银行卡姓名必须与认证信息姓名一致</p>
               </Descriptions.Item>
-              <Descriptions.Item label={<span className={styles.itemLabel}>支付宝号</span>}>
-                <Input onChange={this.handleNumber} style={{width: 385}} placeholder="输入支付宝号" value={ali_pay_number} />
+              <Descriptions.Item label={<span className={styles.itemLabel}>银行卡号</span>}>
+                <Input onChange={this.handleNumber} style={{width: 385}} placeholder="输入银行卡号" value={visa_number} />
               </Descriptions.Item>
-              <Descriptions.Item label={<span className={styles.itemLabel}>收款码</span>} className={styles.textTop}>
-                <Upload
-                  name="avatar"
-                  listType="picture-card"
-                  showUploadList={false}
-                  beforeUpload={this.handleChange}
-                  accept={'.jpg,.jpeg,.png'}
-                >
-                  { ali_payment_qr_code ? <img width="103" height="103" src={ali_payment_qr_code} /> : uploadButton }
-                </Upload>
-                <div className={styles.upImgDesc}>上传收款码</div>
-              </Descriptions.Item>
-              <Descriptions.Item label={<span className={styles.itemLabel}>收款链接</span>}>
-                <Input onChange={this.handleLink} style={{width: 385}} placeholder="输入收款链接" value={ali_pay_payment_link} />
+              <Descriptions.Item label={<span className={styles.itemLabel}>开户行</span>}>
+                <Input onChange={this.handleVisaName} style={{width: 385}} placeholder="输入开户行" value={visa_name} />
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>手机号码</span>}>
-                <Input onChange={this.handlePhone} style={{width: 385}} placeholder="输入手机号码" maxLength={11} value={telephone_number} />
+                <Input onChange={this.handlePhone} style={{width: 385}} placeholder="输入开户预留手机号" maxLength={11} value={telephone_number} />
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>手机验证码</span>}>
                 <Input onChange={this.handleCaptcha} style={{width: 385}} placeholder="输入手机验证码" maxLength={6} value={telephone_verify_code} />
@@ -288,4 +229,4 @@ class FinanceSettingsAlipay extends Component {
   }
 }
 
-export default FinanceSettingsAlipay;
+export default FinanceSettingsVisa;

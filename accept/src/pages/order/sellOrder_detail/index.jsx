@@ -1,5 +1,5 @@
 import { Button, Descriptions, Popconfirm, Input, message } from 'antd';
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
@@ -109,7 +109,7 @@ class SellOrderDetail extends Component {
             <Descriptions.Item label="平台订单号">{ sellOrderDetail.order_id }</Descriptions.Item>
             <Descriptions.Item label="商户订单号">{ sellOrderDetail.out_order_id }</Descriptions.Item>
             <Descriptions.Item label="付款用户">{ sellOrderDetail.payee_name }</Descriptions.Item>
-            <Descriptions.Item label="付款方式"><img src={payIcon[sellOrderDetail.pay_type]} /></Descriptions.Item>
+            <Descriptions.Item label="付款方式"><img src={payIcon[sellOrderDetail.pay_type]} style={{maxWidth: 40}} /></Descriptions.Item>
             <Descriptions.Item label="付款金额(USDT)">{ sellOrderDetail.pay_amount }</Descriptions.Item>
             <Descriptions.Item label="付款金额(CNY)">{ sellOrderDetail.pay_amount_cny }</Descriptions.Item>
             <Descriptions.Item label="收币商户">{ sellOrderDetail.m_user_name }</Descriptions.Item>

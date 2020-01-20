@@ -82,13 +82,22 @@ class BuyOrderAppeal extends Component {
 
   submit = () => {
     const { fileList, type, desc } = this.state;
-    if(fileList.length == 0 || type == '' || desc == ''){
-      message.error('请填写完整信息后提交');
+
+    if(fileList.length == 0) {
+      message.error('请上传图片后提交');
+      return;
+    }else if(type == '') {
+      message.error('请选择问题类型后提交');
+      return;
+    }else if(desc == '') {
+      message.error('请填写申诉描述后提交');
       return;
     }
+
     this.setState({
       submitLock: true,
     })
+
     const { dispatch } = this.props;
     dispatch({
       type: 'buyOrderAppeal/submit',

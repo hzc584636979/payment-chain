@@ -115,8 +115,18 @@ class WithdrawApply extends Component {
       coin_number,
       telephone_verify_code,
     } = this.state;
-    if(!token_id || !to_address || !coin_number || coin_number == 0 || !telephone_verify_code){
-      message.error('请填写完整信息后提交');
+
+    if(!token_id) {
+      message.error('请选择币种后提交');
+      return;
+    }else if(!to_address) {
+      message.error('请填写提币地址后提交');
+      return;
+    }else if(!coin_number || coin_number == 0) {
+      message.error('请填写提币数量后提交');
+      return;
+    }else if(!telephone_verify_code) {
+      message.error('请填写手机验证码后提交');
       return;
     }
 

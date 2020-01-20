@@ -272,6 +272,20 @@ export default {
                   expandPath: '/finance/settings',
                 },
                 {
+                  name: 'VISA设置',
+                  path: '/finance/settingsVisa',
+                  component: './finance/settingsVisa',
+                  hideInMenu: true,
+                  expandPath: '/finance/settings',
+                },
+                {
+                  name: 'Paypal设置',
+                  path: '/finance/settingsPaypal',
+                  component: './finance/settingsPaypal',
+                  hideInMenu: true,
+                  expandPath: '/finance/settings',
+                },
+                {
                   name: '微信设置',
                   path: '/finance/settingsWX',
                   component: './finance/settingsWX',

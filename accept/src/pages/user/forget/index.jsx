@@ -81,13 +81,13 @@ class Forget extends Component {
     let url = '';
     if(tabType == 'phone') {
       url = 'userForget/getPhoneCode'
-      if(!params.phone || !(/^1\d{10}$/.test(params.phone))) {
+      if(!params.phone || !regPhone(params.phone)) {
         message.error('请输入正确的手机号！');
         return;
       }
     }else {
       url = 'userForget/getEmailCode'
-      if(!params.email) {
+      if(!params.email || !(/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(params.email))) {
         message.error('请输入正确的邮箱地址！');
         return;
       }
