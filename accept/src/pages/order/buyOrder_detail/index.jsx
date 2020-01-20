@@ -1,5 +1,5 @@
 import { Button, Descriptions, Popconfirm, Input, message } from 'antd';
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';

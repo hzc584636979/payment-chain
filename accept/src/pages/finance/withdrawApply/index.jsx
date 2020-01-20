@@ -122,7 +122,7 @@ class WithdrawApply extends Component {
     }else if(!to_address) {
       message.error('请填写提币地址后提交');
       return;
-    }else if(!coin_number || coin_number == 0) {
+    }else if(!Number(coin_number) || coin_number == 0) {
       message.error('请填写提币数量后提交');
       return;
     }else if(!telephone_verify_code) {

@@ -135,7 +135,7 @@ class Home extends Component {
     const { dispatch, currentUser } = this.props;
     const { walletType } = this.state;
 
-    if(!this.state.mortgageValue || this.state.mortgageValue == 0) {
+    if(!Number(this.state.mortgageValue) || this.state.mortgageValue == 0) {
       message.error('请输入金额');
       return;
     }
