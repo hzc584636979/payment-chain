@@ -229,7 +229,7 @@ export async function querySellOrderDetail(params) {
   });
 }
 
-/*订单管理-出售订单管理申述-提交问题*/
+/*订单管理-出售订单管理申诉-提交问题*/
 export async function sellOrderAppeal(params) {
   return request(`${apiAddress}/order/complaintOrder`, {
     method: 'POST',
@@ -291,7 +291,7 @@ export async function queryBuyOrderDetail(params) {
   });
 }
 
-/*订单管理-购买订单管理申述-提交问题*/
+/*订单管理-购买订单管理申诉-提交问题*/
 export async function buyOrderAppeal(params) {
   return request(`${apiAddress}/order/complaintOrder`, {
     method: 'POST',
