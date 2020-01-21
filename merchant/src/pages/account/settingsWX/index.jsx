@@ -12,9 +12,9 @@ function beforeUpload(file) {
     message.error('只能上传JPG/PNG文件!');
     return false;
   }
-  const isLt2M = file.size / 1024 / 1024 < 5;
+  const isLt2M = file.size / 1024 / 1024 < 2;
   if (!isLt2M) {
-    message.error('图片超过5MB!');
+    message.error('图片超过2MB!');
     return false;
   }
   return true;

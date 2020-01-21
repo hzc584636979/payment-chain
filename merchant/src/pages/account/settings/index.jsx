@@ -14,9 +14,9 @@ function beforeUpload(file) {
     message.error('只能上传JPG/PNG文件!');
     return false;
   }
-  const isLt2M = file.size / 1024 / 1024 < 5;
+  const isLt2M = file.size / 1024 / 1024 < 2;
   if (!isLt2M) {
-    message.error('图片超过5MB!');
+    message.error('图片超过2MB!');
     return false;
   }
   return true;
@@ -599,7 +599,7 @@ class UserSafe extends Component {
                 >
                   { currentUser.logo_path ? <img width="103" height="103" src={currentUser.logo_path} /> : uploadButton }
                 </Upload>
-                <div className={styles.upImgDesc}>图片上传限制:最大5M</div>
+                <div className={styles.upImgDesc}>图片上传限制:最大2M</div>
               </Descriptions.Item>
               <Descriptions.Item label="绑定手机号">
                 <Input disabled={true} style={{width: 385}} value={currentUser.telephone_number} />
