@@ -67,6 +67,61 @@ export const formatMomentTime = data => {
   ]  
 }
 
+export const compressBase64 = (base64, callback, maxMB) => {
+  let newImage = new Image();
+  let quality = base64.length / maxMB < 0.9 ? base64.length / maxMB < 0.9 : 0.8;    //压缩系数0-1之间，压缩到0.9以上会有bug，注意！（可以自行设置）
+  newImage.src = base64;
+  let imgWidth, imgHeight;
+  newImage.onload = function () {
+    imgWidth = this.width;
+    imgHeight = this.height;
+    //给生成图片设置一个默认的最大宽/高（可以自行设置）
+    let myWidth = 300;
+    //准备在画布上绘制图片
+    let canvas = document.createElement("canvas");
+    let ctx = canvas.getContext("2d");
+    //判断上传的图片的宽高是否超过设置的默认最大值，以及设置同比例的宽高
+    if (Math.max(imgWidth, imgHeight) > myWidth) {
+      if (imgWidth > imgHeight) {
+        canvas.width = myWidth;
+        canvas.height = myWidth * imgHeight / imgWidth;
+      } else {
+        canvas.height = myWidth;
+        canvas.width = myWidth * imgWidth / imgHeight;
+      }
+    } else {
+      canvas.width = imgWidth;
+      canvas.height = imgHeight;
+    }
+    //清空画布
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    //开始绘制图片到画布上
+    ctx.drawImage(this, 0, 0, canvas.width, canvas.height);
+    console.log(quality)
+    let newBase64 = canvas.toDataURL("image/jpeg", quality);//压缩图片大小（重点代码）
+    console.log(base64.length / 1024 / 1024, newBase64.length / 1024 / 1024)
+    // 获取到当前的图片的大小，然后调整成自己需要的大小
+    while (newBase64.length / 1024 / 1024 > maxMB) {
+      quality -= 0.02;
+      newBase64 = canvas.toDataURL("image/jpeg", quality);
+    }
+    callback(newBase64);
+  }
+}
+
+export const getBase64 = (img, callback, maxMB = 5) => {
+  const reader = new FileReader();
+  reader.readAsDataURL(img);
+  reader.addEventListener('load', () => {
+    console.log(reader.result.length / 1024 / 1024)
+    if(reader.result.length / 1024 / 1024  > maxMB) {
+      compressBase64(reader.result, callback, maxMB)
+    }else {
+      callback(reader.result)
+    }
+  });
+}
+
 /**
  * props.route.routes
  * @param router [{}]

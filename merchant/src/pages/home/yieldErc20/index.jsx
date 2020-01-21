@@ -5,52 +5,8 @@ import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
 import QRCode  from 'qrcode.react';
 import BigNumber from 'bignumber.js';
+import { getBase64 } from '@/utils/utils';
 import styles from './style.less';
-
-function getBase64(img, callback) {
-  const reader = new FileReader();
-  reader.addEventListener('load', () => {
-    let newImage = new Image();
-    let quality = 0.6;    //压缩系数0-1之间，压缩到0.9以上会有bug，注意！（可以自行设置）
-    newImage.src = reader.result;
-    let imgWidth, imgHeight;
-    console.log(newImage)
-    newImage.onload = function () {
-      imgWidth = this.width;
-      imgHeight = this.height;
-      //给生成图片设置一个默认的最大宽/高（可以自行设置）
-      let myWidth = 300;
-      //准备在画布上绘制图片
-      let canvas = document.createElement("canvas");
-      let ctx = canvas.getContext("2d");
-      //判断上传的图片的宽高是否超过设置的默认最大值，以及设置同比例的宽高
-      if (Math.max(imgWidth, imgHeight) > myWidth) {
-        if (imgWidth > imgHeight) {
-          canvas.width = myWidth;
-          canvas.height = myWidth * imgHeight / imgWidth;
-        } else {
-          canvas.height = myWidth;
-          canvas.width = myWidth * imgWidth / imgHeight;
-        }
-      } else {
-        canvas.width = imgWidth;
-        canvas.height = imgHeight;
-      }
-      //清空画布
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      //开始绘制图片到画布上
-      ctx.drawImage(this, 0, 0, canvas.width, canvas.height);
-      let newBase64 = canvas.toDataURL("image/jpeg", quality);//压缩图片大小（重点代码）
-      // 获取到当前的图片的大小，然后调整成自己需要的大小，例如说需要200KB-500KB之间（可以自行设置）
-      while (newBase64.length / 1024 > 5000) {
-        quality -= 0.02;
-        newBase64 = canvas.toDataURL("image/jpeg", quality);
-      }
-      callback(newBase64)
-    }
-  });
-  reader.readAsDataURL(img);
-}
 
 function beforeUpload(file) {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
@@ -98,7 +54,7 @@ class YieldErc20 extends Component {
     }
 
     if(payment_amount > maxBalance) {
-      message.error('超出最大可出金金额，可提金额为出金金额 减去 手续费');
+      message.error('超过最大可出金金额，可提金额为可出金金额 减去 手续费');
       return;
     }
 
