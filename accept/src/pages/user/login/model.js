@@ -12,7 +12,7 @@ const Model = {
     *phoneLogin({ payload }, { call, put }) {
       const response = yield call(phoneAccountLogin, payload);
 
-      if (response.status == 1) {
+      if (response.status == 1 && response) {
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;
