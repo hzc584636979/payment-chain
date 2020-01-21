@@ -315,7 +315,7 @@ export async function queryGoldEntryOrderDetail(params) {
   });
 }
 
-/*订单管理-入金订单申述-提交问题*/
+/*订单管理-入金订单申诉-提交问题*/
 export async function goldEntryOrderAppeal(params) {
   return request(`${apiAddress}/order/complaintOrder`, {
     method: 'POST',
@@ -369,7 +369,7 @@ export async function queryGoldYieldOrderDetail(params) {
   });
 }
 
-/*订单管理-出金订单申述-提交问题*/
+/*订单管理-出金订单申诉-提交问题*/
 export async function goldYieldOrderAppeal(params) {
   return request(`${apiAddress}/order/complaintOrder`, {
     method: 'POST',

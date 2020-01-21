@@ -529,7 +529,7 @@ class GoldYieldOrder extends Component {
                   null
                 }
                 <Button>
-                  <Link to={`/order/goldYieldOrder_appeal/${record.order_id}`}>申述</Link>
+                  <Link to={`/order/goldYieldOrder_appeal/${record.order_id}`}>申诉</Link>
                 </Button>
                 <span style={{display: 'inline-block', width: '10px'}}></span>
                 <Button>

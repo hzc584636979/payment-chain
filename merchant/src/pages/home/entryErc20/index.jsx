@@ -93,7 +93,7 @@ class EntryErc20 extends Component {
         <div className={styles.wrap}>
           <Descriptions column={1}>
             <Descriptions.Item label={<span className={styles.itemLabel}>入金金额</span>} className={styles.textTop}>
-              <Input placeholder="请输入出金金额" onChange={this.handlePaymentAmount} style={{width: 385, maxWidth: '100%'}} />
+              <Input placeholder="请输入入金金额" onChange={this.handlePaymentAmount} style={{width: 385, maxWidth: '100%'}} />
               <p style={{fontSize: 14, color: '#333'}}>
                 <span>当前汇率：1USDT≈￥{ (1 * currentUser.token_price * currentUser.rate).toFixed(2) }</span>
               </p>

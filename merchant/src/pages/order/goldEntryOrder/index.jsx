@@ -283,7 +283,7 @@ class GoldEntryOrder extends Component {
           return(
             <span>
               <Button>
-                <Link to={`/order/goldEntryOrder_appeal/${record.order_id}`}>申述</Link>
+                <Link to={`/order/goldEntryOrder_appeal/${record.order_id}`}>申诉</Link>
               </Button>
               <span style={{display: 'inline-block', width: '10px'}}></span>
               <Button>

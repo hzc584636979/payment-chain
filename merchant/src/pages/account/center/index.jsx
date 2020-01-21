@@ -461,7 +461,7 @@ class UserBase extends Component {
                 </Row>
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>交易密码</span>}>
-                <Input disabled={disabled} onChange={this.handleTx} style={{width: 385}} placeholder="输入交易密码" maxLength={8} value={payment_pwd} />
+                <Input type="password" disabled={disabled} onChange={this.handleTx} style={{width: 385}} placeholder="输入交易密码" maxLength={8} value={payment_pwd} />
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>绑定手机</span>}>
                 <Input disabled={disabled} onChange={this.handlePhone} style={{width: 385}} placeholder="输入手机号" maxLength={11} value={telephone_number} />
