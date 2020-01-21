@@ -344,11 +344,11 @@ class UserBase extends Component {
         email_verify_code,
       },
     }).then(data => {
+      this.setState({
+        submitLoading: false,
+      })
       if(data.status != 1) {
         message.error(data.msg);
-        this.setState({
-          submitLoading: false,
-        })
         return;
       }else {
         message.success('操作成功');
@@ -361,9 +361,6 @@ class UserBase extends Component {
             ...data
           }
         })
-      })
-      this.setState({
-        submitLoading: false,
       })
     })
   }
