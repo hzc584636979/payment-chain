@@ -57,7 +57,7 @@ class GoldEntryDissentOrderDetail extends Component {
       message.error('请填写正确的联系方式后提交');
       return;
     }else if(content == '') {
-      message.error('请填写联系方式后提交');
+      message.error('请填写申诉描述后提交');
       return;
     }
 
