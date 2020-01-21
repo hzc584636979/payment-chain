@@ -133,7 +133,7 @@ class Home extends Component {
       type: 'home/getCode',
     }).then(data => {
       if(data.status != 1) {
-        message.error('短信验证码发送失败，请重试！');
+        message.error(data.msg);
         return;
       }
       let count = 59;

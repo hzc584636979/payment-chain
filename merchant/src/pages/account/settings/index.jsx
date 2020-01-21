@@ -312,6 +312,9 @@ class UserSafe extends Component {
           logo: imageUrl
         },
       }).then(data => {
+        this.setState({
+          loading: false,
+        })
         if(data.status != 1) {
           message.error(data.msg);
           return;
@@ -320,9 +323,6 @@ class UserSafe extends Component {
         }
         dispatch({
           type: 'user/getUserInfo',
-        })
-        this.setState({
-          loading: false,
         })
       })
     );

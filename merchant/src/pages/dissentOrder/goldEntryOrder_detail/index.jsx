@@ -72,14 +72,17 @@ class GoldEntryDissentOrderDetail extends Component {
         content,
       },
     }).then(data => {
+      this.setState({
+        submitLock: false,
+      })
       if(data.status != 1) {
         message.error(data.msg);
+        return;
       }else {
         message.success('操作成功');
       }
       this.setState({
         KFVisible: false,
-        submitLock: false,
       })
     })
   }
@@ -100,14 +103,17 @@ class GoldEntryDissentOrderDetail extends Component {
     dispatch({
       type: 'goldEntryDissentOrderDetail/close',
     }).then(data => {
+      this.setState({
+        closeLock: false,
+      })
       if(data.status != 1) {
         message.error(data.msg);
+        return;
       }else {
         message.success('操作成功');
       }
       this.setState({
         KFVisible: false,
-        closeLock: false,
       })
     })
   }
