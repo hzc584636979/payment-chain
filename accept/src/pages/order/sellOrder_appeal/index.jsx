@@ -20,7 +20,7 @@ function beforeUpload(file) {
   }
   const isLt2M = file.size / 1024 / 1024 < 5;
   if (!isLt2M) {
-    message.error('图片超过5MB!');
+    message.error('图片超过2MB!');
     return false;
   }
   return true;
@@ -55,7 +55,7 @@ class Appeal extends Component {
           ...this.state.fileList,
           imageUrl,
         ],
-        upLock: this.state.fileList.length < 4 ? false : true,
+        upLock: this.state.fileList.length < 2 ? false : true,
         loading: false,
       }),
     );
@@ -150,7 +150,7 @@ class Appeal extends Component {
               >
                 {!submitLock && !upLock && uploadButton}
               </Upload>
-              <div className={styles.upImgDesc}>图片上传限制:最多5张，最大5M</div>
+              <div className={styles.upImgDesc}>图片上传限制:最多3张，最大2MB</div>
             </Descriptions.Item>
             <Descriptions.Item className={styles.noneBeforeIcon}>
               <Button type="primary" loading={submitLock} onClick={this.submit}>确定提交</Button>

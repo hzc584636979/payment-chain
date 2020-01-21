@@ -109,7 +109,7 @@ export const compressBase64 = (base64, callback, maxMB) => {
   }
 }
 
-export const getBase64 = (img, callback, maxMB = 5) => {
+export const getBase64 = (img, callback, maxMB = 2) => {
   const reader = new FileReader();
   reader.readAsDataURL(img);
   reader.addEventListener('load', () => {
