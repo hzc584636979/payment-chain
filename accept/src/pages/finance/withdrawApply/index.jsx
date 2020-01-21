@@ -1,4 +1,4 @@
-import { Button, Descriptions, Input, Upload, Icon, message, Row, Col, Select, } from 'antd';
+import { Button, Descriptions, Input, Upload, Icon, message, Row, Col, Select } from 'antd';
 import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import BigNumber from 'bignumber.js';
@@ -10,7 +10,7 @@ const { Option } = Select;
 @connect(({ user, withdrawApply, loading }) => ({
   currentUser: user.currentUser,
   withdrawApply,
-  fetchLoading: loading.effects['withdrawApply/fetch'],
+  fetchLoading: loading.effects['withdrawApply/getCoinInfo'],
 }))
 class WithdrawApply extends Component {
   state = {

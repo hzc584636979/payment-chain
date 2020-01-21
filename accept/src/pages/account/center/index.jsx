@@ -24,7 +24,7 @@ function beforeUpload(file) {
 
 @connect(({ userBase, loading }) => ({
   userBase,
-  fetchLoading: loading.effects['userBase/fetch'],
+  fetchLoading: loading.effects['user/getUserInfo'],
 }))
 class UserBase extends Component {
   state = {

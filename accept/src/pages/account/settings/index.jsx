@@ -264,7 +264,7 @@ const CreateLPForm = Form.create()(props => {
 @connect(({ user, userSafe, loading }) => ({
   currentUser: user.currentUser,
   userSafe,
-  fetchLoading: loading.effects['userSafe/fetch'],
+  fetchLoading: loading.effects['user/getUserInfo'],
 }))
 class UserSafe extends Component {
   state = {
