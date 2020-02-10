@@ -182,7 +182,7 @@ class BuyDissentOrder extends Component {
               "收款方式": payName[i.pay_type],
               "商户昵称": i.payee_name,
               "币种": coinType[i.token_id],
-              "商户出售金额（USDT）": i.pay_amount,
+              "代币数量": i.pay_amount,
               "等值（CNY）": i.pay_amount_cny,
               "订单状态": buyStatusType[i.state],
           };
@@ -197,6 +197,22 @@ class BuyDissentOrder extends Component {
     const { loading } = this.props;
     const { history, list, pagination } = this.props.buyDissentOrder.data;
     const columns = [
+      {
+        title: '操作',
+        key: 'action',
+        fixed: 'left',
+        align: 'center',
+        width: 100,
+        render: (val, record) => {
+          return(
+            <span>
+              <Button>
+                <Link to={`/dissentOrder/buyOrder_detail/${record.order_id}`}>查看</Link>
+              </Button>
+            </span>
+          );
+        },
+      },
       {
         title: '订单创建时间',
         dataIndex: 'created_at',
@@ -267,7 +283,7 @@ class BuyDissentOrder extends Component {
         }
       },
       {
-        title: '商户出售金额（USDT）',
+        title: '代币数量',
         dataIndex: 'pay_amount',
         key: 'pay_amount',
         align: 'center',
@@ -286,22 +302,6 @@ class BuyDissentOrder extends Component {
         render: (val, record) => {
           return buyStatusType[val];
         }
-      },
-      {
-        title: '操作',
-        key: 'action',
-        fixed: 'right',
-        align: 'center',
-        width: 100,
-        render: (val, record) => {
-          return(
-            <span>
-              <Button>
-                <Link to={`/dissentOrder/buyOrder_detail/${record.order_id}`}>查看</Link>
-              </Button>
-            </span>
-          );
-        },
       },
     ];
 

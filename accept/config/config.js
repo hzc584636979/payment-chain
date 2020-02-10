@@ -384,9 +384,9 @@ export default {
   }, 
   "proxy": {
     "/server/api/": {
-      "target": "http://192.168.1.20:7002",
+      "target": "http://www.boq.hk",//"http://192.168.1.20:7002"
       "changeOrigin": true,
-      pathRewrite: { '^/server': '' },
+      pathRewrite: { '^/server': '/acceptance' },
     }
   },
   // chainWebpack: webpackPlugin,

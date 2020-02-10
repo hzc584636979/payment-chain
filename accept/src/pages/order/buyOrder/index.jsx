@@ -11,15 +11,33 @@ import {
   Popconfirm,
   Modal,
   message,
+  Popover,
+  Icon,
+  Upload,
 } from 'antd';
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
 import StandardTable from '@/components/StandardTable';
 import exportXLSX from '@/utils/exportXLSX';
+import { getBase64 } from '@/utils/utils';
 import moment from 'moment';
 import styles from './style.less';
+
+function beforeUpload(file) {
+  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+  if (!isJpgOrPng) {
+    message.error('只能上传JPG/PNG文件!');
+    return false;
+  }
+  const isLt2M = file.size / 1024 / 1024 < 2;
+  if (!isLt2M) {
+    message.error('图片超过2MB!');
+    return false;
+  }
+  return true;
+}
 
 const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
@@ -46,7 +64,7 @@ class BuyOrder extends Component {
     dispatch({
       type: 'buyOrder/fetch',
       payload:{
-        pageSize:10,
+        pageSize:1000,
         page:0,
         state: 0,
         token_id: 0,
@@ -201,7 +219,8 @@ class BuyOrder extends Component {
     dispatch({
       type: 'buyOrder/receipt',
       payload: {
-        order_id: id
+        order_id: id,
+        payment_screenshot: this.state.receiptImg
       },
     }).then(data => {
       if(data.status != 1) {
@@ -210,6 +229,7 @@ class BuyOrder extends Component {
       }else {
         message.success('操作成功');
       }
+      this.handleReceiptChange();
       this.handleSearch(null, params);
     })
   }
@@ -242,14 +262,14 @@ class BuyOrder extends Component {
         let dataWCN = [];
         data.data.rows.map((i) => {
           let dataWObj = {
-              "平台订单号": i.order_id,
-              "商户订单号": i.out_order_id,
+              "币种": coinType[i.token_id],
+              "代币数量": i.pay_amount,
+              "等值 (CNY)": i.pay_amount_cny,
               "客户姓名": i.payee_name,
               "收款方式": payName[i.pay_type],
+              "平台订单号": i.order_id,
+              "商户订单号": i.out_order_id,
               "商户昵称": i.m_user_name,
-              "币种": coinType[i.token_id],
-              "商户出售金额 (USDT)": i.pay_amount,
-              "等值 (CNY)": i.pay_amount_cny,
               "订单状态": buyStatusType[i.state],
               "创建时间": moment(i.created_at).local().format('YYYY-MM-DD HH:mm:ss'),
               "订单更新时间": moment(i.updated_at).local().format('YYYY-MM-DD HH:mm:ss'),
@@ -282,10 +302,130 @@ class BuyOrder extends Component {
     }
   }
 
+  handleUploadImg = file => {
+    if(!beforeUpload(file)) return false;
+    this.setState({
+      handleUploadImgLoading: true
+    })
+    getBase64(file, imageUrl =>
+      this.setState({
+        receiptImg: imageUrl,
+        handleUploadImgLoading: false,
+      }),
+    );
+    return false;
+  }
+
+  handleReceiptChange = () => {
+    this.setState({
+      receiptChange: false,
+      receiptId: null,
+      receiptImg: null,
+    })
+  }
+
+  handleShowReceiptImg = receiptId => {
+    this.setState({
+      receiptId,
+    })
+  }
+
   render() {
     const { loading } = this.props;
+    const { handleUploadImgLoading, receiptImg, receiptId } = this.state;
     const { history, list, pagination } = this.props.buyOrder.data;
+
+    const uploadButton = (
+      <div>
+        <Icon type={handleUploadImgLoading ? 'loading' : 'plus'} />
+      </div>
+    );
+
     const columns = [
+      {
+        title: '操作',
+        key: 'action',
+        fixed: 'left',
+        align: 'center',
+        width: 300,
+        render: (val, record) => {
+          return(
+            <span>
+              {
+                this.getAging(record) ?
+                (
+                  record.state == 4 ?
+                  <Fragment>
+                    <Popover 
+                      title={`上传支付截图`}
+                      content={
+                        <div style={{width: 150}}>
+                          <div style={{textAlign: 'center', width: 104, margin: '0 auto'}}>
+                            <Upload
+                              name="avatar"
+                              listType="picture-card"
+                              showUploadList={false}
+                              beforeUpload={this.handleUploadImg}
+                              accept={'.jpg,.jpeg,.png'}
+                            >
+                              { receiptImg ? <img width="50" height="50" src={receiptImg} /> : uploadButton }
+                            </Upload>
+                          </div>
+                          <Button onClick={this.handleReceiptChange}>取消</Button>
+                          <span style={{display: 'inline-block', width: '10px'}}></span>
+                          <Button disabled={!receiptImg} type="primary" onClick={() => this.receipt(record.order_id)}>确定</Button>
+                        </div>
+                      }
+                      trigger="click"
+                      visible={receiptId == record.order_id ? true : false}
+                    >
+                      <Button onClick={() => this.handleShowReceiptImg(record.order_id)}>确认转款</Button>
+                    </Popover>
+                    <span style={{display: 'inline-block', width: '10px'}}></span>
+                    <Button>
+                      <Link to={`/order/buyOrder_appeal/${record.order_id}`}>申诉</Link>
+                    </Button>
+                  </Fragment>
+                  :
+                  record.state == 3 ?
+                  <Popconfirm title="是否要确认接单？" onConfirm={() => this.transfer(record.order_id)}>
+                    <Button>确认接单</Button>
+                  </Popconfirm>
+                  :
+                  null
+                )
+                :
+                null
+              }
+              <span style={{display: 'inline-block', width: '10px'}}></span>
+              <Button>
+                <Link to={`/order/buyOrder_detail/${record.order_id}`}>查看</Link>
+              </Button>
+            </span>
+          );
+        },
+      },
+      {
+        title: '币种',
+        dataIndex: 'token_id',
+        key: 'token_id',
+        align: 'center',
+        render: (val,record) => {
+          return coinType[val];
+        }
+      },
+      {
+        title: '代币数量',
+        dataIndex: 'pay_amount',
+        key: 'pay_amount',
+        align: 'center',
+      },
+      {
+        title: '等值 (CNY)',
+        dataIndex: 'pay_amount_cny',
+        key: 'pay_amount_cny',
+        align: 'center',
+      },
       {
         title: '时效',
         dataIndex: 'aging',
@@ -297,6 +437,37 @@ class BuyOrder extends Component {
           }else {
             return EXHIBITION2;
           }
+        },
+      },
+      {
+        title: '客户姓名',
+        dataIndex: 'payee_name',
+        key: 'payee_name',
+        align: 'center',
+      },
+      {
+        title: '收款二维码',
+        dataIndex: 'pay_code_url',
+        key: 'pay_code_url',
+        align: 'center',
+        render:(val,record)=>{
+          return (
+            val ?
+            <Popover content={<img src={val} style={{maxWidth: 100}} />}>
+              <Icon type="qrcode" />
+            </Popover>
+            :
+            null
+          );
+        },
+      },
+      {
+        title: '收款方式',
+        dataIndex: 'pay_type',
+        key: 'pay_type',
+        align: 'center',
+        render:(val,record)=>{
+          return <img src={payIcon[val]} style={{maxWidth: 40}} />;
         },
       },
       {
@@ -312,45 +483,9 @@ class BuyOrder extends Component {
         align: 'center',
       },
       {
-        title: '客户姓名',
-        dataIndex: 'payee_name',
-        key: 'payee_name',
-        align: 'center',
-      },
-      {
-        title: '收款方式',
-        dataIndex: 'pay_type',
-        key: 'pay_type',
-        align: 'center',
-        render:(val,record)=>{
-          return <img src={payIcon[val]} style={{maxWidth: 40}} />;
-        },
-      },
-      {
         title: '商户昵称',
         dataIndex: 'm_user_name',
         key: 'm_user_name',
-        align: 'center',
-      },
-      {
-        title: '币种',
-        dataIndex: 'token_id',
-        key: 'token_id',
-        align: 'center',
-        render: (val,record) => {
-          return coinType[val];
-        }
-      },
-      {
-        title: '商户出售金额 (USDT)',
-        dataIndex: 'pay_amount',
-        key: 'pay_amount',
-        align: 'center',
-      },
-      {
-        title: '等值 (CNY)',
-        dataIndex: 'pay_amount_cny',
-        key: 'pay_amount_cny',
         align: 'center',
       },
       {
@@ -378,45 +513,6 @@ class BuyOrder extends Component {
         align: 'center',
         render: (val, record) => {
           return moment(val).local().format('YYYY-MM-DD HH:mm:ss');
-        },
-      },
-      {
-        title: '操作',
-        key: 'action',
-        fixed: 'right',
-        align: 'center',
-        width: 300,
-        render: (val, record) => {
-          return(
-            <span>
-              {
-                this.getAging(record) ?
-                (
-                  record.state == 4 ?
-                  <Popconfirm title="是否要确认转款？" onConfirm={() => this.receipt(record.order_id)}>
-                    <Button>确认转款</Button>
-                  </Popconfirm>
-                  :
-                  record.state == 3 ?
-                  <Popconfirm title="是否要确认接单？" onConfirm={() => this.transfer(record.order_id)}>
-                    <Button>确认接单</Button>
-                  </Popconfirm>
-                  :
-                  null
-                )
-                :
-                null
-              }
-              <span style={{display: 'inline-block', width: '10px'}}></span>
-              <Button>
-                <Link to={`/order/buyOrder_appeal/${record.order_id}`}>申诉</Link>
-              </Button>
-              <span style={{display: 'inline-block', width: '10px'}}></span>
-              <Button>
-                <Link to={`/order/buyOrder_detail/${record.order_id}`}>查看</Link>
-              </Button>
-            </span>
-          );
         },
       },
     ];

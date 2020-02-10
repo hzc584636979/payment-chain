@@ -9,7 +9,7 @@ export default {
   "menu": {
     "locale": true
   },
-  "title": "支付链承兑商中心",
+  "title": "承兑商",
   "pwa": false,
   "iconfontUrl": ""
 };

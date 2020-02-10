@@ -101,17 +101,18 @@ class SellOrderDetail extends Component {
       <ContLayout>
         <div className={styles.wrap}>
           <Descriptions column={1}>
+            <Descriptions.Item label="币种">{ coinType[sellOrderDetail.token_id || 1] }</Descriptions.Item>
+            <Descriptions.Item label="代币数量">{ sellOrderDetail.pay_amount }</Descriptions.Item>
+            <Descriptions.Item label="付款金额(CNY)">{ sellOrderDetail.pay_amount_cny }</Descriptions.Item>
             {
               sellOrderDetail.state == 2 &&
               <Descriptions.Item label="时效"><span style={{color: '#EA0000'}}>{lessTime >= hoursTime ? `${lessTime.hours()} : ${lessTime.minutes()} : ${lessTime.seconds()}` : `${lessTime.minutes()} : ${lessTime.seconds()}`}</span></Descriptions.Item>
             }
+            <Descriptions.Item label="付款用户">{ sellOrderDetail.payee_name }</Descriptions.Item>
+            <Descriptions.Item label="付款方式"><img src={payIcon[sellOrderDetail.pay_type]} style={{maxWidth: 40}} /></Descriptions.Item>
             <Descriptions.Item label="订单状态">{ sellStatusType[sellOrderDetail.state] }</Descriptions.Item>
             <Descriptions.Item label="平台订单号">{ sellOrderDetail.order_id }</Descriptions.Item>
             <Descriptions.Item label="商户订单号">{ sellOrderDetail.out_order_id }</Descriptions.Item>
-            <Descriptions.Item label="付款用户">{ sellOrderDetail.payee_name }</Descriptions.Item>
-            <Descriptions.Item label="付款方式"><img src={payIcon[sellOrderDetail.pay_type]} style={{maxWidth: 40}} /></Descriptions.Item>
-            <Descriptions.Item label="付款金额(USDT)">{ sellOrderDetail.pay_amount }</Descriptions.Item>
-            <Descriptions.Item label="付款金额(CNY)">{ sellOrderDetail.pay_amount_cny }</Descriptions.Item>
             <Descriptions.Item label="收币商户">{ sellOrderDetail.m_user_name }</Descriptions.Item>
             <Descriptions.Item label="创建时间">{ moment(sellOrderDetail.created_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
             <Descriptions.Item label="订单更新时间">{ moment(sellOrderDetail.updated_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>

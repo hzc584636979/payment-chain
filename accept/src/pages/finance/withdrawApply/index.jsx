@@ -210,7 +210,7 @@ class WithdrawApply extends Component {
                   withdrawApply.loading && 
                   <Fragment>
                     <Button
-                      onClick={() => this.onGetAll(allBalance - allLockBalance - withdrawApply.gas)}
+                      onClick={() => this.onGetAll(new BigNumber(allBalance).minus(new BigNumber(allLockBalance)).minus(new BigNumber(withdrawApply.gas)).toNumber())}
                       style={{
                         width: 140,
                         display: 'inline-block',
@@ -242,7 +242,7 @@ class WithdrawApply extends Component {
                 </Button>
               </Descriptions.Item>
               <Descriptions.Item className={styles.noneBeforeIcon}>
-                <Button type="primary" loading={submitLoading} onClick={() => this.submit(allBalance - allLockBalance - withdrawApply.gas)}>确定提交</Button>
+                <Button type="primary" loading={submitLoading} onClick={() => this.submit(new BigNumber(allBalance).minus(new BigNumber(allLockBalance)).minus(new BigNumber(withdrawApply.gas)).toNumber())}>确定提交</Button>
               </Descriptions.Item>
             </Descriptions>
           </div>

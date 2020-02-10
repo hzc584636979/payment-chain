@@ -121,6 +121,7 @@ class SellDissentOrderDetail extends Component {
   render() {
     const { sellDissentOrderDetail, loading } = this.props;
     const { KFVisible, submitLock, closeLock } = this.state;
+    const KFStatus = true/*new Date().getTime() - moment(sellDissentOrderDetail.issue_create_time).local().format('x') > 3 * 60 * 60 * 1000 ? true : false*/;
                                                
     return (
       <ContLayout>
@@ -133,7 +134,9 @@ class SellDissentOrderDetail extends Component {
             <Descriptions.Item label="商户订单号">{ sellDissentOrderDetail.out_order_id }</Descriptions.Item>
             <Descriptions.Item label="付款用户">{ sellDissentOrderDetail.payee_name }</Descriptions.Item>
             <Descriptions.Item label="付款方式"><img src={payIcon[sellDissentOrderDetail.pay_type]} style={{maxWidth: 40}} /></Descriptions.Item>
-            <Descriptions.Item label="付款金额(USDT)">{ sellDissentOrderDetail.pay_amount }</Descriptions.Item>
+            <Descriptions.Item label="币种">{ coinType[sellDissentOrderDetail.token_id || 1] }</Descriptions.Item>
+            <Descriptions.Item label="代币数量">{ sellDissentOrderDetail.pay_amount }</Descriptions.Item>
+            <Descriptions.Item label="代币数量">{ sellDissentOrderDetail.pay_amount }</Descriptions.Item>
             <Descriptions.Item label="付款金额(CNY)">{ sellDissentOrderDetail.pay_amount_cny }</Descriptions.Item>
             <Descriptions.Item label="收币商户">{ sellDissentOrderDetail.m_user_name }</Descriptions.Item>
             <Descriptions.Item label="订单状态">{ sellStatusType[sellDissentOrderDetail.state] }</Descriptions.Item>
@@ -142,7 +145,10 @@ class SellDissentOrderDetail extends Component {
             <Descriptions.Item label="付款时间">{ sellDissentOrderDetail.transfer_time ? moment(sellDissentOrderDetail.transfer_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
             <Descriptions.Item label="承兑商确认时间">{ sellDissentOrderDetail.confirm_time ? moment(sellDissentOrderDetail.confirm_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
             <Descriptions.Item label="操作">
-              <Button type="primary" onClick={this.handleKF}>客服介入</Button>
+              {
+                KFStatus &&
+                <Button type="primary" onClick={this.handleKF}>客服介入</Button>
+              }
               <span style={{display: 'inline-block', width: '10px'}}></span>
               <Button loading={closeLock} type="danger" onClick={this.closeObjection}>关闭异议</Button>
             </Descriptions.Item>

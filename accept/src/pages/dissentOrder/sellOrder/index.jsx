@@ -180,7 +180,8 @@ class SellDissentOrder extends Component {
               "商户订单号": i.out_order_id,
               "付款用户": i.payee_name,
               "付款方式": payName[i.pay_type],
-              "付款金额(USDT)": i.pay_amount,
+              "币种": coinType[i.token_id],
+              "代币数量": i.pay_amount,
               "付款金额(CNY)": i.pay_amount_cny,
               "收币商户": i.m_user_name,
               "订单状态": sellStatusType[i.state],
@@ -196,6 +197,22 @@ class SellDissentOrder extends Component {
     const { loading } = this.props;
     const { history, list, pagination } = this.props.sellDissentOrder.data;
     const columns = [
+      {
+        title: '操作',
+        key: 'action',
+        fixed: 'left',
+        align: 'center',
+        width: 100,
+        render: (val, record) => {
+          return(
+            <span>
+              <Button>
+                <Link to={`/dissentOrder/sellOrder_detail/${record.order_id}`}>查看</Link>
+              </Button>
+            </span>
+          );
+        },
+      },
       {
         title: '订单创建时间',
         dataIndex: 'created_at',
@@ -251,7 +268,16 @@ class SellDissentOrder extends Component {
         },
       },
       {
-        title: '付款金额(USDT)',
+        title: '币种',
+        dataIndex: 'token_id',
+        key: 'token_id',
+        align: 'center',
+        render: (val,record) => {
+          return coinType[val || 1];
+        }
+      },
+      {
+        title: '代币数量',
         dataIndex: 'pay_amount',
         key: 'pay_amount',
         align: 'center',
@@ -276,22 +302,6 @@ class SellDissentOrder extends Component {
         render: (val, record) => {
           return sellStatusType[val];
         }
-      },
-      {
-        title: '操作',
-        key: 'action',
-        fixed: 'right',
-        align: 'center',
-        width: 100,
-        render: (val, record) => {
-          return(
-            <span>
-              <Button>
-                <Link to={`/dissentOrder/sellOrder_detail/${record.order_id}`}>查看</Link>
-              </Button>
-            </span>
-          );
-        },
       },
     ];
 

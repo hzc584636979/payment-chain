@@ -121,6 +121,7 @@ class BuyDissentOrderDetail extends Component {
   render() {
     const { buyDissentOrderDetail, loading } = this.props;
     const { KFVisible, submitLock, closeLock } = this.state;
+    const KFStatus = true/*new Date().getTime() - moment(buyDissentOrderDetail.issue_create_time).local().format('x') > 3 * 60 * 60 * 1000 ? true : false*/;
                                                
     return (
       <ContLayout>
@@ -172,7 +173,7 @@ class BuyDissentOrderDetail extends Component {
             }
 
             <Descriptions.Item label="币种">{ coinType[buyDissentOrderDetail.token_id] }</Descriptions.Item>
-            <Descriptions.Item label="商户出售金额（USDT）">{ buyDissentOrderDetail.payee_name }</Descriptions.Item>
+            <Descriptions.Item label="代币数量">{ buyDissentOrderDetail.payee_name }</Descriptions.Item>
             <Descriptions.Item label="等值（CNY）">{ buyDissentOrderDetail.payee_account }</Descriptions.Item>
             <Descriptions.Item label="订单状态">{ buyStatusType[buyDissentOrderDetail.state] }</Descriptions.Item>
             <Descriptions.Item label="创建时间">{ moment(buyDissentOrderDetail.created_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
@@ -180,7 +181,11 @@ class BuyDissentOrderDetail extends Component {
             <Descriptions.Item label="接单时间">{ buyDissentOrderDetail.transfer_time ? moment(buyDissentOrderDetail.transfer_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
             <Descriptions.Item label="转款时间">{ buyDissentOrderDetail.confirm_time ? moment(buyDissentOrderDetail.confirm_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
             <Descriptions.Item label="操作">
-              <Button type="primary" onClick={this.handleKF}>客服介入</Button>
+              {
+                
+                <Button type="primary" onClick={this.handleKF}>客服介入</Button>
+              }
+              
               <span style={{display: 'inline-block', width: '10px'}}></span>
               <Button loading={closeLock} type="danger" onClick={this.closeObjection}>关闭异议</Button>
             </Descriptions.Item>

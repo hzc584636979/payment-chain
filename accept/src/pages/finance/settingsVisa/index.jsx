@@ -129,8 +129,8 @@ class FinanceSettingsVisa extends Component {
     if(!visa_real_name) {
       message.error('请填写姓名后提交');
       return;
-    }else if(!visa_number) {
-      message.error('请填写银行卡号后提交');
+    }else if(!visa_number || !regBankNumber(visa_number)) {
+      message.error('请填写正确的银行卡号后提交，银行卡位数为16位~19位');
       return;
     }else if(!visa_name) {
       message.error('请填写开户行后提交');

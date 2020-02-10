@@ -109,14 +109,13 @@ class buyOrderDetail extends Component {
       <ContLayout>
         <div className={styles.wrap}>
           <Descriptions column={1}>
+            <Descriptions.Item label="币种">{ coinType[buyOrderDetail.token_id] }</Descriptions.Item>
+            <Descriptions.Item label="代币数量">{ buyOrderDetail.pay_amount }</Descriptions.Item>
+            <Descriptions.Item label="等值 (CNY)">{ buyOrderDetail.pay_amount_cny }</Descriptions.Item>
             {
               (buyOrderDetail.state == 4 || buyOrderDetail.state == 3) &&
               <Descriptions.Item label="时效"><span style={{color: '#EA0000'}}>{lessTime >= hoursTime ? `${lessTime.hours()} : ${lessTime.minutes()} : ${lessTime.seconds()}` : `${lessTime.minutes()} : ${lessTime.seconds()}`}</span></Descriptions.Item>
             }
-            <Descriptions.Item label="订单状态">{ buyStatusType[buyOrderDetail.state] }</Descriptions.Item>
-            <Descriptions.Item label="平台订单号">{ buyOrderDetail.order_id }</Descriptions.Item>
-            <Descriptions.Item label="商户订单号">{ buyOrderDetail.out_order_id }</Descriptions.Item>
-            <Descriptions.Item label="商户昵称">{ buyOrderDetail.m_user_name }</Descriptions.Item>
             <Descriptions.Item label="客户姓名">{buyOrderDetail.payee_name}</Descriptions.Item>
 
             {
@@ -130,6 +129,7 @@ class buyOrderDetail extends Component {
             {
               buyOrderDetail.pay_type == 2 && 
               <Fragment>
+                <Descriptions.Item label="客户支付宝账号"><img src={buyOrderDetail.payee_account} style={{maxWidth: 150}} /></Descriptions.Item>
                 <Descriptions.Item label="客户支付宝收款码"><img src={buyOrderDetail.pay_code_url} style={{maxWidth: 150}} /></Descriptions.Item>
               </Fragment>
             }
@@ -137,6 +137,7 @@ class buyOrderDetail extends Component {
             {
               buyOrderDetail.pay_type == 3 && 
               <Fragment>
+                <Descriptions.Item label="客户微信账号"><img src={buyOrderDetail.payee_account} style={{maxWidth: 150}} /></Descriptions.Item>
                 <Descriptions.Item label="客户微信收款码"><img src={buyOrderDetail.pay_code_url} style={{maxWidth: 150}} /></Descriptions.Item>
               </Fragment>
             }
@@ -155,10 +156,11 @@ class buyOrderDetail extends Component {
                 <Descriptions.Item label="客户Paypal账号">{buyOrderDetail.payee_account}</Descriptions.Item>
               </Fragment>
             }
-
-            <Descriptions.Item label="币种">{ coinType[buyOrderDetail.token_id] }</Descriptions.Item>
-            <Descriptions.Item label="商户出售金额 (USDT)">{ buyOrderDetail.pay_amount }</Descriptions.Item>
-            <Descriptions.Item label="等值 (CNY)">{ buyOrderDetail.pay_amount_cny }</Descriptions.Item>
+            
+            <Descriptions.Item label="订单状态">{ buyStatusType[buyOrderDetail.state] }</Descriptions.Item>
+            <Descriptions.Item label="平台订单号">{ buyOrderDetail.order_id }</Descriptions.Item>
+            <Descriptions.Item label="商户订单号">{ buyOrderDetail.out_order_id }</Descriptions.Item>
+            <Descriptions.Item label="商户昵称">{ buyOrderDetail.m_user_name }</Descriptions.Item>
             <Descriptions.Item label="创建时间">{ moment(buyOrderDetail.created_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
             <Descriptions.Item label="订单更新时间">{ moment(buyOrderDetail.updated_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
             <Descriptions.Item label="接单时间">{ buyOrderDetail.transfer_time ? moment(buyOrderDetail.transfer_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>

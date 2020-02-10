@@ -16,12 +16,36 @@ window.g_setLocalStorage = (params, key="paymentChain") => {
   return localStorage.setItem(key, JSON.stringify(params));
 };
 
+window.setCookie = (name, value, day) => {
+  if(day !== 0){     //当设置的时间等于0时，不设置expires属性，cookie在浏览器关闭后删除
+    var expires = day * 24 * 60 * 60 * 1000;
+    var date = new Date(+new Date()+expires);
+    document.cookie = name + "=" + value + ";expires=" + date.toUTCString();
+  }else{
+    document.cookie = name + "=" + value;
+  }
+}
+
+window.getCookie = (key) => {
+  var arr1 = document.cookie.split("; ");//由于cookie是通过一个分号+空格的形式串联起来的，所以这里需要先按分号空格截断,变成[name=Jack,pwd=123456,age=22]数组类型；
+  for(var i = 0; i < arr1.length; i++){
+    var arr2 = arr1[i].split("=");//通过=截断，把name=Jack截断成[name,Jack]数组；
+    if(arr2[0] == key){
+        return decodeURI(arr2[1]);
+    }
+  }
+}
+
 window.wei2USDT = (val, type='erc20') => {
   return Number(val) ? Number(val) / Math.pow(10, type == 'erc20' ? 6 : 8) : 0;
 }
 
 window.regPhone = phone => {
   return /^1\d{10}$/.test(phone);
+}
+
+window.regBankNumber = number => {
+  return /^(\d{16,19})$/.test(number);
 }
 
 import weixin from '@/assets/icon_saoma_weixin.png';

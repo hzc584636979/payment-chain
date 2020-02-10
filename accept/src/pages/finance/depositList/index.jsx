@@ -209,6 +209,25 @@ class DepositList extends Component {
     const { history, list, pagination } = this.props.depositList.data;
     const columns = [
       {
+        title: '操作',
+        key: 'action',
+        fixed: 'left',
+        align: 'center',
+        width: 100,
+        render: (val, record) => {
+          return(
+            <span>
+              {
+                record.state == 1 &&
+                <Popconfirm title="是否要申请解冻？" onConfirm={() => this.frozen(record.id)}>
+                  <Button>申请解冻</Button>
+                </Popconfirm>
+              }
+            </span>
+          );
+        },
+      },
+      {
         title: '平台订单号',
         dataIndex: 'id',
         key: 'id',
@@ -252,25 +271,6 @@ class DepositList extends Component {
         render: (val, record) => {
           return val && moment(val).local().format('YYYY-MM-DD HH:mm:ss')
         }
-      },
-      {
-        title: '操作',
-        key: 'action',
-        fixed: 'right',
-        align: 'center',
-        width: 100,
-        render: (val, record) => {
-          return(
-            <span>
-              {
-                record.state == 1 &&
-                <Popconfirm title="是否要申请解冻？" onConfirm={() => this.frozen(record.id)}>
-                  <Button>申请解冻</Button>
-                </Popconfirm>
-              }
-            </span>
-          );
-        },
       },
     ];
 

@@ -46,7 +46,7 @@ class SellOrder extends Component {
     dispatch({
       type: 'sellOrder/fetch',
       payload:{
-        pageSize:10,
+        pageSize:1000,
         page:0,
         state: 0,
         token_id: 0,
@@ -242,12 +242,13 @@ class SellOrder extends Component {
         let dataWCN = [];
         data.data.rows.map((i) => {
           let dataWObj = {
-              "平台订单号": i.order_id,
-              "商户订单号": i.out_order_id,
+              "币种": coinType[i.token_id || 1],
+              "代币数量": i.pay_amount,
               "付款用户": i.payee_name,
               "付款方式": payName[i.pay_type],
-              "付款金额(USDT)": i.pay_amount,
               "付款金额(CNY)": i.pay_amount_cny,
+              "平台订单号": i.order_id,
+              "商户订单号": i.out_order_id,
               "收币商户": i.m_user_name,
               "订单状态": sellStatusType[i.state],
               "创建时间": moment(i.created_at).local().format('YYYY-MM-DD HH:mm:ss'),
@@ -286,94 +287,9 @@ class SellOrder extends Component {
     const { exportVisible } = this.state;
     const columns = [
       {
-        title: '时效',
-        dataIndex: 'aging',
-        key: 'aging',
-        align: 'center',
-        render: (val, record) => {
-          if(record.state == 2) {
-            return this.getAging(record) || <span style={{color: '#EA0000'}}>0 : 0</span>;
-          }else {
-            return EXHIBITION2;
-          }
-        },
-      },
-      {
-        title: '平台订单号',
-        dataIndex: 'order_id',
-        key: 'order_id',
-        align: 'center',
-      },
-      {
-        title: '商户订单号',
-        dataIndex: 'out_order_id',
-        key: 'out_order_id',
-        align: 'center',
-      },
-      {
-        title: '付款用户',
-        dataIndex: 'payee_name',
-        key: 'payee_name',
-        align: 'center',
-      },
-      {
-        title: '付款方式',
-        dataIndex: 'pay_type',
-        key: 'pay_type',
-        align: 'center',
-        render:(val,record)=>{
-          return <img src={payIcon[val]} style={{maxWidth: 40}} />;
-        },
-      },
-      {
-        title: '付款金额(USDT)',
-        dataIndex: 'pay_amount',
-        key: 'pay_amount',
-        align: 'center',
-      },
-      {
-        title: '付款金额(CNY)',
-        dataIndex: 'pay_amount_cny',
-        key: 'pay_amount_cny',
-        align: 'center',
-      },
-      {
-        title: '收币商户',
-        dataIndex: 'm_user_name',
-        key: 'm_user_name',
-        align: 'center',
-      },
-      {
-        title: '订单状态',
-        dataIndex: 'state',
-        key: 'state',
-        align: 'center',
-        render:(val,record)=>{
-          return sellStatusType[val];
-        },
-      },
-      {
-        title: '创建时间',
-        dataIndex: 'created_at',
-        key: 'created_at',
-        align: 'center',
-        render: (val, record) => {
-          return moment(val).local().format('YYYY-MM-DD HH:mm:ss');
-        },
-      },
-      {
-        title: '订单更新时间',
-        dataIndex: 'updated_at',
-        key: 'updated_at',
-        align: 'center',
-        render: (val, record) => {
-          return moment(val).local().format('YYYY-MM-DD HH:mm:ss');
-        },
-      },
-      {
         title: '操作',
         key: 'action',
-        fixed: 'right',
+        fixed: 'left',
         align: 'center',
         width: 300,
         render: (val, record) => {
@@ -407,6 +323,100 @@ class SellOrder extends Component {
               </Button>
             </span>
           );
+        },
+      },
+      {
+        title: '币种',
+        dataIndex: 'token_id',
+        key: 'token_id',
+        align: 'center',
+        render: (val,record) => {
+          return coinType[val || 1];
+        }
+      },
+      {
+        title: '代币数量',
+        dataIndex: 'pay_amount',
+        key: 'pay_amount',
+        align: 'center',
+      },
+      {
+        title: '时效',
+        dataIndex: 'aging',
+        key: 'aging',
+        align: 'center',
+        render: (val, record) => {
+          if(record.state == 2) {
+            return this.getAging(record) || <span style={{color: '#EA0000'}}>0 : 0</span>;
+          }else {
+            return EXHIBITION2;
+          }
+        },
+      },
+      {
+        title: '付款用户',
+        dataIndex: 'payee_name',
+        key: 'payee_name',
+        align: 'center',
+      },
+      {
+        title: '付款方式',
+        dataIndex: 'pay_type',
+        key: 'pay_type',
+        align: 'center',
+        render:(val,record)=>{
+          return <img src={payIcon[val]} style={{maxWidth: 40}} />;
+        },
+      },
+      {
+        title: '付款金额(CNY)',
+        dataIndex: 'pay_amount_cny',
+        key: 'pay_amount_cny',
+        align: 'center',
+      },
+      {
+        title: '平台订单号',
+        dataIndex: 'order_id',
+        key: 'order_id',
+        align: 'center',
+      },
+      {
+        title: '商户订单号',
+        dataIndex: 'out_order_id',
+        key: 'out_order_id',
+        align: 'center',
+      },
+      {
+        title: '收币商户',
+        dataIndex: 'm_user_name',
+        key: 'm_user_name',
+        align: 'center',
+      },
+      {
+        title: '订单状态',
+        dataIndex: 'state',
+        key: 'state',
+        align: 'center',
+        render:(val,record)=>{
+          return sellStatusType[val];
+        },
+      },
+      {
+        title: '创建时间',
+        dataIndex: 'created_at',
+        key: 'created_at',
+        align: 'center',
+        render: (val, record) => {
+          return moment(val).local().format('YYYY-MM-DD HH:mm:ss');
+        },
+      },
+      {
+        title: '订单更新时间',
+        dataIndex: 'updated_at',
+        key: 'updated_at',
+        align: 'center',
+        render: (val, record) => {
+          return moment(val).local().format('YYYY-MM-DD HH:mm:ss');
         },
       },
     ];

@@ -192,6 +192,76 @@ class Home extends Component {
     })
   }
 
+  firstOnlineLayerClose = () => {
+    this.setState({
+      firstOnlineLayerStatus: false,
+    })
+    setCookie('firstOnlineLayer', '1');
+  }
+
+  firstOnlineLayerSubmit = () => {
+    const { firstBuyStatus, firstSellStatus } = this.state;
+    setCookie('firstOnlineLayer', '1');
+    if(firstBuyStatus) {
+      this.toggleManagement('buyStatus', true);
+    }
+    if(firstSellStatus) {
+      this.toggleManagement('sellStatus', true);
+    }
+  }
+
+  firstOnlineLayerChangeStatus = (key, status) => {
+    this.setState({
+      [key]: status
+    })
+  }
+
+  firstOnlineLayer = () => {
+    const { firstBuyStatus, firstSellStatus } = this.state;
+    if(getCookie('firstOnlineLayer')) return;
+    return (
+      <Layer
+        title="承兑管理"
+        hiddenVisible={this.firstOnlineLayerClose}
+      >
+        <div className={styles.mortgageLayout}>
+          <Row
+            gutter={24}
+            type="flex"
+          >
+            <Col xl={24}>
+              <div className={`${styles.layoutLeft} ${styles.otherWrap}`} style={{padding: 0, height: 'auto'}}>
+                <div className={styles.item}>
+                  购买
+                  <span style={{display: 'inline-block', width: '10px'}}></span>
+                  <Button type={firstBuyStatus ? 'primary' : ''} onClick={() => this.firstOnlineLayerChangeStatus('firstBuyStatus', true)}>上线</Button>
+                  <span style={{display: 'inline-block', width: '10px'}}></span>
+                  <Button type={!firstBuyStatus ? 'primary' : ''} onClick={() => this.firstOnlineLayerChangeStatus('firstBuyStatus', false)}>下线</Button>
+                </div>
+                <div className={styles.item}>
+                  出售
+                  <span style={{display: 'inline-block', width: '10px'}}></span>
+                  <Button type={firstSellStatus ? 'primary' : ''} onClick={() => this.firstOnlineLayerChangeStatus('firstSellStatus', true)}>上线</Button>
+                  <span style={{display: 'inline-block', width: '10px'}}></span>
+                  <Button type={!firstSellStatus ? 'primary' : ''} onClick={() => this.firstOnlineLayerChangeStatus('firstSellStatus', false)}>下线</Button>
+                </div>
+              </div>
+              <div className={styles.desc} style={{margin: '10px 0'}}>
+                温馨提示：<br/>
+                请准备充足资金后上线，否则订单失败将有降低信用的惩罚
+              </div>
+              <div style={{textAlign: 'center'}}>
+                <Button type="primary" style={{width: 120}} onClick={this.firstOnlineLayerSubmit}>确定上线</Button>
+                <span style={{display: 'inline-block', width: '10px'}}></span>
+                <Button style={{width: 120}} onClick={this.firstOnlineLayerClose}>稍后上线</Button>
+              </div>
+            </Col>
+          </Row>
+        </div>
+      </Layer>
+    );
+  }
+
   render() {
     const { accountBalance1, tokenBalance1, tokenBalance2, payVisible, mortgageVisible, buyStatus, sellStatus, mortgageValue, walletType } = this.state;
     const { currentUser, home, loading, getUserInfoLoading } = this.props;
@@ -301,7 +371,7 @@ class Home extends Component {
                         type="flex"
                       >
                         <Col xl={12} md={12} sm={24} xs={24}>
-                          <div className={styles.itemBox} style={{borderRight: '1px solid #ECECEC'}}>
+                          <div className={styles.itemBox}>
                             <div className={styles.title}>代币余额</div>
                             <div className={styles.item}>
                               <span style={{display: 'inline-block', width: 160}}>可用余额（USDT）</span>
@@ -328,8 +398,17 @@ class Home extends Component {
                           </div>
                         </Col>
                         <Col xl={12} md={12} sm={24} xs={24}>
-                          <div className={`${styles.itemBox} ${styles.itemBoxBg2}`}>
+                          <div className={`${styles.itemBox} ${styles.itemBoxBg2}`} style={{borderLeft: '1px solid #ECECEC'}}>
                             <div className={styles.title}>抵押资金</div>
+                            <div className={styles.item}>
+                              <span style={{display: 'inline-block', width: 160}}>我的排名</span>
+                              <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>{ currentUser.rank }</span>
+                              <span style={{cursor: 'pointer', color: '#49a1ff'}}>
+                                <Popover content={<div>缴纳更多押金，可提升排名</div>}>
+                                  <Icon type="exclamation-circle" />
+                                </Popover>
+                              </span> 
+                            </div>
                             <div className={styles.item}>
                               <span style={{display: 'inline-block', width: 160}}>抵押资金（USDT）</span>
                               {accountBalance1 ? 
@@ -539,6 +618,10 @@ class Home extends Component {
                 </div>
               </div>
             </Layer>
+          }
+          {
+            getRealNamePassed() &&
+            this.firstOnlineLayer()
           }
           {
             !getRealNamePassed() &&
