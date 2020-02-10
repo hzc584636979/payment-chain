@@ -43,9 +43,9 @@ class YieldOmni extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'yieldOmni/fetch',
-      payload:{
-        pageSize:10,
-        page:0,
+      payload: {
+        pageSize: 10,
+        page: 0,
         state: 5,
         token_id: 2,
         order_id: null,
@@ -54,9 +54,7 @@ class YieldOmni extends Component {
     });
   }
 
-  componentWillUnmount() {
-
-  }
+  componentWillUnmount() {}
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
@@ -64,7 +62,7 @@ class YieldOmni extends Component {
 
     const params = {
       ...history,
-      page: pagination.current -1,
+      page: pagination.current - 1,
       pageSize: pagination.pageSize,
     };
 
@@ -74,7 +72,7 @@ class YieldOmni extends Component {
     });
   };
 
-  handleSearch = (e, pagination={}) => {
+  handleSearch = (e, pagination = {}) => {
     e && e.preventDefault();
     const { dispatch, form } = this.props;
     form.validateFields((err, fieldsValue) => {
@@ -129,7 +127,7 @@ class YieldOmni extends Component {
     const { pagination } = this.props.yieldOmni.data;
 
     const params = {
-      page: pagination.current -1,
+      page: pagination.current - 1,
       pageSize: pagination.pageSize,
     };
 
@@ -140,40 +138,40 @@ class YieldOmni extends Component {
         payment_pwd: MM,
       },
     }).then(data => {
-      if(data.status != 1) {
+      if (data.status != 1) {
         message.error(data.msg);
         return;
-      }else {
+      } else {
         message.success('操作成功');
       }
       this.handleSearch(null, params);
       this.setState({
         yieldId: null,
         MM: null,
-      })
-    })
-  }
+      });
+    });
+  };
 
   button = yieldId => {
     this.setState({
       yieldId,
-    })
-  }
+    });
+  };
 
   cancelButton = yieldId => {
     this.setState({
       yieldId: null,
       MM: null,
-    })
-  }
+    });
+  };
 
   handleMM = e => {
     this.setState({
       MM: e.target.value,
-    })
-  }
+    });
+  };
 
-  renderItem = (record) => {
+  renderItem = record => {
     const { currentUser } = this.props;
     const { yieldId, MM, coin } = this.state;
     let renderStr = record.a_user_name;
@@ -237,29 +235,46 @@ class YieldOmni extends Component {
         }
       }
     }*/
-    if(yieldId == record.order_id) { 
+    if (yieldId == record.order_id) {
       renderStr = {
         children: (
           <Row gutter={24} type="flex" justify="space-between" className={`${styles.itemLayer}`}>
             <Col xl={10} sm={24}>
               <Row>
-                <Col span={12}>{ record.a_user_name }</Col>
-                <Col span={12}>单价 { record.cny_price } CNY</Col>
+                <Col span={12}>{record.a_user_name}</Col>
+                <Col span={12}>单价 {record.cny_price} CNY</Col>
               </Row>
               <Row>
-                <Col span={12}>数量 { record.pay_amount } USDT</Col>
-                <Col span={12}>{ record.min_amount } CNY - { record.max_amount } CNY</Col>
+                <Col span={12}>数量 {record.pay_amount} USDT</Col>
+                <Col span={12}>
+                  {record.min_amount} CNY - {record.max_amount} CNY
+                </Col>
               </Row>
             </Col>
             <Col xl={14} sm={24}>
-              <Input disabled={true} value={`${record.pay_amount} USDT`} style={{width: '15%'}} />
-              <span style={{color: '#999999',padding: '0 5px'}}><Icon type="swap" /></span>
-              <Input disabled={true} value={`${record.pay_amount_cny} CNY`} style={{width: '15%'}} />
-              <span style={{display: 'inline-block', width: 15}}></span>
-              <Input type="password" placeholder="输入交易密码" maxLength={8} onChange={this.handleMM} value={MM} style={{width: '20%'}} />
-              <span style={{display: 'inline-block', width: 15}}></span>
-              <Button type="primary" onClick={() => this.yield(record)}>出金</Button>
-              <span style={{display: 'inline-block', width: 15}}></span>
+              <Input disabled={true} value={`${record.pay_amount} USDT`} style={{ width: '15%' }} />
+              <span style={{ color: '#999999', padding: '0 5px' }}>
+                <Icon type="swap" />
+              </span>
+              <Input
+                disabled={true}
+                value={`${record.pay_amount_cny} CNY`}
+                style={{ width: '15%' }}
+              />
+              <span style={{ display: 'inline-block', width: 15 }}></span>
+              <Input
+                type="password"
+                placeholder="输入交易密码"
+                maxLength={8}
+                onChange={this.handleMM}
+                value={MM}
+                style={{ width: '20%' }}
+              />
+              <span style={{ display: 'inline-block', width: 15 }}></span>
+              <Button type="primary" onClick={() => this.yield(record)}>
+                出金
+              </Button>
+              <span style={{ display: 'inline-block', width: 15 }}></span>
               <Button onClick={this.cancelButton}>取消</Button>
             </Col>
           </Row>
@@ -267,10 +282,10 @@ class YieldOmni extends Component {
         props: {
           colSpan: 7,
         },
-      }
+      };
     }
     return renderStr;
-  }
+  };
 
   render() {
     const { loading } = this.props;
@@ -282,25 +297,25 @@ class YieldOmni extends Component {
         dataIndex: 'a_user_name',
         key: 'a_user_name',
         align: 'center',
-        render: (val, record) => this.renderItem(record)
+        render: (val, record) => this.renderItem(record),
       },
       {
-        title: '订单金额(USDT)',
+        title: '代币数量',
         dataIndex: 'pay_amount',
         key: 'pay_amount',
         align: 'center',
         render: (val, record) => {
-          if(yieldId == record.order_id) {
+          if (yieldId == record.order_id) {
             return {
               children: val,
               props: {
                 colSpan: 0,
               },
-            }
-          }else {
+            };
+          } else {
             return val;
           }
-        }
+        },
       },
       {
         title: '订单金额(CNY)',
@@ -308,17 +323,17 @@ class YieldOmni extends Component {
         key: 'pay_amount_cny',
         align: 'center',
         render: (val, record) => {
-          if(yieldId == record.order_id) {
+          if (yieldId == record.order_id) {
             return {
               children: val,
               props: {
                 colSpan: 0,
               },
-            }
-          }else {
+            };
+          } else {
             return val;
           }
-        }
+        },
       },
       {
         title: '单价(CNY)',
@@ -326,17 +341,17 @@ class YieldOmni extends Component {
         key: 'cny_price',
         align: 'center',
         render: (val, record) => {
-          if(yieldId == record.order_id) {
+          if (yieldId == record.order_id) {
             return {
               children: val,
               props: {
                 colSpan: 0,
               },
-            }
-          }else {
+            };
+          } else {
             return val;
           }
-        }
+        },
       },
       {
         title: '手续费(USDT)',
@@ -344,17 +359,17 @@ class YieldOmni extends Component {
         key: 'gas',
         align: 'center',
         render: (val, record) => {
-          if(yieldId == record.order_id) {
+          if (yieldId == record.order_id) {
             return {
               children: val,
               props: {
                 colSpan: 0,
               },
-            }
-          }else {
+            };
+          } else {
             return val;
           }
-        }
+        },
       },
       {
         title: '创建时间',
@@ -362,15 +377,17 @@ class YieldOmni extends Component {
         key: 'created_at',
         align: 'center',
         render: (val, record) => {
-          if(yieldId == record.order_id) {
+          if (yieldId == record.order_id) {
             return {
               children: val,
               props: {
                 colSpan: 0,
               },
-            }
-          }else {
-            return moment(val).local().format('YYYY-MM-DD HH:mm:ss')
+            };
+          } else {
+            return moment(val)
+              .local()
+              .format('YYYY-MM-DD HH:mm:ss');
           }
         },
       },
@@ -379,15 +396,19 @@ class YieldOmni extends Component {
         key: 'action',
         align: 'center',
         render: (val, record) => {
-          if(yieldId == record.order_id) {
+          if (yieldId == record.order_id) {
             return {
               children: val,
               props: {
                 colSpan: 0,
               },
-            }
-          }else {
-            return <Button type="primary" onClick={() => this.button(record.order_id)}>出金</Button>;
+            };
+          } else {
+            return (
+              <Button type="primary" onClick={() => this.button(record.order_id)}>
+                出金
+              </Button>
+            );
           }
         },
       },

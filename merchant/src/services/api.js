@@ -2,12 +2,12 @@ import request from '@/utils/request';
 import { formatMomentTime } from '@/utils/utils';
 
 let apiAddress = '';
-if(process.env.NODE_ENV == 'development') {
+if (process.env.NODE_ENV == 'development') {
   apiAddress = '/server/api';
-}else {
+} else {
   apiAddress = 'http://www.boq.hk/merchant/api';
 }
-console.log(process.env.NODE_ENV)
+console.log(process.env.NODE_ENV);
 
 /*手机登陆*/
 export async function phoneAccountLogin(params) {
@@ -242,14 +242,14 @@ export async function entryOmniListSearchAll(params) {
 /*订单管理-提币/充币订单-请求*/
 export async function coinOrder(params) {
   let time = params.time && formatMomentTime(params.time);
-  let begin_time = parseInt(time[0] / 1000)+'';
-  let end_time = parseInt(time[1] / 1000)+'';
+  let begin_time = parseInt(time[0] / 1000) + '';
+  let end_time = parseInt(time[1] / 1000) + '';
   return request(`${apiAddress}/financial/getCashOutRecord`, {
     method: 'POST',
     data: {
       ...params,
       begin_time,
-      end_time
+      end_time,
     },
   });
 }
@@ -257,14 +257,14 @@ export async function coinOrder(params) {
 /*订单管理-提币/充币订单-搜索*/
 export async function coinOrderSearchAll(params) {
   let time = params.time && formatMomentTime(params.time);
-  let begin_time = parseInt(time[0] / 1000)+'';
-  let end_time = parseInt(time[1] / 1000)+'';
+  let begin_time = parseInt(time[0] / 1000) + '';
+  let end_time = parseInt(time[1] / 1000) + '';
   return request(`${apiAddress}/financial/getCashOutRecord`, {
     method: 'POST',
     data: {
       ...params,
       begin_time,
-      end_time
+      end_time,
     },
   });
 }
@@ -287,7 +287,7 @@ export async function goldEntryOrder(params) {
     data: {
       ...params,
       begin_time,
-      end_time
+      end_time,
     },
   });
 }
@@ -302,7 +302,7 @@ export async function goldEntryOrderSearchAll(params) {
     data: {
       ...params,
       begin_time,
-      end_time
+      end_time,
     },
   });
 }
@@ -333,7 +333,7 @@ export async function goldYieldOrder(params) {
     data: {
       ...params,
       begin_time,
-      end_time
+      end_time,
     },
   });
 }
@@ -348,7 +348,7 @@ export async function goldYieldOrderSearchAll(params) {
     data: {
       ...params,
       begin_time,
-      end_time
+      end_time,
     },
   });
 }
@@ -356,6 +356,14 @@ export async function goldYieldOrderSearchAll(params) {
 /*订单管理-出金订单-审核*/
 export async function goldYieldOrderAuditOrder(params) {
   return request(`${apiAddress}/order/auditOrder`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*订单管理-出金订单-撤回*/
+export async function goldYieldOrderWithdrawOrder(params) {
+  return request(`${apiAddress}/order/cancelOrderr`, {
     method: 'POST',
     data: params,
   });
@@ -387,7 +395,7 @@ export async function goldEntryDissentOrder(params) {
     data: {
       ...params,
       begin_time,
-      end_time
+      end_time,
     },
   });
 }
@@ -402,7 +410,7 @@ export async function goldEntryDissentOrderSearchAll(params) {
     data: {
       ...params,
       begin_time,
-      end_time
+      end_time,
     },
   });
 }
@@ -441,7 +449,7 @@ export async function goldYieldDissentOrder(params) {
     data: {
       ...params,
       begin_time,
-      end_time
+      end_time,
     },
   });
 }
@@ -456,7 +464,7 @@ export async function goldYieldDissentOrderSearchAll(params) {
     data: {
       ...params,
       begin_time,
-      end_time
+      end_time,
     },
   });
 }
@@ -527,7 +535,7 @@ export async function callback(params) {
     data: {
       ...params,
       begin_time,
-      end_time
+      end_time,
     },
   });
 }
@@ -542,7 +550,7 @@ export async function callbackSearchAll(params) {
     data: {
       ...params,
       begin_time,
-      end_time
+      end_time,
     },
   });
 }
@@ -570,7 +578,6 @@ export async function userBaseGetEmailCode(params) {
     data: params,
   });
 }
-
 
 /*账户管理-商户信息-提交信息*/
 export async function userBaseSubmit(params) {
@@ -779,6 +786,3 @@ export async function financeSettingsWXSubmit(params) {
     data: params,
   });
 }
-
-
-

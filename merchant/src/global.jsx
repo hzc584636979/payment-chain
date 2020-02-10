@@ -9,27 +9,32 @@ var script = document.createElement('script');
 script.type = 'text/javascript';
 script.async = true;
 script.src = 'http://pv.sohu.com/cityjson?ie=utf-8';
-document.head.appendChild(script);    
+document.head.appendChild(script);
 
 window.EXHIBITION = '/';
 window.EXHIBITION2 = '--';
-window.DEFAULTAVATAR = 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png';
+window.DEFAULTAVATAR =
+  'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png';
 
-window.g_getLocalStorage = (key="paymentChain") => {
+window.g_getLocalStorage = (key = 'paymentChain') => {
   return localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key)) : null;
 };
 
-window.g_setLocalStorage = (params, key="paymentChain") => {
+window.g_setLocalStorage = (params, key = 'paymentChain') => {
   return localStorage.setItem(key, JSON.stringify(params));
 };
 
-window.wei2USDT = (val, type='erc20') => {
+window.wei2USDT = (val, type = 'erc20') => {
   return Number(val) ? Number(val) / Math.pow(10, type == 'erc20' ? 6 : 8) : 0;
-}
+};
 
 window.regPhone = phone => {
   return /^1\d{10}$/.test(phone);
-}
+};
+
+window.regBankNumber = number => {
+  return /^(\d{16,19})$/.test(number);
+};
 
 import weixin from '@/assets/icon_saoma_weixin.png';
 import yinlian from '@/assets/icon_saoma_yinlian.png';
@@ -42,14 +47,14 @@ window.payIcon = {
   3: weixin,
   4: visa,
   5: paypal,
-}
+};
 window.payName = {
   1: '银联',
   2: '支付宝',
   3: '微信',
   4: 'VISA',
   5: 'Paypal',
-}
+};
 window.sellStatusType = {
   0: '全部',
   1: '待用户付款',
@@ -80,12 +85,12 @@ window.orderStatus = {
 window.coinType = {
   0: '全部',
   1: 'USDT',
-}
+};
 window.coinType2 = {
   0: '全部',
   1: 'USDT(erc20)',
   2: 'USDT(omni)',
-}
+};
 
 if (pwa) {
   // Notify user if offline now

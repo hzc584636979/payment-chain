@@ -34,26 +34,22 @@ const getValue = obj =>
 }))
 @Form.create()
 class WithdrawList extends Component {
-  state = {
-    
-  };
+  state = {};
 
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
       type: 'withdrawList/fetch',
-      payload:{
-        pageSize:10,
-        page:0,
+      payload: {
+        pageSize: 10,
+        page: 0,
         state: 0,
         time: [moment().startOf('month'), moment().endOf('month')],
       },
     });
   }
 
-  componentWillUnmount() {
-
-  }
+  componentWillUnmount() {}
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
@@ -61,7 +57,7 @@ class WithdrawList extends Component {
 
     const params = {
       ...history,
-      page: pagination.current -1,
+      page: pagination.current - 1,
       pageSize: pagination.pageSize,
     };
 
@@ -79,8 +75,8 @@ class WithdrawList extends Component {
 
       const values = {
         ...fieldsValue,
-        page:0,
-        pageSize:10,
+        page: 0,
+        pageSize: 10,
       };
       dispatch({
         type: 'withdrawList/search',
@@ -97,33 +93,38 @@ class WithdrawList extends Component {
         <Row gutter={24}>
           <Col xl={6} lg={12} sm={24}>
             <FormItem>
-              {getFieldDecorator('state',{ initialValue: history.nickname })(
-                <Input placeholder="平台编号/商户订单号" />
+              {getFieldDecorator('state', { initialValue: history.nickname })(
+                <Input placeholder="平台编号/商户订单号" />,
               )}
             </FormItem>
           </Col>
           <Col xl={6} lg={12} sm={24}>
             <FormItem label="订单状态">
-              {getFieldDecorator('state',{ initialValue: history.state+'' })(
+              {getFieldDecorator('state', { initialValue: history.state + '' })(
                 <Select placeholder="请选择">
-                  {
-                    Object.keys(orderStatus).map(value => {
-                      return <Option value={value} key={value}>{orderStatus[value]}</Option>
-                    })
-                  }
-                </Select>
+                  {Object.keys(orderStatus).map(value => {
+                    return (
+                      <Option value={value} key={value}>
+                        {orderStatus[value]}
+                      </Option>
+                    );
+                  })}
+                </Select>,
               )}
             </FormItem>
           </Col>
           <Col xl={6} lg={12} sm={24}>
             <FormItem>
-              {getFieldDecorator('time',{ initialValue: history.time })(
-                <RangePicker style={{width: '100%'}}/>
+              {getFieldDecorator('time', { initialValue: history.time })(
+                <RangePicker style={{ width: '100%' }} />,
               )}
             </FormItem>
           </Col>
           <Col xl={6} lg={12} sm={24}>
-            <span className={styles.submitButtons} style={{paddingTop: 4, display: 'inline-block'}}>
+            <span
+              className={styles.submitButtons}
+              style={{ paddingTop: 4, display: 'inline-block' }}
+            >
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
@@ -144,40 +145,56 @@ class WithdrawList extends Component {
 
       const values = {
         ...fieldsValue,
-        page:0,
-        pageSize:10,
+        page: 0,
+        pageSize: 10,
       };
       dispatch({
         type: 'withdrawList/export',
         payload: values,
       }).then(data => {
-        if(data.status != 1) {
+        if (data.status != 1) {
           message.error(data.msg);
           return;
         }
-        if(data.data.rows.length <= 0){
+        if (data.data.rows.length <= 0) {
           message.error('选择的日期内无数据');
           return;
         }
         let dataWCN = [];
-        data.data.rows.map((i) => {
+        data.data.rows.map(i => {
           let dataWObj = {
-              "内部订单号": i.order_id,
-              "外部订单号": i.out_order_id,
-              "客户收款方式": payName[i.pay_type],
-              "客户收款昵称": i.payee_name,
+            内部订单号: i.order_id,
+            外部订单号: i.out_order_id,
+            客户收款方式: payName[i.pay_type],
+            客户收款昵称: i.payee_name,
           };
           dataWCN.push(dataWObj);
-        })
+        });
         exportXLSX('提币/充币异议订单', dataWCN);
-      })
+      });
     });
-  }
+  };
 
   render() {
     const { loading } = this.props;
     const { history, list, pagination } = this.props.withdrawList.data;
     const columns = [
+      {
+        title: '操作',
+        key: 'action',
+        fixed: 'left',
+        align: 'center',
+        width: 100,
+        render: (val, record) => {
+          return (
+            <span>
+              <Button>
+                <Link to={`/finance/withdrawList_detail/${record.order_id}`}>查看</Link>
+              </Button>
+            </span>
+          );
+        },
+      },
       {
         title: '申请时间',
         dataIndex: 'order_id',
@@ -205,22 +222,6 @@ class WithdrawList extends Component {
           return orderStatus[val];
         },
       },
-      {
-        title: '操作',
-        key: 'action',
-        fixed: 'right',
-        align: 'center',
-        width: 100,
-        render: (val, record) => {
-          return(
-            <span>
-              <Button>
-                <Link to={`/finance/withdrawList_detail/${record.order_id}`}>查看</Link>
-              </Button>
-            </span>
-          );
-        },
-      },
     ];
 
     return (
@@ -236,7 +237,9 @@ class WithdrawList extends Component {
             scroll={list && list.length > 0 ? { x: 1400 } : {}}
           />
         </div>
-        <a style={{display: 'none'}} href="" download id="hf">导出</a>
+        <a style={{ display: 'none' }} href="" download id="hf">
+          导出
+        </a>
       </ContLayout>
     );
   }

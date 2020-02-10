@@ -10,9 +10,9 @@ import { connect, routerRedux } from 'dva';
 import { Icon, Result, Button, Divider } from 'antd';
 import Authorized from '@/utils/Authorized';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
-import logo from '../assets/logo.svg';
+import logo from '../assets/logo1.png';
 import styles from './BasicLayout.less';
-import zh_CN from 'antd/lib/locale-provider/zh_CN'
+import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import { ConfigProvider } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -124,7 +124,7 @@ const BasicLayout = props => {
     authority: undefined,
   };
 
-  const onLogoutClick = function(){
+  const onLogoutClick = function() {
     dispatch({
       type: 'login/logout',
     });
@@ -133,25 +133,32 @@ const BasicLayout = props => {
   const newRoute = () => {
     let item = [];
     props.route.routes.map(data => {
-      data.path != '/account' && data.path != '/yield' && data.path != '/entry' && item.push(data.routes ? {name: data.name, path: data.path, component: data.routes[0].component} : data)
-    })
+      data.path != '/account' &&
+        data.path != '/yield' &&
+        data.path != '/entry' &&
+        item.push(
+          data.routes
+            ? { name: data.name, path: data.path, component: data.routes[0].component }
+            : data,
+        );
+    });
 
     return {
       ...props.route,
       routes: item,
       allRoutes: props.route.routes,
     };
-  }
+  };
 
   const newProps = {
     ...props,
-    route: newRoute()
-  }
+    route: newRoute(),
+  };
 
   return (
     <ConfigProvider locale={zh_CN}>
       <div className={styles.topTitle}>
-        <Link to="/account">{ currentUser && currentUser.user_name || '设置名称' }</Link>
+        <Link to="/account">{(currentUser && currentUser.user_name) || '设置名称'}</Link>
         <Divider type="vertical" />
         <a onClick={onLogoutClick}>退出</a>
       </div>
@@ -165,13 +172,24 @@ const BasicLayout = props => {
         )}
         menuItemRender={(menuItemProps, defaultDom) => {
           let checked = false;
-          if(props.location.pathname.indexOf(menuItemProps.path) > -1) {
+          if (props.location.pathname.indexOf(menuItemProps.path) > -1) {
             checked = true;
           }
-          if((props.location.pathname.indexOf('/yield/') > -1 || props.location.pathname.indexOf('/entry/') > -1) && menuItemProps.path == "/home") {
+          if (
+            (props.location.pathname.indexOf('/yield/') > -1 ||
+              props.location.pathname.indexOf('/entry/') > -1) &&
+            menuItemProps.path == '/home'
+          ) {
             checked = true;
           }
-          return <Link style={checked ? {borderBottom: '2px solid #1890ff', color: '#1890ff'} : {}} to={menuItemProps.path}>{defaultDom}</Link>;
+          return (
+            <Link
+              style={checked ? { borderBottom: '2px solid #1890ff', color: '#1890ff' } : {}}
+              to={menuItemProps.path}
+            >
+              {defaultDom}
+            </Link>
+          );
         }}
         footerRender={footerRender}
         menuDataRender={menuDataRender}

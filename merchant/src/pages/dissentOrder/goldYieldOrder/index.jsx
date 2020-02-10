@@ -34,17 +34,15 @@ const getValue = obj =>
 }))
 @Form.create()
 class GoldYieldDissentOrder extends Component {
-  state = {
-    
-  };
+  state = {};
 
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
       type: 'goldYieldDissentOrder/fetch',
-      payload:{
-        pageSize:10,
-        page:0,
+      payload: {
+        pageSize: 10,
+        page: 0,
         state: 0,
         token_id: 0,
         time: [moment().startOf('month'), moment().endOf('month')],
@@ -52,9 +50,7 @@ class GoldYieldDissentOrder extends Component {
     });
   }
 
-  componentWillUnmount() {
-
-  }
+  componentWillUnmount() {}
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
@@ -62,7 +58,7 @@ class GoldYieldDissentOrder extends Component {
 
     const params = {
       ...history,
-      page: pagination.current -1,
+      page: pagination.current - 1,
       pageSize: pagination.pageSize,
     };
 
@@ -80,8 +76,8 @@ class GoldYieldDissentOrder extends Component {
 
       const values = {
         ...fieldsValue,
-        page:0,
-        pageSize:10,
+        page: 0,
+        pageSize: 10,
       };
       dispatch({
         type: 'goldYieldDissentOrder/search',
@@ -98,39 +94,46 @@ class GoldYieldDissentOrder extends Component {
         <Row gutter={24}>
           <Col xl={6} lg={12} sm={24}>
             <FormItem label="币种">
-              {getFieldDecorator('token_id',{ initialValue: history.token_id+'' })(
+              {getFieldDecorator('token_id', { initialValue: history.token_id + '' })(
                 <Select placeholder="请选择">
-                  {
-                    Object.keys(coinType).map(value => {
-                      return <Option value={value} key={value}>{coinType[value]}</Option>
-                    })
-                  }
-                </Select>
+                  {Object.keys(coinType).map(value => {
+                    return (
+                      <Option value={value} key={value}>
+                        {coinType[value]}
+                      </Option>
+                    );
+                  })}
+                </Select>,
               )}
             </FormItem>
           </Col>
           <Col xl={6} lg={12} sm={24}>
             <FormItem label="订单状态">
-              {getFieldDecorator('state',{ initialValue: history.state+'' })(
+              {getFieldDecorator('state', { initialValue: history.state + '' })(
                 <Select placeholder="请选择">
-                  {
-                    Object.keys(buyStatusType).map(value => {
-                      return <Option value={value} key={value}>{buyStatusType[value]}</Option>
-                    })
-                  }
-                </Select>
+                  {Object.keys(buyStatusType).map(value => {
+                    return (
+                      <Option value={value} key={value}>
+                        {buyStatusType[value]}
+                      </Option>
+                    );
+                  })}
+                </Select>,
               )}
             </FormItem>
           </Col>
           <Col xl={8} lg={12} sm={24}>
             <FormItem>
-              {getFieldDecorator('time',{ initialValue: history.time })(
-                <RangePicker style={{width: '100%'}}/>
+              {getFieldDecorator('time', { initialValue: history.time })(
+                <RangePicker style={{ width: '100%' }} />,
               )}
             </FormItem>
           </Col>
           <Col xl={4} lg={12} sm={24}>
-            <span className={styles.submitButtons} style={{paddingTop: 4, display: 'inline-block'}}>
+            <span
+              className={styles.submitButtons}
+              style={{ paddingTop: 4, display: 'inline-block' }}
+            >
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
@@ -151,54 +154,76 @@ class GoldYieldDissentOrder extends Component {
 
       const values = {
         ...fieldsValue,
-        page:0,
-        pageSize:10,
+        page: 0,
+        pageSize: 10,
       };
       dispatch({
         type: 'goldYieldDissentOrder/export',
         payload: values,
       }).then(data => {
-        if(data.status != 1) {
+        if (data.status != 1) {
           message.error(data.msg);
           return;
         }
-        if(data.data.rows.length <= 0){
+        if (data.data.rows.length <= 0) {
           message.error('选择的日期内无数据');
           return;
         }
         let dataWCN = [];
-        data.data.rows.map((i) => {
+        data.data.rows.map(i => {
           let dataWObj = {
-              "异议时间": moment(i.issue_create_time).local().format('YYYY-MM-DD HH:mm:ss'),
-              "问题类型": i.issue_type,
-              "平台订单号": i.order_id,
-              "商户订单号": i.out_order_id,
-              "承兑商姓名": i.a_user_name,
-              "币种": coinType[i.token_id],
-              "订单金额（USDT）": i.pay_amount,
-              "订单金额（CNY）": i.pay_amount_cny,
-              "订单状态": buyStatusType[i.state],
-              "订单创建时间": moment(i.created_at).local().format('YYYY-MM-DD HH:mm:ss'),
+            异议时间: moment(i.issue_create_time)
+              .local()
+              .format('YYYY-MM-DD HH:mm:ss'),
+            问题类型: i.issue_type,
+            平台订单号: i.order_id,
+            商户订单号: i.out_order_id,
+            承兑商姓名: i.a_user_name,
+            币种: coinType[i.token_id],
+            代币数量: i.pay_amount,
+            '订单金额（CNY）': i.pay_amount_cny,
+            订单状态: buyStatusType[i.state],
+            订单创建时间: moment(i.created_at)
+              .local()
+              .format('YYYY-MM-DD HH:mm:ss'),
           };
           dataWCN.push(dataWObj);
-        })
+        });
         exportXLSX('出金异议订单', dataWCN);
-      })
+      });
     });
-  }
+  };
 
   render() {
     const { loading } = this.props;
     const { history, list, pagination } = this.props.goldYieldDissentOrder.data;
     const columns = [
       {
+        title: '操作',
+        key: 'action',
+        fixed: 'left',
+        align: 'center',
+        width: 100,
+        render: (val, record) => {
+          return (
+            <span>
+              <Button>
+                <Link to={`/dissentOrder/goldYieldOrder_detail/${record.order_id}`}>查看</Link>
+              </Button>
+            </span>
+          );
+        },
+      },
+      {
         title: '异议时间',
         dataIndex: 'issue_create_time',
         key: 'issue_create_time',
         align: 'center',
         render: (val, record) => {
-          return moment(val).local().format('YYYY-MM-DD HH:mm:ss')
-        }
+          return moment(val)
+            .local()
+            .format('YYYY-MM-DD HH:mm:ss');
+        },
       },
       {
         title: '问题类型',
@@ -229,12 +254,12 @@ class GoldYieldDissentOrder extends Component {
         dataIndex: 'token_id',
         key: 'token_id',
         align: 'center',
-        render:(val,record)=>{
+        render: (val, record) => {
           return coinType[val];
         },
       },
       {
-        title: '订单金额（USDT）',
+        title: '代币数量',
         dataIndex: 'pay_amount',
         key: 'pay_amount',
         align: 'center',
@@ -250,7 +275,7 @@ class GoldYieldDissentOrder extends Component {
         dataIndex: 'state',
         key: 'state',
         align: 'center',
-        render:(val,record)=>{
+        render: (val, record) => {
           return buyStatusType[val];
         },
       },
@@ -260,23 +285,9 @@ class GoldYieldDissentOrder extends Component {
         key: 'created_at',
         align: 'center',
         render: (val, record) => {
-          return moment(val).local().format('YYYY-MM-DD HH:mm:ss')
-        }
-      },
-      {
-        title: '操作',
-        key: 'action',
-        fixed: 'right',
-        align: 'center',
-        width: 100,
-        render: (val, record) => {
-          return(
-            <span>
-              <Button>
-                <Link to={`/dissentOrder/goldYieldOrder_detail/${record.order_id}`}>查看</Link>
-              </Button>
-            </span>
-          );
+          return moment(val)
+            .local()
+            .format('YYYY-MM-DD HH:mm:ss');
         },
       },
     ];
@@ -294,7 +305,9 @@ class GoldYieldDissentOrder extends Component {
             scroll={list && list.length > 0 ? { x: 1400 } : {}}
           />
         </div>
-        <a style={{display: 'none'}} href="" download id="hf">导出</a>
+        <a style={{ display: 'none' }} href="" download id="hf">
+          导出
+        </a>
       </ContLayout>
     );
   }

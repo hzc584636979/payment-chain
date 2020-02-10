@@ -141,7 +141,7 @@ class EntryErc20 extends Component {
         align: 'center',
       },
       {
-        title: '订单金额(USDT)',
+        title: '代币数量',
         dataIndex: 'pay_amount',
         key: 'pay_amount',
         align: 'center',

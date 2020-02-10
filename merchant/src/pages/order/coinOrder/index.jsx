@@ -50,9 +50,7 @@ const statusType = {
 }))
 @Form.create()
 class CoinOrder extends Component {
-  state = {
-    
-  };
+  state = {};
 
   interval = undefined;
 
@@ -60,9 +58,9 @@ class CoinOrder extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'coinOrder/fetch',
-      payload:{
-        pageSize:10,
-        page:0,
+      payload: {
+        pageSize: 10,
+        page: 0,
         state: 0,
         order_type: 0,
         token_id: 0,
@@ -76,7 +74,7 @@ class CoinOrder extends Component {
           count,
         });
       }, 1000);
-    })
+    });
   }
 
   componentWillUnmount() {
@@ -89,7 +87,7 @@ class CoinOrder extends Component {
 
     const params = {
       ...history,
-      page: pagination.current -1,
+      page: pagination.current - 1,
       pageSize: pagination.pageSize,
     };
 
@@ -107,8 +105,8 @@ class CoinOrder extends Component {
 
       const values = {
         ...fieldsValue,
-        page:0,
-        pageSize:10,
+        page: 0,
+        pageSize: 10,
       };
       dispatch({
         type: 'coinOrder/search',
@@ -125,54 +123,61 @@ class CoinOrder extends Component {
         <Row gutter={24}>
           <Col xl={4} lg={12} sm={24}>
             <FormItem label="币种">
-              {getFieldDecorator('token_id',{ initialValue: history.token_id+'' })(
+              {getFieldDecorator('token_id', { initialValue: history.token_id + '' })(
                 <Select placeholder="请选择">
-                  {
-                    Object.keys(coinType2).map(value => {
-                      return <Option value={value} key={value}>{coinType2[value]}</Option>
-                    })
-                  }
-                </Select>
+                  {Object.keys(coinType2).map(value => {
+                    return (
+                      <Option value={value} key={value}>
+                        {coinType2[value]}
+                      </Option>
+                    );
+                  })}
+                </Select>,
               )}
             </FormItem>
           </Col>
           <Col xl={5} lg={12} sm={24}>
             <FormItem label="订单分类">
-              {getFieldDecorator('order_type',{ initialValue: history.order_type+'' })(
+              {getFieldDecorator('order_type', { initialValue: history.order_type + '' })(
                 <Select placeholder="请选择">
-                  {
-                    Object.keys(orderType).map(value => {
-                      return <Option value={value} key={value}>{orderType[value]}</Option>
-                    })
-                  }
-                </Select>
+                  {Object.keys(orderType).map(value => {
+                    return (
+                      <Option value={value} key={value}>
+                        {orderType[value]}
+                      </Option>
+                    );
+                  })}
+                </Select>,
               )}
             </FormItem>
           </Col>
           <Col xl={5} lg={12} sm={24}>
             <FormItem label="订单状态">
-              {getFieldDecorator('state',{ initialValue: history.state+'' })(
+              {getFieldDecorator('state', { initialValue: history.state + '' })(
                 <Select placeholder="请选择">
-                  {
-                    Object.keys(statusType).map(value => {
-                      return <Option value={value} key={value}>{statusType[value]}</Option>
-                    })
-                  }
-                </Select>
+                  {Object.keys(statusType).map(value => {
+                    return (
+                      <Option value={value} key={value}>
+                        {statusType[value]}
+                      </Option>
+                    );
+                  })}
+                </Select>,
               )}
             </FormItem>
           </Col>
           <Col xl={6} lg={12} sm={24}>
             <FormItem>
-              {getFieldDecorator('time',{ initialValue: history.time })(
-                <RangePicker
-                  style={{ width: '100%' }}
-                />
+              {getFieldDecorator('time', { initialValue: history.time })(
+                <RangePicker style={{ width: '100%' }} />,
               )}
             </FormItem>
           </Col>
           <Col xl={4} lg={12} sm={24}>
-            <span className={styles.submitButtons} style={{paddingTop: 4, display: 'inline-block'}}>
+            <span
+              className={styles.submitButtons}
+              style={{ paddingTop: 4, display: 'inline-block' }}
+            >
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
@@ -193,52 +198,70 @@ class CoinOrder extends Component {
 
       const values = {
         ...fieldsValue,
-        page:0,
-        pageSize:10,
+        page: 0,
+        pageSize: 10,
       };
       dispatch({
         type: 'coinOrder/export',
         payload: values,
       }).then(data => {
-        if(data.status != 1) {
+        if (data.status != 1) {
           message.error(data.msg);
           return;
         }
-        if(data.data.list.length <= 0){
+        if (data.data.list.length <= 0) {
           message.error('选择的日期内无数据');
           return;
         }
         let dataWCN = [];
-        data.data.list.map((i) => {
+        data.data.list.map(i => {
           let dataWObj = {
-              "订单号": i.id,
-              "订单分类": orderType[i.type],
-              "币种": coinType2[i.token_id],
-              "订单金额（USDT）": wei2USDT(i.count, i.token_id == 1 ? 'erc20' : 'omni'),
-              "地址": i.to_address,
-              "订单状态": statusType[Number(i.state)+1],
-              "Txhash": i.txid,
-              "创建时间": moment(i.create_time*1000).local().format('YYYY-MM-DD HH:mm:ss'),
+            订单号: i.id,
+            订单分类: orderType[i.type],
+            币种: coinType2[i.token_id],
+            代币数量: wei2USDT(i.count, i.token_id == 1 ? 'erc20' : 'omni'),
+            地址: i.to_address,
+            订单状态: statusType[Number(i.state) + 1],
+            Txhash: i.txid,
+            创建时间: moment(i.create_time * 1000)
+              .local()
+              .format('YYYY-MM-DD HH:mm:ss'),
           };
           dataWCN.push(dataWObj);
-        })
+        });
         exportXLSX('提币、充币订单', dataWCN);
-      })
+      });
     });
-  }
+  };
 
   handleClipBoard = val => {
-    if(copy(val)){
-      message.success('复制成功') 
-    }else{
-      message.error('复制失败，请重试') 
+    if (copy(val)) {
+      message.success('复制成功');
+    } else {
+      message.error('复制失败，请重试');
     }
-  }
+  };
 
   render() {
     const { loading } = this.props;
     const { history, list, pagination } = this.props.coinOrder.data;
     const columns = [
+      {
+        title: '操作',
+        key: 'action',
+        fixed: 'left',
+        align: 'center',
+        width: 100,
+        render: (val, record) => {
+          return (
+            <span>
+              <Button>
+                <Link to={`/order/coinOrder_detail/${record.id}`}>查看</Link>
+              </Button>
+            </span>
+          );
+        },
+      },
       {
         title: '订单号',
         dataIndex: 'id',
@@ -250,7 +273,7 @@ class CoinOrder extends Component {
         dataIndex: 'type',
         key: 'type',
         align: 'center',
-        render:(val,record)=>{
+        render: (val, record) => {
           return orderType[val];
         },
       },
@@ -259,16 +282,16 @@ class CoinOrder extends Component {
         dataIndex: 'token_id',
         key: 'token_id',
         align: 'center',
-        render:(val,record)=>{
+        render: (val, record) => {
           return coinType2[val];
         },
       },
       {
-        title: '订单金额 (USDT)',
+        title: '代币数量',
         dataIndex: 'count',
         key: 'count',
         align: 'center',
-        render:(val,record)=>{
+        render: (val, record) => {
           return wei2USDT(val, record.token_id == 1 ? 'erc20' : 'omni');
         },
       },
@@ -278,8 +301,8 @@ class CoinOrder extends Component {
         key: 'to_address',
         align: 'center',
         ellipsis: true,
-        render:(val,record)=>{
-          return <a onClick={() => this.handleClipBoard(val)}>{ val }</a>;
+        render: (val, record) => {
+          return <a onClick={() => this.handleClipBoard(val)}>{val}</a>;
         },
       },
       {
@@ -287,8 +310,8 @@ class CoinOrder extends Component {
         dataIndex: 'state',
         key: 'state',
         align: 'center',
-        render:(val,record)=>{
-          return statusType[Number(val)+1];
+        render: (val, record) => {
+          return statusType[Number(val) + 1];
         },
       },
       {
@@ -297,8 +320,8 @@ class CoinOrder extends Component {
         key: 'txid',
         align: 'center',
         ellipsis: true,
-        render:(val,record)=>{
-          return <a onClick={() => this.handleClipBoard(val)}>{ val }</a>;
+        render: (val, record) => {
+          return <a onClick={() => this.handleClipBoard(val)}>{val}</a>;
         },
       },
       {
@@ -307,23 +330,9 @@ class CoinOrder extends Component {
         key: 'create_time',
         align: 'center',
         render: (val, record) => {
-          return moment(val*1000).local().format('YYYY-MM-DD HH:mm:ss')
-        }
-      },
-      {
-        title: '操作',
-        key: 'action',
-        fixed: 'right',
-        align: 'center',
-        width: 100,
-        render: (val, record) => {
-          return(
-            <span>
-              <Button>
-                <Link to={`/order/coinOrder_detail/${record.id}`}>查看</Link>
-              </Button>
-            </span>
-          );
+          return moment(val * 1000)
+            .local()
+            .format('YYYY-MM-DD HH:mm:ss');
         },
       },
     ];
@@ -341,7 +350,9 @@ class CoinOrder extends Component {
             scroll={list && list.length > 0 ? { x: 1400 } : {}}
           />
         </div>
-        <a style={{display: 'none'}} href="" download id="hf">导出</a>
+        <a style={{ display: 'none' }} href="" download id="hf">
+          导出
+        </a>
       </ContLayout>
     );
   }

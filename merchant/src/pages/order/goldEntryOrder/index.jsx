@@ -35,9 +35,7 @@ const getValue = obj =>
 }))
 @Form.create()
 class GoldEntryOrder extends Component {
-  state = {
-    
-  };
+  state = {};
 
   interval = undefined;
 
@@ -45,15 +43,15 @@ class GoldEntryOrder extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'goldEntryOrder/fetch',
-      payload:{
-        pageSize:10,
-        page:0,
+      payload: {
+        pageSize: 10,
+        page: 0,
         state: 0,
         token_id: 0,
         order_id: null,
         time: [moment().startOf('month'), moment().endOf('month')],
       },
-    })
+    });
   }
 
   componentWillUnmount() {
@@ -66,7 +64,7 @@ class GoldEntryOrder extends Component {
 
     const params = {
       ...history,
-      page: pagination.current -1,
+      page: pagination.current - 1,
       pageSize: pagination.pageSize,
     };
 
@@ -85,8 +83,8 @@ class GoldEntryOrder extends Component {
       const values = {
         ...fieldsValue,
         order_id: fieldsValue.order_id || null,
-        page:0,
-        pageSize:10,
+        page: 0,
+        pageSize: 10,
       };
       dispatch({
         type: 'goldEntryOrder/search',
@@ -104,46 +102,53 @@ class GoldEntryOrder extends Component {
         <Row gutter={24}>
           <Col xl={5} lg={12} sm={24}>
             <FormItem>
-              {getFieldDecorator('order_id',{ initialValue: history.order_id })(<Input placeholder="平台订单号" />)}
+              {getFieldDecorator('order_id', { initialValue: history.order_id })(
+                <Input placeholder="平台订单号" />,
+              )}
             </FormItem>
           </Col>
           <Col xl={3} lg={12} sm={24}>
             <FormItem label="币种">
-              {getFieldDecorator('token_id',{ initialValue: history.token_id+'' })(
+              {getFieldDecorator('token_id', { initialValue: history.token_id + '' })(
                 <Select placeholder="请选择">
-                  {
-                    Object.keys(coinType).map(value => {
-                      return <Option value={value} key={value}>{coinType[value]}</Option>
-                    })
-                  }
-                </Select>
+                  {Object.keys(coinType).map(value => {
+                    return (
+                      <Option value={value} key={value}>
+                        {coinType[value]}
+                      </Option>
+                    );
+                  })}
+                </Select>,
               )}
             </FormItem>
           </Col>
           <Col xl={5} lg={12} sm={24}>
             <FormItem label="订单状态">
-              {getFieldDecorator('state',{ initialValue: history.state+'' })(
+              {getFieldDecorator('state', { initialValue: history.state + '' })(
                 <Select placeholder="请选择">
-                  {
-                    Object.keys(sellStatusType).map(value => {
-                      return <Option value={value} key={value}>{sellStatusType[value]}</Option>
-                    })
-                  }
-                </Select>
+                  {Object.keys(sellStatusType).map(value => {
+                    return (
+                      <Option value={value} key={value}>
+                        {sellStatusType[value]}
+                      </Option>
+                    );
+                  })}
+                </Select>,
               )}
             </FormItem>
           </Col>
           <Col xl={7} lg={12} sm={24}>
             <FormItem>
-              {getFieldDecorator('time',{ initialValue: history.time })(
-                <RangePicker
-                  style={{ width: '100%' }}
-                />
+              {getFieldDecorator('time', { initialValue: history.time })(
+                <RangePicker style={{ width: '100%' }} />,
               )}
             </FormItem>
           </Col>
           <Col xl={4} lg={12} sm={24}>
-            <span className={styles.submitButtons} style={{paddingTop: 4, display: 'inline-block'}}>
+            <span
+              className={styles.submitButtons}
+              style={{ paddingTop: 4, display: 'inline-block' }}
+            >
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
@@ -165,45 +170,88 @@ class GoldEntryOrder extends Component {
       const values = {
         ...fieldsValue,
         order_id: fieldsValue.order_id || null,
-        page:0,
-        pageSize:10,
+        page: 0,
+        pageSize: 10,
       };
       dispatch({
         type: 'goldEntryOrder/export',
         payload: values,
       }).then(data => {
-        if(data.status != 1) {
+        if (data.status != 1) {
           message.error(data.msg);
           return;
         }
-        if(data.data.rows.length <= 0){
+        if (data.data.rows.length <= 0) {
           message.error('选择的日期内无数据');
           return;
         }
         let dataWCN = [];
-        data.data.rows.map((i) => {
+        data.data.rows.map(i => {
           let dataWObj = {
-              "平台订单号": i.order_id,
-              "商户订单号": i.out_order_id,
-              "承兑商姓名": i.a_user_name,
-              "币种": coinType[i.token_id],
-              "订单金额(USDT)": i.pay_amount,
-              "订单金额(CNY)": i.pay_amount_cny,
-              "手续费(USDT)": i.gas,
-              "订单状态": sellStatusType[i.state],
-              "创建时间": moment(i.created_at).local().format('YYYY-MM-DD HH:mm:ss'),
+            平台订单号: i.order_id,
+            商户订单号: i.out_order_id,
+            承兑商姓名: i.a_user_name,
+            币种: coinType[i.token_id],
+            代币数量: i.pay_amount,
+            '订单金额(CNY)': i.pay_amount_cny,
+            '手续费(USDT)': i.gas,
+            订单状态: sellStatusType[i.state],
+            创建时间: moment(i.created_at)
+              .local()
+              .format('YYYY-MM-DD HH:mm:ss'),
           };
           dataWCN.push(dataWObj);
-        })
+        });
         exportXLSX('出金订单', dataWCN);
-      })
+      });
     });
-  }
+  };
 
   render() {
     const { loading } = this.props;
     const { history, list, pagination } = this.props.goldEntryOrder.data;
     const columns = [
+      {
+        title: '操作',
+        key: 'action',
+        fixed: 'left',
+        align: 'center',
+        width: 200,
+        render: (val, record) => {
+          return (
+            <span>
+              <Button>
+                <Link to={`/order/goldEntryOrder_appeal/${record.order_id}`}>申诉</Link>
+              </Button>
+              <span style={{ display: 'inline-block', width: '10px' }}></span>
+              <Button>
+                <Link to={`/order/goldEntryOrder_detail/${record.order_id}`}>查看</Link>
+              </Button>
+            </span>
+          );
+        },
+      },
+      {
+        title: '币种',
+        dataIndex: 'token_id',
+        key: 'token_id',
+        align: 'center',
+        render: (val, record) => {
+          return coinType[val];
+        },
+      },
+      {
+        title: '代币数量',
+        dataIndex: 'pay_amount',
+        key: 'pay_amount',
+        align: 'center',
+      },
+      {
+        title: '订单金额(CNY)',
+        dataIndex: 'pay_amount_cny',
+        key: 'pay_amount_cny',
+        align: 'center',
+      },
       {
         title: '平台订单号',
         dataIndex: 'order_id',
@@ -222,27 +270,7 @@ class GoldEntryOrder extends Component {
         key: 'a_user_name',
         align: 'center',
       },
-      {
-        title: '币种',
-        dataIndex: 'token_id',
-        key: 'token_id',
-        align: 'center',
-        render:(val,record)=>{
-          return coinType[val];
-        },
-      },
-      {
-        title: '订单金额(USDT)',
-        dataIndex: 'pay_amount',
-        key: 'pay_amount',
-        align: 'center',
-      },
-      {
-        title: '订单金额(CNY)',
-        dataIndex: 'pay_amount_cny',
-        key: 'pay_amount_cny',
-        align: 'center',
-      },
+
       {
         title: '单价(CNY)',
         dataIndex: 'cny_price',
@@ -270,27 +298,9 @@ class GoldEntryOrder extends Component {
         key: 'created_at',
         align: 'center',
         render: (val, record) => {
-          return moment(val).local().format('YYYY-MM-DD HH:mm:ss')
-        },
-      },
-      {
-        title: '操作',
-        key: 'action',
-        fixed: 'right',
-        align: 'center',
-        width: 200,
-        render: (val, record) => {
-          return(
-            <span>
-              <Button>
-                <Link to={`/order/goldEntryOrder_appeal/${record.order_id}`}>申诉</Link>
-              </Button>
-              <span style={{display: 'inline-block', width: '10px'}}></span>
-              <Button>
-                <Link to={`/order/goldEntryOrder_detail/${record.order_id}`}>查看</Link>
-              </Button>
-            </span>
-          );
+          return moment(val)
+            .local()
+            .format('YYYY-MM-DD HH:mm:ss');
         },
       },
     ];
@@ -308,7 +318,9 @@ class GoldEntryOrder extends Component {
             scroll={list && list.length > 0 ? { x: 1400 } : {}}
           />
         </div>
-        <a style={{display: 'none'}} href="" download id="hf">导出</a>
+        <a style={{ display: 'none' }} href="" download id="hf">
+          导出
+        </a>
       </ContLayout>
     );
   }

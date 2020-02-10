@@ -162,7 +162,7 @@ export default {
               name: '出金',
               routes: [
                 {
-                  name: 'erc20出金',
+                  name: 'USDT出金',
                   icon: 'shopping-cart',
                   path: '/yield/yieldErc20',
                   component: './home/yieldErc20',
@@ -180,7 +180,7 @@ export default {
               name: '入金',
               routes: [
                 {
-                  name: 'erc20入金',
+                  name: 'USDT入金',
                   icon: 'shopping-cart',
                   path: '/entry/entryErc20',
                   component: './home/entryErc20',
@@ -475,13 +475,13 @@ export default {
   },
   manifest: {
     basePath: '/',
-  }, 
-  "proxy": {
-    "/server/api/": {
-      "target": "http://192.168.1.20:7003",
-      "changeOrigin": true,
-      pathRewrite: { '^/server': '' },
-    }
+  },
+  proxy: {
+    '/server/api/': {
+      target: 'http://www.boq.hk', //"http://192.168.1.20:7003"
+      changeOrigin: true,
+      pathRewrite: { '^/server': '/merchant' },
+    },
   },
   // chainWebpack: webpackPlugin,
   // proxy: {
@@ -492,4 +492,3 @@ export default {
   //   },
   // },
 };
-
