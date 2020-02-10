@@ -11,7 +11,7 @@ const plugins = [
   [
     'umi-plugin-react',
     {
-      antd: true,
+      antd: false,
       dva: {
         hmr: true,
       },
