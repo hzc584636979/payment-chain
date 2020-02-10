@@ -246,9 +246,14 @@ class GoldYieldOrder extends Component {
       page: pagination.current - 1,
       pageSize: pagination.pageSize,
     };
+    
+    if (!MM) {
+      message.error('请输入交易密码');
+      return;
+    }
 
     dispatch({
-      type: 'goldYieldOrder/yield',
+      type: 'goldYieldOrder/yieldOrder',
       payload: {
         order_id: record.order_id,
         payment_pwd: MM,

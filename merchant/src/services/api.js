@@ -361,6 +361,14 @@ export async function goldYieldOrderAuditOrder(params) {
   });
 }
 
+/*订单管理-出金订单-出金*/
+export async function goldYieldOrderYield(params) {
+  return request(`${apiAddress}/order/goldYield`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
 /*订单管理-出金订单-撤回*/
 export async function goldYieldOrderWithdrawOrder(params) {
   return request(`${apiAddress}/order/cancelOrderr`, {

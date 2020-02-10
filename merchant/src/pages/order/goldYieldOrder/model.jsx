@@ -1,7 +1,7 @@
 import {
   goldYieldOrder,
   goldYieldOrderSearchAll,
-  yieldErc20,
+  goldYieldOrderYield,
   goldYieldOrderWithdrawOrder,
   goldYieldOrderAuditOrder,
 } from '@/services/api';
@@ -61,8 +61,9 @@ const Model = {
       const response = yield call(goldYieldOrderSearchAll, payload);
       return response;
     },
-    *yield({ payload }, { call, put }) {
-      const response = yield call(yieldErc20, payload);
+    *yieldOrder({ payload }, { call, put }) {
+      console.log(payload)
+      const response = yield call(goldYieldOrderYield, payload);
       return response;
     },
     *withdrawOrder({ payload }, { call, put }) {
