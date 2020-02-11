@@ -545,7 +545,7 @@ class Home extends Component {
                               <a onClick={() => this.handlePayVisible('erc20')}>充值</a>
                               <a onClick={() => this.handleWithdrawApplyVisible('erc20')}>提币</a>
                               <Link to="/yield/yieldErc20">出金</Link>
-                              <Link to="/entry/entryErc20">入金</Link>
+                              {/*<Link to="/entry/entryErc20">入金</Link>*/}
                             </div>
                           </div>
                         </Col>

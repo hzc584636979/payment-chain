@@ -371,7 +371,7 @@ export async function goldYieldOrderYield(params) {
 
 /*订单管理-出金订单-撤回*/
 export async function goldYieldOrderWithdrawOrder(params) {
-  return request(`${apiAddress}/order/cancelOrderr`, {
+  return request(`${apiAddress}/order/cancelOrder`, {
     method: 'POST',
     data: params,
   });
