@@ -12,6 +12,7 @@ import {
   Modal,
   message,
   Icon,
+  Popover,
 } from 'antd';
 import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
@@ -490,6 +491,22 @@ class GoldYieldOrder extends Component {
           }
         },
       },
+      /*{
+        title: '支付截图',
+        dataIndex: 'payment_screenshot',
+        key: 'payment_screenshot',
+        align: 'center',
+        render: (val, record) => {
+          return (
+            val ?
+            <Popover content={<a target="_blank" href={val}><img src={val} style={{maxWidth: 100}} /></a>}>
+              <Icon type="file-image" />
+            </Popover>
+            :
+            null
+          );
+        },
+      },*/
       {
         title: '平台订单号',
         dataIndex: 'order_id',

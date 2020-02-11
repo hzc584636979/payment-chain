@@ -57,6 +57,12 @@ class GoldYieldOrderDetail extends Component {
               {goldYieldOrderDetail.cny_price}
             </Descriptions.Item>
             <Descriptions.Item label="手续费">{ `${goldYieldOrderDetail.gas} ${coinType[goldYieldOrderDetail.token_id]}` }</Descriptions.Item>
+            {
+              goldYieldOrderDetail.state == 5 &&
+              <Descriptions.Item label="支付截图">
+                <a target="_blank" href={goldYieldOrderDetail.payment_screenshot}><img src={goldYieldOrderDetail.payment_screenshot} width="150" height="150" /></a>
+              </Descriptions.Item>
+            }
             <Descriptions.Item label="创建时间">
               {moment(goldYieldOrderDetail.created_at)
                 .local()

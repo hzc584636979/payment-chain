@@ -124,7 +124,7 @@ export default {
             },
             {
               path: '/order',
-              redirect: '/order/coinOrder',
+              redirect: '/order/goldYieldOrder',
               authority: ['admin', 'user'],
             },
             {
@@ -212,12 +212,6 @@ export default {
               name: '订单管理',
               routes: [
                 {
-                  name: '提币/充币订单',
-                  icon: 'transaction',
-                  path: '/order/coinOrder',
-                  component: './order/coinOrder',
-                },
-                {
                   name: '出金订单',
                   icon: 'shopping-cart',
                   path: '/order/goldYieldOrder',
@@ -228,6 +222,12 @@ export default {
                   icon: 'shopping-cart',
                   path: '/order/goldEntryOrder',
                   component: './order/goldEntryOrder',
+                },
+                {
+                  name: '提币/充币订单',
+                  icon: 'transaction',
+                  path: '/order/coinOrder',
+                  component: './order/coinOrder',
                 },
                 {
                   name: '申述',
