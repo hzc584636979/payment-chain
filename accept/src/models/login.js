@@ -34,6 +34,7 @@ const Model = {
     changeLoginStatus(state, { payload }) {
       setAuthority('guest');
       g_setLocalStorage(null);
+      setCookie('firstOnlineLayer', '');
       return { ...state, status: payload.status, type: payload.type };
     },
   },
