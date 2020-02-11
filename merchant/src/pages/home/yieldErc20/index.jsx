@@ -163,6 +163,7 @@ class YieldErc20 extends Component {
         ...values,
         pay_type: payType,
         pay_amount: payment_amount,
+        payment_pwd,
       },
     }).then(data => {
       if (data.status != 1) {
@@ -269,7 +270,9 @@ class YieldErc20 extends Component {
                 style={{ width: 385, maxWidth: '100%' }}
               />
               <p style={{ fontSize: 14, color: '#333' }}>
-                <span>可出金余额:{allBalance - allLockBalance} USDT</span>
+                <span>可出金余额:{new BigNumber(allBalance)
+                          .minus(new BigNumber(allLockBalance))
+                          .toNumber()} USDT</span>
                 <br />
                 <span>
                   当前汇率：1USDT≈￥{(1 * currentUser.token_price * currentUser.rate).toFixed(2)}
@@ -503,7 +506,10 @@ class YieldErc20 extends Component {
               <Button
                 type="primary"
                 loading={submitLock}
-                onClick={() => this.submit(allBalance - allLockBalance - gas)}
+                onClick={() => this.submit(new BigNumber(allBalance)
+                          .minus(new BigNumber(allLockBalance))
+                          .minus(new BigNumber(currentUser.gas))
+                          .toNumber())}
               >
                 确定提交
               </Button>

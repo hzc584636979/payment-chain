@@ -126,9 +126,7 @@ class WithdrawApply extends Component {
       return;
     }
 
-    const x = new BigNumber(coin_number);
-    const y = new BigNumber(withdrawApply.gas);
-    if (x.plus(y).toNumber() > maxBalance) {
+    if (coin_number > maxBalance) {
       message.error('超过最大金额，可提金额为可用余额 减去 手续费');
       return;
     }
@@ -242,7 +240,9 @@ class WithdrawApply extends Component {
                     </Button>
                     <p style={{ fontSize: 14, color: '#333' }}>
                       <span style={{ paddingRight: 10 }}>手续费:{withdrawApply.gas} USDT</span>
-                      <span>可用余额:{allBalance - allLockBalance} USDT</span>
+                      <span>可用余额:{new BigNumber(allBalance)
+                          .minus(new BigNumber(allLockBalance))
+                          .toNumber()} USDT</span>
                     </p>
                   </Fragment>
                 )}

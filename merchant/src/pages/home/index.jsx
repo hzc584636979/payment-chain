@@ -196,9 +196,7 @@ class Home extends Component {
       return;
     }
 
-    const x = new BigNumber(withdrawApplyValue);
-    const y = new BigNumber(currentUser.gas);
-    if (x.plus(y).toNumber() > maxCoin) {
+    if (withdrawApplyValue > maxCoin) {
       message.error('超过最大金额，可提金额为可用余额 减去 手续费');
       return;
     }
@@ -424,7 +422,8 @@ class Home extends Component {
                                     textAlign: 'center',
                                   }}
                                 >
-                                  {allBalance - allLockBalance}
+                                  { new BigNumber(allBalance)
+                              .minus(new BigNumber(allLockBalance)).toNumber()}
                                 </span>
                               ) : (
                                 <span
@@ -448,7 +447,8 @@ class Home extends Component {
                                   }}
                                 >
                                   {(
-                                    (allBalance - allLockBalance) *
+                                    (new BigNumber(allBalance)
+                              .minus(new BigNumber(allLockBalance)).toNumber()) *
                                     currentUser.token_price *
                                     currentUser.rate
                                   ).toFixed(2)}
@@ -545,7 +545,7 @@ class Home extends Component {
                               <a onClick={() => this.handlePayVisible('erc20')}>充值</a>
                               <a onClick={() => this.handleWithdrawApplyVisible('erc20')}>提币</a>
                               <Link to="/yield/yieldErc20">出金</Link>
-                              {/*<Link to="/entry/entryErc20">入金</Link>*/}
+                              <Link to="/entry/entryErc20">入金</Link>
                             </div>
                           </div>
                         </Col>
@@ -935,7 +935,11 @@ class Home extends Component {
                       style={{ color: '#333333', textAlign: 'left' }}
                     >
                       <span style={{ paddingRight: 10 }}>手续费:{currentUser.gas} USDT</span>
-                      <span>可用余额:{allBalance - allLockBalance} USDT</span>
+                      <span>可用余额:{
+                        new BigNumber(allBalance)
+                          .minus(new BigNumber(allLockBalance))
+                          .toNumber()
+                        } USDT</span>
                     </Col>
                   </Row>
                   <Row>
