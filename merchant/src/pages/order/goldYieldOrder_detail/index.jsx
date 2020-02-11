@@ -56,7 +56,7 @@ class GoldYieldOrderDetail extends Component {
             <Descriptions.Item label="单价(CNY)">
               {goldYieldOrderDetail.cny_price}
             </Descriptions.Item>
-            <Descriptions.Item label="手续费(USDT)">{goldYieldOrderDetail.gas}</Descriptions.Item>
+            <Descriptions.Item label="手续费">{ `${goldYieldOrderDetail.gas} ${coinType[goldYieldOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="创建时间">
               {moment(goldYieldOrderDetail.created_at)
                 .local()

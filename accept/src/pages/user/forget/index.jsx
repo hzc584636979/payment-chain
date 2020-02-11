@@ -658,7 +658,7 @@ class Forget extends Component {
       renderJsx = (
         <div className={styles.phoneSuccessImg}>
           <img src={img_logon_empty} />
-          <div className={styles.txt}>您已成功注册，赶快去<Link to="/user/login" style={{color: '#1890ff'}}>登录~</Link></div>
+          <div className={styles.txt}>您已成功重置密码，赶快去<Link to="/user/login" style={{color: '#1890ff'}}>登录~</Link></div>
         </div>
       )
     }

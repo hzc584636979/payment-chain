@@ -354,7 +354,7 @@ class YieldOmni extends Component {
         },
       },
       {
-        title: '手续费(USDT)',
+        title: '手续费',
         dataIndex: 'gas',
         key: 'gas',
         align: 'center',
@@ -367,7 +367,7 @@ class YieldOmni extends Component {
               },
             };
           } else {
-            return val;
+            return `${val} ${coinType[record.token_id]}`
           }
         },
       },

@@ -56,7 +56,7 @@ class GoldEntryOrderDetail extends Component {
             <Descriptions.Item label="承兑商姓名">
               {goldEntryOrderDetail.a_user_name}
             </Descriptions.Item>
-            <Descriptions.Item label="手续费(USDT)">{goldEntryOrderDetail.gas}</Descriptions.Item>
+            <Descriptions.Item label="手续费">{ `${goldEntryOrderDetail.gas} ${coinType[goldEntryOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="创建时间">
               {moment(goldEntryOrderDetail.created_at)
                 .local()

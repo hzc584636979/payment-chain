@@ -194,7 +194,7 @@ class GoldEntryOrder extends Component {
             币种: coinType[i.token_id],
             代币数量: i.pay_amount,
             '订单金额(CNY)': i.pay_amount_cny,
-            '手续费(USDT)': i.gas,
+            手续费: `${i.gas} ${coinType[i.token_id]}`,
             订单状态: sellStatusType[i.state],
             创建时间: moment(i.created_at)
               .local()
@@ -278,10 +278,13 @@ class GoldEntryOrder extends Component {
         align: 'center',
       },
       {
-        title: '手续费(USDT)',
+        title: '手续费',
         dataIndex: 'gas',
         key: 'gas',
         align: 'center',
+        render: (val, record) => {
+          return `${val} ${coinType[record.token_id]}`
+        },
       },
       {
         title: '订单状态',

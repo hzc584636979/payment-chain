@@ -279,7 +279,7 @@ class YieldErc20 extends Component {
         }
       },
       {
-        title: '手续费(USDT)',
+        title: '手续费',
         dataIndex: 'gas',
         key: 'gas',
         align: 'center',
@@ -292,7 +292,7 @@ class YieldErc20 extends Component {
               },
             }
           }else {
-            return val;
+            return `${val} ${coinType[record.token_id]}`
           }
         }
       },

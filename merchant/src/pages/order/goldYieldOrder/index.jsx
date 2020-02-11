@@ -199,7 +199,7 @@ class GoldYieldOrder extends Component {
             商户订单号: i.out_order_id,
             承兑商姓名: i.a_user_name,
             '单价(CNY)': i.cny_price,
-            '手续费(USDT)': i.gas,
+            手续费: `${i.gas} ${coinType[i.token_id]}`,
             订单状态: buyStatusType[i.state],
             创建时间: moment(i.created_at)
               .local()
@@ -552,7 +552,7 @@ class GoldYieldOrder extends Component {
         },
       },
       {
-        title: '手续费(USDT)',
+        title: '手续费',
         dataIndex: 'gas',
         key: 'gas',
         align: 'center',
@@ -565,7 +565,7 @@ class GoldYieldOrder extends Component {
               },
             };
           } else {
-            return val;
+            return `${val} ${coinType[record.token_id]}`
           }
         },
       },

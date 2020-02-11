@@ -153,10 +153,13 @@ class EntryOmni extends Component {
         align: 'center',
       },
       {
-        title: '手续费(USDT)',
+        title: '手续费',
         dataIndex: 'gas',
         key: 'gas',
         align: 'center',
+        render: (val, record) => {
+          return `${val} ${coinType[record.token_id]}`
+        },
       },
       {
         title: '创建时间',
