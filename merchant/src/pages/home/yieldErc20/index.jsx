@@ -515,7 +515,7 @@ class YieldErc20 extends Component {
               </Button>
               <span style={{ display: 'inline-block', width: '10px' }}></span>
               <Button>
-                <Link to="/order/goldEntryOrder?history">返回</Link>
+                <Link to="/order/goldYieldOrder">返回</Link>
               </Button>
             </Descriptions.Item>
           </Descriptions>
