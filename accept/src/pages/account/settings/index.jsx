@@ -189,17 +189,17 @@ const CreateTPForm = Form.create()(props => {
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="旧密码">
           {form.getFieldDecorator('old_payment_pwd', {
             rules: [{ required: true, message: '请输入旧密码' },{ required: true, pattern: /\w{6,}$/, message: '旧密码最少为6位' },{validator: validateToNextPassword},{whitespace: true, message: '不能有空格'}],
-          })(<Input type="password" placeholder="请输入旧密码" maxLength={8} />)}
+          })(<Input type="password" placeholder="请输入旧密码" maxLength={24} />)}
         </FormItem>
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="新密码">
           {form.getFieldDecorator('new_payment_pwd', {
-            rules: [{ required: true, message: '请输入新密码' },{ required: true, pattern: /\w{6,}$/, message: '新密码最少为6位' },{validator: validateToNextPassword},{whitespace: true, message: '不能有空格'}],
-          })(<Input type="password" placeholder="请输入新密码" maxLength={8} />)}
+            rules: [{ required: true, message: '请输入新密码' },{ required: true, pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d]{6,24}$/, message: '新密码必须由大写字母，小写字母，数字且不含有特殊字符组成的6位~24位密码' },{validator: validateToNextPassword},{whitespace: true, message: '不能有空格'}],
+          })(<Input type="password" placeholder="请输入新密码" maxLength={24} />)}
         </FormItem>
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="确认密码">
           {form.getFieldDecorator('againPassword', {
             rules: [{ required: true, message: '请确认密码'},{validator: confirmPassword},{whitespace: true, message: '不能有空格'}],
-          })(<Input type="password" placeholder="请确认密码" maxLength={8} />)}
+          })(<Input type="password" placeholder="请确认密码" maxLength={24} />)}
         </FormItem>
       </Form>
     </Modal>
@@ -244,17 +244,117 @@ const CreateLPForm = Form.create()(props => {
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="旧密码">
           {form.getFieldDecorator('old_login_pwd', {
             rules: [{ required: true, message: '请输入旧密码' },{ required: true, pattern: /\w{6,}$/, message: '旧密码最少为6位' },{validator: validateToNextPassword},{whitespace: true, message: '不能有空格'}],
-          })(<Input type="password" placeholder="请输入旧密码" maxLength={8} />)}
+          })(<Input type="password" placeholder="请输入旧密码" maxLength={24} />)}
         </FormItem>
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="新密码">
           {form.getFieldDecorator('new_login_pwd', {
-            rules: [{ required: true, message: '请输入新密码' },{ required: true, pattern: /\w{6,}$/, message: '新密码最少为6位' },{validator: validateToNextPassword},{whitespace: true, message: '不能有空格'}],
-          })(<Input type="password" placeholder="请输入新密码" maxLength={8} />)}
+            rules: [{ required: true, message: '请输入新密码' },{ required: true, pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d]{6,24}$/, message: '新密码必须由大写字母，小写字母，数字且不含有特殊字符组成的6位~24位密码' },{validator: validateToNextPassword},{whitespace: true, message: '不能有空格'}],
+          })(<Input type="password" placeholder="请输入新密码" maxLength={24} />)}
         </FormItem>
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="确认密码">
           {form.getFieldDecorator('againPassword', {
             rules: [{ required: true, message: '请确认密码'},{validator: confirmPassword},{whitespace: true, message: '不能有空格'}],
-          })(<Input type="password" placeholder="请确认密码" maxLength={8} />)}
+          })(<Input type="password" placeholder="请确认密码" maxLength={24} />)}
+        </FormItem>
+      </Form>
+    </Modal>
+  );
+});
+
+const CreateForgetTPForm = Form.create()(props => {
+  const { modalVisible, form, submit, cancel, onGetCaptcha, count2, count3 } = props;
+  const okHandle = () => {
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+      form.resetFields();
+      submit(fieldsValue);
+    });
+  };
+  const cancelHandle = () => {
+    form.resetFields();
+    cancel();
+  }
+  const validateToNextPassword = (rule, value, callback) => {
+    if (value) {
+      form.validateFields(['againPassword'], { force: true });
+    }
+    callback();
+  }
+  const confirmPassword = (rule,value,callback) => {
+    if (value && value !== form.getFieldValue('payment_pwd')) {
+      callback('您输入的两个密码不一致！');
+    } else {
+      callback();
+    }
+  }
+  return (
+    <Modal
+      title="忘记交易密码"
+      visible={modalVisible}
+      onOk={okHandle}
+      onCancel={cancelHandle}
+      centered
+    >
+      <Form>
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="新密码">
+          {form.getFieldDecorator('payment_pwd', {
+            rules: [{ required: true, message: '请输入新密码' },{ required: true, pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d]{6,24}$/, message: '新密码必须由大写字母，小写字母，数字且不含有特殊字符组成的6位~24位密码' },{validator: validateToNextPassword},{whitespace: true, message: '不能有空格'}],
+          })(<Input type="password" placeholder="请输入新密码" maxLength={24} />)}
+        </FormItem>
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="确认密码">
+          {form.getFieldDecorator('againPassword', {
+            rules: [{ required: true, message: '请确认密码'},{validator: confirmPassword},{whitespace: true, message: '不能有空格'}],
+          })(<Input type="password" placeholder="请确认密码" maxLength={24} />)}
+        </FormItem>
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="手机验证码">
+          <Row gutter={8}>
+            <Col span={16}>
+              {form.getFieldDecorator('telephone_verify_code', {
+                rules: [{ required: true, message: '请输入正确的验证码' }],
+              })(<Input placeholder="请输入验证码" maxLength={6} />)}
+            </Col>
+            <Col span={8}>
+              <Button
+                disabled={!!count2}
+                className={styles.getCaptcha}
+                onClick={() => onGetCaptcha('phone')}
+                style={{
+                  width: 140,
+                  display: 'inline-block',
+                  marginLeft: 20
+                }}
+              >
+                {count2
+                  ? `${count2} s`
+                  : '获取手机验证码'}
+              </Button>
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="邮箱验证码">
+          <Row gutter={8}>
+            <Col span={16}>
+              {form.getFieldDecorator('email_verify_code', {
+                rules: [{ required: true, message: '请输入正确的验证码' }],
+              })(<Input placeholder="请输入验证码" maxLength={6} />)}
+            </Col>
+            <Col span={8}>
+              <Button
+                disabled={!!count3}
+                className={styles.getCaptcha}
+                onClick={() => onGetCaptcha('email')}
+                style={{
+                  width: 140,
+                  display: 'inline-block',
+                  marginLeft: 20
+                }}
+              >
+                {count3
+                  ? `${count3} s`
+                  : '获取邮箱验证码'}
+              </Button>
+            </Col>
+          </Row>
         </FormItem>
       </Form>
     </Modal>
@@ -275,6 +375,8 @@ class UserSafe extends Component {
   };
 
   interval = undefined;
+  interval2 = undefined;
+  interval3 = undefined;
 
   componentDidMount() {
     const { dispatch } = this.props;
@@ -286,6 +388,8 @@ class UserSafe extends Component {
 
   componentWillUnmount() {
     clearInterval(this.interval);
+    clearInterval(this.interval2);
+    clearInterval(this.interval3);
   }
 
   handleChange = file => {
@@ -495,9 +599,113 @@ class UserSafe extends Component {
     })
   }
 
+  forgetTPOk = fieldsValue => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'userSafe/forgetTP',
+      payload: fieldsValue,
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      dispatch({
+        type: 'user/getUserInfo',
+      })
+      this.setState({
+        forgetTPVisible: false,
+      })
+    })
+  }
+
+  forgetTPCancel = () => {
+    this.handleModalVisible('forgetTPVisible');
+  }
+
+  forgetOnGetCaptcha = type => {
+    const { currentUser, dispatch } = this.props;
+
+    if(type == 'phone' && (!currentUser.telephone_number || !regPhone(currentUser.telephone_number))) {
+      message.error('请输入正确的手机号！');
+      return;
+    }
+
+    if(type == 'email' && (!currentUser.email_address || !(/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(currentUser.email_address)))) {
+      message.error('请输入正确的邮箱地址！');
+      return;
+    }
+
+    if(type == 'phone') {
+      clearInterval(this.interval2);
+    }else {
+      clearInterval(this.interval3);
+    }
+    
+    let url = '';
+    let params = {};
+
+    if(type == 'phone') {
+      url = 'userSafe/getPhoneCode';
+      params = {
+        telephone_number: currentUser.telephone_number,
+      }
+    }else if(type == 'email') {
+      url = 'userSafe/getEmailCode';
+      params = {
+        email_address: currentUser.email_address,
+      }
+    }
+
+    dispatch({
+      type: url,
+      payload: params,
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+
+      let count = 59;
+      if(type == 'phone') {
+        this.setState({
+          count2: count,
+        });
+        this.interval2 = window.setInterval(() => {
+          count -= 1;
+          this.setState({
+            count2: count,
+          });
+
+          if (count === 0) {
+            clearInterval(this.interval2);
+          }
+        }, 1000);
+      }else if(type == 'email') {
+        this.setState({
+          count3: count,
+        });
+        this.interval3 = window.setInterval(() => {
+          count -= 1;
+          this.setState({
+            count3: count,
+          });
+
+          if (count === 0) {
+            clearInterval(this.interval3);
+          }
+        }, 1000);
+      }
+    })
+  }
+
   render() {
     const { currentUser, fetchLoading } = this.props;
-    const { count, phoneVisible, emailVisible, TPVisible, LPVisible, toggleMD5, loading, logo_path } = this.state;
+    const { count, phoneVisible, emailVisible, TPVisible, LPVisible, toggleMD5, loading, logo_path, forgetTPVisible, count2, count3 } = this.state;
 
     const uploadButton = (
       <div>
@@ -527,6 +735,14 @@ class UserSafe extends Component {
     const LPMethods = {
       submit: this.LPOk,
       cancel: this.LPCancel,
+    };
+
+    const forgetTPMethods = {
+      submit: this.forgetTPOk,
+      cancel: this.forgetTPCancel,
+      onGetCaptcha: this.forgetOnGetCaptcha,
+      count2: count2, 
+      count3: count3, 
     };
 
     return (
@@ -588,6 +804,17 @@ class UserSafe extends Component {
                 >
                   修改交易密码
                 </Button>
+                <Button
+                  type="primary"
+                  onClick={() => this.handleModalVisible('forgetTPVisible')}
+                  style={{
+                    width: 140,
+                    display: 'inline-block',
+                    marginLeft: 20
+                  }}
+                >
+                  忘记交易密码
+                </Button>
               </Descriptions.Item>
               <Descriptions.Item label="登录密码">
                 <Input type="password" value={currentUser.login_pwd} disabled={true} style={{width: 385}} />
@@ -627,6 +854,7 @@ class UserSafe extends Component {
         <CreateEmailForm {...emailMethods} modalVisible={ emailVisible } />
         <CreateTPForm {...TPMethods} modalVisible={ TPVisible } />
         <CreateLPForm {...LPMethods} modalVisible={ LPVisible } />
+        <CreateForgetTPForm {...forgetTPMethods} modalVisible={ forgetTPVisible } />
       </ContLayout>
     );
   }

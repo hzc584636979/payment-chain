@@ -795,6 +795,14 @@ export async function userSafeReviseTP(params) {
   });
 }
 
+/*账户管理-安全设置-忘记交易密码*/
+export async function userSafeForgetTP(params) {
+  return request(`${apiAddress}/login/paymentPwdReset`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
 /*账户管理-安全设置-修改登录密码*/
 export async function userSafeReviseLP(params) {
   return request(`${apiAddress}/account/modifyLoginPwd`, {

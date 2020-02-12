@@ -1,5 +1,6 @@
 import { Button, Descriptions, Input, Upload, Icon, message, Row, Col, Select } from 'antd';
 import React, { Component, Fragment } from 'react';
+import Link from 'umi/link';
 import { connect } from 'dva';
 import BigNumber from 'bignumber.js';
 import ContLayout from '@/components/ContLayout';
@@ -243,6 +244,11 @@ class WithdrawApply extends Component {
               </Descriptions.Item>
               <Descriptions.Item className={styles.noneBeforeIcon}>
                 <Button type="primary" loading={submitLoading} onClick={() => this.submit(new BigNumber(allBalance).minus(new BigNumber(allLockBalance)).minus(new BigNumber(withdrawApply.gas)).toNumber())}>确定提交</Button>
+                <Button
+                  type="link"
+                >
+                  <Link to="/finance/withdrawList">提币/充币查询</Link>
+                </Button>
               </Descriptions.Item>
             </Descriptions>
           </div>

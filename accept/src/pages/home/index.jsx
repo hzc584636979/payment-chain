@@ -577,6 +577,11 @@ class Home extends Component {
                     </Button>
                     <div className={styles.address}>{payLayerAddress}</div>
                     <Button type="primary" style={{width: 130}} onClick={() => this.handleClipBoard(payLayerAddress)}>复制地址</Button>
+                    <Button
+                      type="link"
+                    >
+                      <Link to="/finance/withdrawList">提币/充币查询</Link>
+                    </Button>
                   </div>
                 }
                 <div className={styles.desc}>

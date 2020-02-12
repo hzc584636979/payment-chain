@@ -131,8 +131,8 @@ class Forget extends Component {
   }
 
   checkPassword = (rule, value, callback) => {
-    if (value.length < 6 || value.length > 8) {
-      callback('请输入6位~8位之间的密码');
+    if (!(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d]{6,24}$/.test(value))) {
+      callback('必须由大写字母，小写字母，数字且不含有特殊字符组成的6位~24位密码');
     } else {
       const { form } = this.props;
 
@@ -375,7 +375,7 @@ class Forget extends Component {
               <Input
                 size="large"
                 type="password"
-                maxLength={8}
+                maxLength={24}
                 style={{
                   width: 360
                 }}
@@ -398,7 +398,7 @@ class Forget extends Component {
               <Input
                 size="large"
                 type="password"
-                maxLength={8}
+                maxLength={24}
                 style={{
                   width: 360
                 }}
@@ -609,7 +609,7 @@ class Forget extends Component {
               <Input
                 size="large"
                 type="password"
-                maxLength={8}
+                maxLength={24}
                 style={{
                   width: 360
                 }}
@@ -632,7 +632,7 @@ class Forget extends Component {
               <Input
                 size="large"
                 type="password"
-                maxLength={8}
+                maxLength={24}
                 style={{
                   width: 360
                 }}

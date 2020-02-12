@@ -4,6 +4,7 @@ import {
   userSafeRevisePhone, 
   userSafeReviseEmail, 
   userSafeReviseTP, 
+  userSafeForgetTP,
   userSafeReviseLP,
   userSafeModifyLogo, 
 } from '@/services/api';
@@ -36,6 +37,10 @@ const Model = {
     },
     *reviseTP({ payload }, { call, put }) {
       const response = yield call(userSafeReviseTP, payload);
+      return response;
+    },
+    *forgetTP({ payload }, { call, put }) {
+      const response = yield call(userSafeForgetTP, payload);
       return response;
     },
     *reviseLP({ payload }, { call, put }) {
