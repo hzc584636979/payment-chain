@@ -244,9 +244,9 @@ class SellOrder extends Component {
           let dataWObj = {
               "币种": coinType[i.token_id || 1],
               "代币数量": i.pay_amount,
+              "付款金额(CNY)": i.pay_amount_cny,
               "付款用户": i.payee_name,
               "付款方式": payName[i.pay_type],
-              "付款金额(CNY)": i.pay_amount_cny,
               "平台订单号": i.order_id,
               "商户订单号": i.out_order_id,
               "收币商户": i.m_user_name,
@@ -341,17 +341,10 @@ class SellOrder extends Component {
         align: 'center',
       },
       {
-        title: '时效',
-        dataIndex: 'aging',
-        key: 'aging',
+        title: '付款金额(CNY)',
+        dataIndex: 'pay_amount_cny',
+        key: 'pay_amount_cny',
         align: 'center',
-        render: (val, record) => {
-          if(record.state == 2) {
-            return this.getAging(record) || <span style={{color: '#EA0000'}}>0 : 0</span>;
-          }else {
-            return EXHIBITION2;
-          }
-        },
       },
       {
         title: '付款用户',
@@ -369,10 +362,17 @@ class SellOrder extends Component {
         },
       },
       {
-        title: '付款金额(CNY)',
-        dataIndex: 'pay_amount_cny',
-        key: 'pay_amount_cny',
+        title: '时效',
+        dataIndex: 'aging',
+        key: 'aging',
         align: 'center',
+        render: (val, record) => {
+          if(record.state == 2) {
+            return this.getAging(record) || <span style={{color: '#EA0000'}}>0 : 0</span>;
+          }else {
+            return EXHIBITION2;
+          }
+        },
       },
       {
         title: '平台订单号',

@@ -427,19 +427,6 @@ class BuyOrder extends Component {
         align: 'center',
       },
       {
-        title: '时效',
-        dataIndex: 'aging',
-        key: 'aging',
-        align: 'center',
-        render: (val, record) => {
-          if(record.state == 4 || record.state == 3) {
-            return this.getAging(record) || <span style={{color: '#EA0000'}}>0 : 0</span>;
-          }else {
-            return EXHIBITION2;
-          }
-        },
-      },
-      {
         title: '客户姓名',
         dataIndex: 'payee_name',
         key: 'payee_name',
@@ -468,6 +455,19 @@ class BuyOrder extends Component {
         align: 'center',
         render:(val,record)=>{
           return <img src={payIcon[val]} style={{maxWidth: 40}} />;
+        },
+      },
+      {
+        title: '时效',
+        dataIndex: 'aging',
+        key: 'aging',
+        align: 'center',
+        render: (val, record) => {
+          if(record.state == 4 || record.state == 3) {
+            return this.getAging(record) || <span style={{color: '#EA0000'}}>0 : 0</span>;
+          }else {
+            return EXHIBITION2;
+          }
         },
       },
       {

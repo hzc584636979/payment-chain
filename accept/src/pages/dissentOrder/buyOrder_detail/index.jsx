@@ -173,8 +173,8 @@ class BuyDissentOrderDetail extends Component {
             }
 
             <Descriptions.Item label="币种">{ coinType[buyDissentOrderDetail.token_id] }</Descriptions.Item>
-            <Descriptions.Item label="代币数量">{ buyDissentOrderDetail.payee_name }</Descriptions.Item>
-            <Descriptions.Item label="等值（CNY）">{ buyDissentOrderDetail.payee_account }</Descriptions.Item>
+            <Descriptions.Item label="代币数量">{ buyDissentOrderDetail.pay_amount }</Descriptions.Item>
+            <Descriptions.Item label="等值（CNY）">{ buyDissentOrderDetail.pay_amount_cny }</Descriptions.Item>
             <Descriptions.Item label="订单状态">{ buyStatusType[buyDissentOrderDetail.state] }</Descriptions.Item>
             <Descriptions.Item label="创建时间">{ moment(buyDissentOrderDetail.created_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
             <Descriptions.Item label="订单更新时间">{ moment(buyDissentOrderDetail.updated_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>

@@ -180,7 +180,7 @@ class BuyDissentOrder extends Component {
               "商户订单号": i.out_order_id,
               "客户姓名": i.payee_name,
               "收款方式": payName[i.pay_type],
-              "商户昵称": i.payee_name,
+              "商户昵称": i.m_user_name,
               "币种": coinType[i.token_id],
               "代币数量": i.pay_amount,
               "等值（CNY）": i.pay_amount_cny,
@@ -269,8 +269,8 @@ class BuyDissentOrder extends Component {
       },
       {
         title: '商户昵称',
-        dataIndex: 'payee_name',
-        key: 'payee_name',
+        dataIndex: 'm_user_name',
+        key: 'm_user_name',
         align: 'center',
       },
       {

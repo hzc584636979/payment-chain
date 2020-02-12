@@ -136,7 +136,6 @@ class SellDissentOrderDetail extends Component {
             <Descriptions.Item label="付款方式"><img src={payIcon[sellDissentOrderDetail.pay_type]} style={{maxWidth: 40}} /></Descriptions.Item>
             <Descriptions.Item label="币种">{ coinType[sellDissentOrderDetail.token_id || 1] }</Descriptions.Item>
             <Descriptions.Item label="代币数量">{ sellDissentOrderDetail.pay_amount }</Descriptions.Item>
-            <Descriptions.Item label="代币数量">{ sellDissentOrderDetail.pay_amount }</Descriptions.Item>
             <Descriptions.Item label="付款金额(CNY)">{ sellDissentOrderDetail.pay_amount_cny }</Descriptions.Item>
             <Descriptions.Item label="收币商户">{ sellDissentOrderDetail.m_user_name }</Descriptions.Item>
             <Descriptions.Item label="订单状态">{ sellStatusType[sellDissentOrderDetail.state] }</Descriptions.Item>
