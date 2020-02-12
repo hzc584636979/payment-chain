@@ -333,7 +333,7 @@ class GoldYieldOrder extends Component {
               <Input
                 type="password"
                 placeholder="输入交易密码"
-                maxLength={8}
+                maxLength={24}
                 onChange={this.handleMM}
                 value={MM}
                 style={{ width: '20%' }}

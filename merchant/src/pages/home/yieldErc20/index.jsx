@@ -500,11 +500,12 @@ class YieldErc20 extends Component {
 
             <Descriptions.Item label={<span className={styles.itemLabel}>交易密码</span>}>
               <Input
+                type="password"
                 value={payment_pwd}
                 placeholder="请输入交易密码"
                 onChange={e => this.handleUpKey(e, 'payment_pwd')}
                 style={{ width: 385, maxWidth: '100%' }}
-                maxLength={8}
+                maxLength={24}
               />
             </Descriptions.Item>
             <Descriptions.Item className={styles.noneBeforeIcon}>
