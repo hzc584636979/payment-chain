@@ -809,6 +809,11 @@ class Home extends Component {
                     >
                       复制地址
                     </Button>
+                    <Button
+                      type="link"
+                    >
+                      <Link to="/order/coinOrder">提币/充币查询</Link>
+                    </Button>
                   </div>
                 )}
                 <div className={styles.desc}>
@@ -996,6 +1001,11 @@ class Home extends Component {
                     }
                   >
                     确定
+                  </Button>
+                  <Button
+                    type="link"
+                  >
+                    <Link to="/order/coinOrder">提币/充币查询</Link>
                   </Button>
                 </div>
               </div>

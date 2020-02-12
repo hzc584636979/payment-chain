@@ -91,7 +91,7 @@ class Login extends Component {
     const { type, loginErrorStatus, loginErrorMsg } = this.state;
     return (
       <div className={styles.main}>
-        <div className={styles.top}>支付链开启支付的新时代</div>
+        <div className={styles.top}>支付链开启支付的新时代<p>商户登录</p></div>
         <LoginComponents
           className={styles.LoginComponentsBg}
           defaultActiveKey={type}
@@ -127,7 +127,7 @@ class Login extends Component {
             <Password
               name="phonePassword"
               placeholder={`请输入登录密码`}
-              maxLength={8}
+              maxLength={24}
               rules={[
                 {
                   required: true,
@@ -165,7 +165,7 @@ class Login extends Component {
             <Password
               name="emailPassword"
               placeholder={`请输入登录密码`}
-              maxLength={8}
+              maxLength={24}
               rules={[
                 {
                   required: true,

@@ -101,7 +101,12 @@ class EntryErc20 extends Component {
               />
               <p style={{ fontSize: 14, color: '#333' }}>
                 <span>
-                  当前汇率：1USDT≈￥{(1 * currentUser.token_price * currentUser.rate).toFixed(2)}
+                  当前汇率：1USDT≈{
+                    cashType == 1 ?
+                    `￥${(1 * currentUser.token_price * currentUser.rate).toFixed(2)}`
+                    :
+                    `＄${(1 * currentUser.token_price).toFixed(2)}`
+                  }
                 </span>
               </p>
             </Descriptions.Item>

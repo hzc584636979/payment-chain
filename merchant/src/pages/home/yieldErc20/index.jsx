@@ -275,7 +275,12 @@ class YieldErc20 extends Component {
                           .toNumber()} USDT</span>
                 <br />
                 <span>
-                  当前汇率：1USDT≈￥{(1 * currentUser.token_price * currentUser.rate).toFixed(2)}
+                  当前汇率：1USDT≈{
+                    cashType == 1 ?
+                    `￥${(1 * currentUser.token_price * currentUser.rate).toFixed(2)}`
+                    :
+                    `＄${(1 * currentUser.token_price).toFixed(2)}`
+                  }
                 </span>
               </p>
             </Descriptions.Item>

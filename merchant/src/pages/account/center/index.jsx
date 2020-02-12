@@ -299,8 +299,8 @@ class UserBase extends Component {
     }else if(!id_card_back_path) {
       message.error('请上传身份证国徽面后提交');
       return;
-    }else if(!payment_pwd) {
-      message.error('请填写交易密码后提交');
+    }else if(!payment_pwd || !(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d]{6,24}$/.test(payment_pwd))) {
+      message.error('请填写正确的交易密码后提交');
       return;
     }else if(!telephone_number || !regPhone(telephone_number)) {
       message.error('请填写正确的绑定手机后提交');
@@ -460,8 +460,9 @@ class UserBase extends Component {
                   </Col>
                 </Row>
               </Descriptions.Item>
-              <Descriptions.Item label={<span className={styles.itemLabel}>交易密码</span>}>
-                <Input type="password" disabled={disabled} onChange={this.handleTx} style={{width: 385}} placeholder="输入交易密码" maxLength={8} value={payment_pwd} />
+              <Descriptions.Item label={<span className={styles.itemLabel}>交易密码</span>} className={styles.textTop}>
+                <Input type="password" disabled={disabled} onChange={this.handleTx} style={{width: 385}} placeholder="输入交易密码" maxLength={24} value={payment_pwd} />
+                <p style={{fontSize: 14, color: '#EA0000'}}>必须由大写字母，小写字母，数字且不含有特殊字符组成的6位~24位密码</p>
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>绑定手机</span>}>
                 <Input disabled={disabled} onChange={this.handlePhone} style={{width: 385}} placeholder="输入手机号" maxLength={11} value={telephone_number} />

@@ -329,29 +329,7 @@ class GoldYieldOrder extends Component {
       renderStr = {
         children: (
           <Row gutter={24} type="flex" justify="space-between" className={`${styles.itemLayer}`}>
-            <Col xl={10} sm={24}>
-              <Row>
-                <Col span={12}>{record.a_user_name}</Col>
-                <Col span={12}>单价 {record.cny_price} CNY</Col>
-              </Row>
-              <Row>
-                <Col span={12}>数量 {record.pay_amount} USDT</Col>
-                <Col span={12}>
-                  {record.min_amount} CNY - {record.max_amount} CNY
-                </Col>
-              </Row>
-            </Col>
             <Col xl={14} sm={24}>
-              <Input disabled={true} value={`${record.pay_amount} USDT`} style={{ width: '15%' }} />
-              <span style={{ color: '#999999', padding: '0 5px' }}>
-                <Icon type="swap" />
-              </span>
-              <Input
-                disabled={true}
-                value={`${record.pay_amount_cny} CNY`}
-                style={{ width: '15%' }}
-              />
-              <span style={{ display: 'inline-block', width: 15 }}></span>
               <Input
                 type="password"
                 placeholder="输入交易密码"
@@ -366,6 +344,28 @@ class GoldYieldOrder extends Component {
               </Button>
               <span style={{ display: 'inline-block', width: 15 }}></span>
               <Button onClick={this.cancelButton}>取消</Button>
+              <span style={{ display: 'inline-block', width: 15 }}></span>
+              <Input disabled={true} value={`${record.pay_amount} USDT`} style={{ width: '15%' }} />
+              <span style={{ color: '#999999', padding: '0 5px' }}>
+                <Icon type="swap" />
+              </span>
+              <Input
+                disabled={true}
+                value={`${record.pay_amount_cny} CNY`}
+                style={{ width: '15%' }}
+              />
+            </Col>
+            <Col xl={10} sm={24}>
+              <Row>
+                <Col span={12}>{record.a_user_name}</Col>
+                <Col span={12}>单价 {record.cny_price} CNY</Col>
+              </Row>
+              <Row>
+                <Col span={12}>数量 {record.pay_amount} USDT</Col>
+                <Col span={12}>
+                  {record.min_amount} CNY - {record.max_amount} CNY
+                </Col>
+              </Row>
             </Col>
           </Row>
         ),
