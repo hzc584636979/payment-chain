@@ -4,16 +4,18 @@
  * https://github.com/ant-design/ant-design-pro-layout
  */
 import ProLayout, { DefaultFooter, SettingDrawer } from '@ant-design/pro-layout';
-import React, { Fragment, useEffect } from 'react';
+import React, { PureComponent, Fragment, useEffect } from 'react';
 import Link from 'umi/link';
+import withRouter from 'umi/withRouter';
 import { connect, routerRedux } from 'dva';
-import { Icon, Result, Button, Divider } from 'antd';
+import { Icon, Result, Button, Divider, openNotification } from 'antd';
 import Authorized from '@/utils/Authorized';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo1.png';
 import styles from './BasicLayout.less';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import { ConfigProvider } from 'antd';
+import { socketSubscribe, destroyWebSocket } from '@/utils/socketSubscribe-mqtt';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
@@ -93,46 +95,46 @@ const footerRender = () => {
   return '';
 };
 
-const BasicLayout = props => {
-  const {
-    currentUser = {
-      avatar: '',
-      name: '',
-    },
-    dispatch,
-    children,
-    settings,
-    location = {
-      pathname: '/',
-    },
-  } = props;
-  /**
-   * constructor
-   */
+class BasicLayout extends PureComponent {
+  constructor(props) {
+    super(props);
+  
+    this.state = {};
+  }
 
-  !g_getLocalStorage() && dispatch(routerRedux.push('/user/login'));
+  componentDidMount() {
+    !g_getLocalStorage() && dispatch(routerRedux.push('/user/login'));
 
-  useEffect(() => {
-    if (dispatch) {
-      dispatch({
-        type: 'user/getUserInfo',
-      });
-    }
-  }, []);
+    this.props.dispatch({
+      type: 'user/getUserInfo',
+    });
 
-  const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
-    authority: undefined,
-  };
+    const { mqtt_theme } = window.g_getLocalStorage() || {};
+    socketSubscribe({
+      subscribeList: `${window.g_getLocalStorage().user_id}order`,
+      backList: (d) => {
+        console.log(d)
+        let msBody = JSON.parse(d.body);
+        if(msBody.event == 'order') {
+          this.openNotification('提醒', msBody.data)
+        }
+      }
+    });
+  }
 
-  const onLogoutClick = function() {
-    dispatch({
+  componentWillUnmount() {
+    destroyWebSocket();
+  }
+
+  onLogoutClick = () => {
+    this.props.dispatch({
       type: 'login/logout',
     });
   };
 
-  const newRoute = () => {
+  newRoute = () => {
     let item = [];
-    props.route.routes.map(data => {
+    this.props.route.routes.map(data => {
       data.path != '/account' &&
         data.path != '/yield' &&
         data.path != '/entry' &&
@@ -144,76 +146,95 @@ const BasicLayout = props => {
     });
 
     return {
-      ...props.route,
+      ...this.props.route,
       routes: item,
-      allRoutes: props.route.routes,
+      allRoutes: this.props.route.routes,
     };
+  }
+
+  openNotification = (message, msBody) => {
+    const key = `open${Date.now()}`;
+    const args = {
+      message,
+      description: <p>您有一笔状态为{msBody.order_type == 1 ? sellStatusType[msBody.order_state] : buyStatusType[msBody.order_state]}的{msBody.order_type == 1 ? '入金' : '出金'}订单，<a onClick={() => {
+        window.g_app._store.dispatch(routerRedux.push('/order'));
+        notification.close(key);
+      }}>前往查看</a></p>,
+      key,
+      duration: 0,
+    };
+    notification.open(args);
   };
 
-  const newProps = {
-    ...props,
-    route: newRoute(),
-  };
+  render() {
+    const {
+      currentUser,
+      dispatch,
+      children,
+      settings,
+      location = {
+        pathname: '/',
+      },
+    } = this.props;
+    const authorized = getAuthorityFromRouter(this.props.route.routes, location.pathname || '/') || {
+      authority: undefined,
+    };
+    const newProps = {
+      ...this.props,
+      route: this.newRoute()
+    }
 
-  return (
-    <ConfigProvider locale={zh_CN}>
-      <div className={styles.topTitle}>
-        <Link to="/account">{(currentUser && currentUser.user_name) || '设置名称'}</Link>
-        <Divider type="vertical" />
-        <a onClick={onLogoutClick}>退出</a>
-      </div>
-      <ProLayout
-        logo={logo}
-        menuHeaderRender={(logoDom, titleDom) => (
-          <Link to="/">
-            {logoDom}
-            {titleDom}
-          </Link>
-        )}
-        menuItemRender={(menuItemProps, defaultDom) => {
-          let checked = false;
-          if (props.location.pathname.indexOf(menuItemProps.path) > -1) {
-            checked = true;
-          }
-          if (
-            (props.location.pathname.indexOf('/yield/') > -1 ||
-              props.location.pathname.indexOf('/entry/') > -1) &&
-            menuItemProps.path == '/home'
-          ) {
-            checked = true;
-          }
-          return (
-            <Link
-              style={checked ? { borderBottom: '2px solid #1890ff', color: '#1890ff' } : {}}
-              to={menuItemProps.path}
-            >
-              {defaultDom}
+    return (
+      <ConfigProvider locale={zh_CN}>
+        <div className={styles.topTitle}>
+          <Link to="/account">{ currentUser && currentUser.user_name || '设置名称' }</Link>
+          <Divider type="vertical" />
+          <a onClick={this.onLogoutClick}>退出</a>
+        </div>
+        <ProLayout
+          logo={logo}
+          menuHeaderRender={(logoDom, titleDom) => (
+            <Link to="/">
+              {logoDom}
+              {titleDom}
             </Link>
-          );
-        }}
-        footerRender={footerRender}
-        menuDataRender={menuDataRender}
-        {...newProps}
-        {...settings}
-      >
-        <Authorized authority={authorized.authority} noMatch={noMatch}>
-          {children}
-        </Authorized>
-      </ProLayout>
-      {/*<SettingDrawer
-        settings={settings}
-        onSettingChange={config =>
-          dispatch({
-            type: 'settings/changeSetting',
-            payload: config,
-          })
-        }
-      />*/}
-    </ConfigProvider>
-  );
-};
+          )}
+          menuItemRender={(menuItemProps, defaultDom) => {
+            let checked = false;
+            if (this.props.location.pathname.indexOf(menuItemProps.path) > -1) {
+              checked = true;
+            }
+            if (
+              (this.props.location.pathname.indexOf('/yield/') > -1 ||
+                this.props.location.pathname.indexOf('/entry/') > -1) &&
+              menuItemProps.path == '/home'
+            ) {
+              checked = true;
+            }
+            return (
+              <Link
+                style={checked ? { borderBottom: '2px solid #1890ff', color: '#1890ff' } : {}}
+                to={menuItemProps.path}
+              >
+                {defaultDom}
+              </Link>
+            );
+          }}
+          footerRender={footerRender}
+          menuDataRender={menuDataRender}
+          {...newProps}
+          {...settings}
+        >
+          <Authorized authority={authorized.authority} noMatch={noMatch}>
+            {children}
+          </Authorized>
+        </ProLayout>
+      </ConfigProvider>
+    );
+  }
+}
 
-export default connect(({ user, settings }) => ({
+export default withRouter(connect(({ user, settings }) => ({
   currentUser: user.currentUser,
   settings,
-}))(BasicLayout);
+}))(BasicLayout));
