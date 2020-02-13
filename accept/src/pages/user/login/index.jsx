@@ -91,7 +91,7 @@ class Login extends Component {
     const { type, loginErrorStatus, loginErrorMsg } = this.state;
     return (
       <div className={styles.main}>
-        <div className={styles.top}>支付链开启支付的新时代<p>承兑商登录</p></div>
+        <div className={styles.top}>承兑商登录<p>支付链开启支付的新时代</p></div>
         <LoginComponents
           className={styles.LoginComponentsBg}
           defaultActiveKey={type}
