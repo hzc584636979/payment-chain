@@ -204,12 +204,8 @@ class Home extends Component {
   firstOnlineLayerSubmit = () => {
     const { firstBuyStatus, firstSellStatus } = this.state;
     setCookie('firstOnlineLayer', '1');
-    if(firstBuyStatus) {
-      this.toggleManagement('buyStatus', true);
-    }
-    if(firstSellStatus) {
-      this.toggleManagement('sellStatus', true);
-    }
+    this.toggleManagement('buyStatus', firstBuyStatus);
+    this.toggleManagement('sellStatus', firstSellStatus);
   }
 
   firstOnlineLayerChangeStatus = (key, status) => {
