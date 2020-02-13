@@ -60,6 +60,21 @@ class BuyOrder extends Component {
   interval = undefined;
 
   componentDidMount() {
+    this.getViewData();
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.location.query.key && this.initKey != nextProps.location.query.key) {
+      this.initKey = nextProps.location.query.key;
+      this.getViewData();
+    }
+  }
+
+  getViewData = () => {
     const { dispatch } = this.props;
     dispatch({
       type: 'buyOrder/fetch',
@@ -81,14 +96,6 @@ class BuyOrder extends Component {
       }, 1000);
     })
   }
-
-  componentWillUnmount() {
-    clearInterval(this.interval);
-  }
-
-/*  shouldComponentUpdate() {
-    console.log('1232321321')
-  }*/
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;

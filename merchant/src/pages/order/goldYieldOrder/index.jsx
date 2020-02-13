@@ -45,6 +45,21 @@ class GoldYieldOrder extends Component {
   interval = undefined;
 
   componentDidMount() {
+    this.getViewData();
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.location.query.key && this.initKey != nextProps.location.query.key) {
+      this.initKey = nextProps.location.query.key;
+      this.getViewData();
+    }
+  }
+
+  getViewData = () => {
     const { dispatch } = this.props;
     dispatch({
       type: 'goldYieldOrder/fetch',
@@ -57,10 +72,6 @@ class GoldYieldOrder extends Component {
         time: [moment().startOf('month'), moment().endOf('month')],
       },
     });
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.interval);
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {

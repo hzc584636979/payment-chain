@@ -6,6 +6,7 @@
 import ProLayout, { DefaultFooter, SettingDrawer } from '@ant-design/pro-layout';
 import React, { PureComponent, Fragment, useEffect } from 'react';
 import Link from 'umi/link';
+import router from 'umi/router';
 import withRouter from 'umi/withRouter';
 import { connect, routerRedux } from 'dva';
 import { Icon, Result, Button, Divider, notification } from 'antd';
@@ -149,9 +150,15 @@ class BasicLayout extends PureComponent {
     const args = {
       message,
       description: <p>您有一笔状态为{data.order_type == 1 ? buyStatusType[data.order_state] : sellStatusType[data.order_state]}的{data.order_type == 1 ? '购买' : '出售'}订单，<a onClick={() => {
-        window.g_app._store.dispatch(routerRedux.push(data.order_type == 1 ? `/order/buyOrder?v=${key}` : '/order/sellOrder'));
-        notification.close(key);
-      }}>前往查看</a></p>,
+          router.push({
+            pathname: data.order_type == 1 ? `/order/buyOrder` : '/order/sellOrder',
+            query: {
+              key,
+            },
+          });
+          notification.close(key);
+        }
+      }>前往查看</a></p>,
       key,
       duration: 0,
     };
