@@ -35,15 +35,8 @@ class GoldEntryOrderDetail extends Component {
             <Descriptions.Item label="订单状态">
               {sellStatusType[goldEntryOrderDetail.state]}
             </Descriptions.Item>
-            <Descriptions.Item label="币种">
-              {coinType[goldEntryOrderDetail.token_id]}
-            </Descriptions.Item>
-            <Descriptions.Item label="代币数量">
-              {goldEntryOrderDetail.pay_amount}
-            </Descriptions.Item>
-            <Descriptions.Item label="订单金额(CNY)">
-              {goldEntryOrderDetail.pay_amount_cny}
-            </Descriptions.Item>
+            <Descriptions.Item label="订单金额">{ `${goldEntryOrderDetail.pay_amount_cny} ${cashType[goldEntryOrderDetail.currency_type]}` }</Descriptions.Item>
+            <Descriptions.Item label="代币数量">{ `${goldEntryOrderDetail.pay_amount} ${coinType[goldEntryOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="单价(CNY)">
               {goldEntryOrderDetail.cny_price}
             </Descriptions.Item>

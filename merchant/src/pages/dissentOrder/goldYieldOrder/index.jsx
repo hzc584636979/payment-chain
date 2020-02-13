@@ -172,18 +172,17 @@ class GoldYieldDissentOrder extends Component {
         let dataWCN = [];
         data.data.rows.map(i => {
           let dataWObj = {
-            异议时间: moment(i.issue_create_time)
+            "异议时间": moment(i.issue_create_time)
               .local()
               .format('YYYY-MM-DD HH:mm:ss'),
-            问题类型: i.issue_type,
-            平台订单号: i.order_id,
-            商户订单号: i.out_order_id,
-            承兑商姓名: i.a_user_name,
-            币种: coinType[i.token_id],
-            代币数量: i.pay_amount,
-            '订单金额（CNY）': i.pay_amount_cny,
-            订单状态: buyStatusType[i.state],
-            订单创建时间: moment(i.created_at)
+            "问题类型": i.issue_type,
+            "平台订单号": i.order_id,
+            "商户订单号": i.out_order_id,
+            "承兑商姓名": i.a_user_name,
+            "订单金额": `${i.pay_amount_cny} ${cashType[i.currency_type]}`,
+            "代币数量": `${i.pay_amount} ${coinType[i.token_id]}`,
+            "订单状态": buyStatusType[i.state],
+            "订单创建时间": moment(i.created_at)
               .local()
               .format('YYYY-MM-DD HH:mm:ss'),
           };
@@ -250,25 +249,22 @@ class GoldYieldDissentOrder extends Component {
         align: 'center',
       },
       {
-        title: '币种',
-        dataIndex: 'token_id',
-        key: 'token_id',
+        title: '订单金额',
+        dataIndex: 'pay_amount_cny',
+        key: 'pay_amount_cny',
         align: 'center',
-        render: (val, record) => {
-          return coinType[val];
-        },
+        render: (val,record) => {
+          return `${val} ${cashType[record.currency_type]}`;
+        }
       },
       {
         title: '代币数量',
         dataIndex: 'pay_amount',
         key: 'pay_amount',
         align: 'center',
-      },
-      {
-        title: '订单金额（CNY）',
-        dataIndex: 'pay_amount_cny',
-        key: 'pay_amount_cny',
-        align: 'center',
+        render: (val,record) => {
+          return `${val} ${coinType[record.token_id]}`;
+        }
       },
       {
         title: '订单状态',

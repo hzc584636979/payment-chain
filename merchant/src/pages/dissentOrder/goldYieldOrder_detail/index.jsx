@@ -147,15 +147,8 @@ class GoldYieldDissentOrderDetail extends Component {
             <Descriptions.Item label="承兑商姓名">
               {goldYieldDissentOrderDetail.a_user_name}
             </Descriptions.Item>
-            <Descriptions.Item label="币种">
-              {coinType[goldYieldDissentOrderDetail.token_id]}
-            </Descriptions.Item>
-            <Descriptions.Item label="代币数量">
-              {goldYieldDissentOrderDetail.pay_amount}
-            </Descriptions.Item>
-            <Descriptions.Item label="订单金额（CNY）">
-              {goldYieldDissentOrderDetail.pay_amount_cny}
-            </Descriptions.Item>
+            <Descriptions.Item label="订单金额">{ `${goldYieldDissentOrderDetail.pay_amount_cny} ${cashType[goldYieldDissentOrderDetail.currency_type]}` }</Descriptions.Item>
+            <Descriptions.Item label="代币数量">{ `${goldYieldDissentOrderDetail.pay_amount} ${coinType[goldYieldDissentOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="订单创建时间">
               {moment(goldYieldDissentOrderDetail.created_at)
                 .local()

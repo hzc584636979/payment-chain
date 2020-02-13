@@ -35,15 +35,8 @@ class GoldYieldOrderDetail extends Component {
             <Descriptions.Item label="订单状态">
               {buyStatusType[goldYieldOrderDetail.state]}
             </Descriptions.Item>
-            <Descriptions.Item label="币种">
-              {coinType[goldYieldOrderDetail.token_id]}
-            </Descriptions.Item>
-            <Descriptions.Item label="代币数量">
-              {goldYieldOrderDetail.pay_amount}
-            </Descriptions.Item>
-            <Descriptions.Item label="订单金额(CNY)">
-              {goldYieldOrderDetail.pay_amount_cny}
-            </Descriptions.Item>
+            <Descriptions.Item label="订单金额">{ `${goldYieldOrderDetail.pay_amount_cny} ${cashType[goldYieldOrderDetail.currency_type]}` }</Descriptions.Item>
+            <Descriptions.Item label="代币数量">{ `${goldYieldOrderDetail.pay_amount} ${coinType[goldYieldOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="平台订单号">
               {goldYieldOrderDetail.order_id}
             </Descriptions.Item>

@@ -193,16 +193,15 @@ class GoldYieldOrder extends Component {
         let dataWCN = [];
         data.data.rows.map(i => {
           let dataWObj = {
-            币种: coinType[i.token_id],
-            代币数量: i.pay_amount,
-            '订单金额(CNY)': i.pay_amount_cny,
-            平台订单号: i.order_id,
-            商户订单号: i.out_order_id,
-            承兑商姓名: i.a_user_name,
-            '单价(CNY)': i.cny_price,
-            手续费: `${i.gas} ${coinType[i.token_id]}`,
-            订单状态: buyStatusType[i.state],
-            创建时间: moment(i.created_at)
+            "订单金额": `${i.pay_amount_cny} ${cashType[i.currency_type]}`,
+            "代币数量": `${i.pay_amount} ${coinType[i.token_id]}`,
+            "平台订单号": i.order_id,
+            "商户订单号": i.out_order_id,
+            "承兑商姓名": i.a_user_name,
+            "单价(CNY)": i.cny_price,
+            "手续费": `${i.gas} ${coinType[i.token_id]}`,
+            '订单状态': buyStatusType[i.state],
+            "创建时间": moment(i.created_at)
               .local()
               .format('YYYY-MM-DD HH:mm:ss'),
           };
@@ -351,7 +350,7 @@ class GoldYieldOrder extends Component {
               </span>
               <Input
                 disabled={true}
-                value={`${record.pay_amount_cny} CNY`}
+                value={`${record.pay_amount_cny} ${cashType[record.currency_type]}`}
                 style={{ width: '15%' }}
               />
             </Col>
@@ -438,9 +437,9 @@ class GoldYieldOrder extends Component {
         },
       },
       {
-        title: '币种',
-        dataIndex: 'token_id',
-        key: 'token_id',
+        title: '订单金额',
+        dataIndex: 'pay_amount_cny',
+        key: 'pay_amount_cny',
         align: 'center',
         render: (val, record) => {
           if (yieldId == record.order_id) {
@@ -451,7 +450,7 @@ class GoldYieldOrder extends Component {
               },
             };
           } else {
-            return coinType[val];
+            return `${val} ${cashType[record.currency_type]}`;
           }
         },
       },
@@ -469,25 +468,7 @@ class GoldYieldOrder extends Component {
               },
             };
           } else {
-            return val;
-          }
-        },
-      },
-      {
-        title: '订单金额(CNY)',
-        dataIndex: 'pay_amount_cny',
-        key: 'pay_amount_cny',
-        align: 'center',
-        render: (val, record) => {
-          if (yieldId == record.order_id) {
-            return {
-              children: val,
-              props: {
-                colSpan: 0,
-              },
-            };
-          } else {
-            return val;
+            return `${val} ${coinType[record.token_id]}`;
           }
         },
       },

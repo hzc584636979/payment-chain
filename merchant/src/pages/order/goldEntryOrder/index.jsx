@@ -12,7 +12,7 @@ import {
   Modal,
   message,
 } from 'antd';
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
@@ -74,8 +74,8 @@ class GoldEntryOrder extends Component {
     });
   };
 
-  handleSearch = e => {
-    e.preventDefault();
+  handleSearch = (e, pagination = {}) => {
+    e && e.preventDefault();
     const { dispatch, form } = this.props;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -83,8 +83,8 @@ class GoldEntryOrder extends Component {
       const values = {
         ...fieldsValue,
         order_id: fieldsValue.order_id || null,
-        page: 0,
-        pageSize: 10,
+        page: pagination.page || 0,
+        pageSize: pagination.pageSize || 10,
       };
       dispatch({
         type: 'goldEntryOrder/search',
@@ -188,15 +188,14 @@ class GoldEntryOrder extends Component {
         let dataWCN = [];
         data.data.rows.map(i => {
           let dataWObj = {
-            平台订单号: i.order_id,
-            商户订单号: i.out_order_id,
-            承兑商姓名: i.a_user_name,
-            币种: coinType[i.token_id],
-            代币数量: i.pay_amount,
-            '订单金额(CNY)': i.pay_amount_cny,
-            手续费: `${i.gas} ${coinType[i.token_id]}`,
-            订单状态: sellStatusType[i.state],
-            创建时间: moment(i.created_at)
+            "订单金额": `${i.pay_amount_cny} ${cashType[i.currency_type]}`,
+            "代币数量": `${i.pay_amount} ${coinType[i.token_id]}`,
+            "平台订单号": i.order_id,
+            "商户订单号": i.out_order_id,
+            "承兑商姓名": i.a_user_name,
+            "手续费": `${i.gas} ${coinType[i.token_id]}`,
+            "订单状态": sellStatusType[i.state],
+            "创建时间": moment(i.created_at)
               .local()
               .format('YYYY-MM-DD HH:mm:ss'),
           };
@@ -207,6 +206,31 @@ class GoldEntryOrder extends Component {
     });
   };
 
+  confirmPayment = order_id => {
+    const { dispatch } = this.props;
+    const { pagination } = this.props.goldEntryOrder.data;
+
+    const params = {
+      page: pagination.current - 1,
+      pageSize: pagination.pageSize,
+    };
+
+    dispatch({
+      type: 'goldEntryOrder/confirmPayment',
+      payload: {
+        order_id,
+      },
+    }).then(data => {
+      if (data.status != 1) {
+        message.error(data.msg);
+        return;
+      } else {
+        message.success('操作成功');
+      }
+      this.handleSearch(null, params);
+    });
+  }
+
   render() {
     const { loading } = this.props;
     const { history, list, pagination } = this.props.goldEntryOrder.data;
@@ -216,10 +240,17 @@ class GoldEntryOrder extends Component {
         key: 'action',
         fixed: 'left',
         align: 'center',
-        width: 200,
+        width: 300,
         render: (val, record) => {
           return (
             <span>
+              {
+                record.state == 1 &&
+                <Fragment>
+                  <Button type="primary" onClick={() => this.confirmPayment(record.order_id)}>确认已付款</Button>
+                  <span style={{ display: 'inline-block', width: '10px' }}></span>
+                </Fragment>
+              }
               <Button>
                 <Link to={`/order/goldEntryOrder_appeal/${record.order_id}`}>申诉</Link>
               </Button>
@@ -232,25 +263,22 @@ class GoldEntryOrder extends Component {
         },
       },
       {
-        title: '币种',
-        dataIndex: 'token_id',
-        key: 'token_id',
+        title: '订单金额',
+        dataIndex: 'pay_amount_cny',
+        key: 'pay_amount_cny',
         align: 'center',
-        render: (val, record) => {
-          return coinType[val];
-        },
+        render: (val,record) => {
+          return `${val} ${cashType[record.currency_type]}`;
+        }
       },
       {
         title: '代币数量',
         dataIndex: 'pay_amount',
         key: 'pay_amount',
         align: 'center',
-      },
-      {
-        title: '订单金额(CNY)',
-        dataIndex: 'pay_amount_cny',
-        key: 'pay_amount_cny',
-        align: 'center',
+        render: (val,record) => {
+          return `${val} ${coinType[record.token_id]}`;
+        }
       },
       {
         title: '平台订单号',

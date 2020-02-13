@@ -1,6 +1,6 @@
 import { Button, Descriptions, Input, Select, Upload, Icon, message, Popover } from 'antd';
 import React, { Component, Fragment } from 'react';
-import { connect } from 'dva';
+import { connect, routerRedux } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
 import QRCode from 'qrcode.react';
@@ -14,6 +14,7 @@ import styles from './style.less';
 }))
 class EntryErc20 extends Component {
   state = {
+    cashType: 1,
     payType: 1,
     imageUrl: null,
   };
@@ -24,7 +25,7 @@ class EntryErc20 extends Component {
 
   submit = maxBalance => {
     const { currentUser } = this.props;
-    const { payType, payment_amount, payment_name } = this.state;
+    const { payType, payment_amount, payment_name, cashType } = this.state;
     let values = {};
 
     if (!Number(payment_amount) || payment_amount == 0) {
@@ -48,12 +49,13 @@ class EntryErc20 extends Component {
         pay_name: payment_name,
         pay_amount: payment_amount,
         pay_type: payType,
+        currency_type: cashType,
       },
     }).then(data => {
       if (data.status != 1) {
         message.error(data.msg);
       } else {
-        message.success('操作成功');
+        message.success(<p>操作成功，<a onClick={() => {dispatch(routerRedux.push('/order/goldEntryOrder'))}}>请前往入金订单确认已付款</a></p>);
       }
       this.setState({
         submitLock: false,
@@ -79,10 +81,29 @@ class EntryErc20 extends Component {
     });
   };
 
+  changeCashType = cashType => {
+    this.setState({
+      cashType,
+      payType: cashType == 1 ? 1 : 4,
+      imageUrl: null,
+      params: {},
+    });
+  };
+
   render() {
     const { currentUser, fetchLoading } = this.props;
-    const { submitLock, payType, payment_amount } = this.state;
-    const gas = new BigNumber(payment_amount)
+    const { submitLock, payType, payment_amount, cashType } = this.state;
+    const cashToCoin = 
+      cashType == 1 ?
+      new BigNumber(payment_amount || 0)
+      .dividedBy(new BigNumber(currentUser.token_price))
+      .dividedBy(new BigNumber(currentUser.rate))
+      .toNumber()
+      :
+      new BigNumber(payment_amount || 0)
+      .dividedBy(new BigNumber(currentUser.token_price))
+      .toNumber();
+    const gas = new BigNumber(cashToCoin)
       .multipliedBy(new BigNumber(currentUser.gas_percent))
       .toNumber();
 
@@ -90,6 +111,22 @@ class EntryErc20 extends Component {
       <ContLayout>
         <div className={styles.wrap}>
           <Descriptions column={1}>
+            <Descriptions.Item label={<span className={styles.itemLabel}>现金类型</span>}>
+              <Button
+                style={{ marginRight: 20 }}
+                type={cashType == 1 ? 'primary' : null}
+                onClick={() => this.changeCashType(1)}
+              >
+                CNY
+              </Button>
+              <Button
+                style={{ marginRight: 20 }}
+                type={cashType == 2 ? 'primary' : null}
+                onClick={() => this.changeCashType(2)}
+              >
+                USD
+              </Button>
+            </Descriptions.Item>
             <Descriptions.Item
               label={<span className={styles.itemLabel}>入金金额</span>}
               className={styles.textTop}
@@ -100,6 +137,10 @@ class EntryErc20 extends Component {
                 style={{ width: 385, maxWidth: '100%' }}
               />
               <p style={{ fontSize: 14, color: '#333' }}>
+                <span>
+                  当前入金：{cashToCoin} USDT <span style={{color: '#ff4141'}}>(汇率实时变动，具体金额以订单为准)</span>
+                </span>
+                <br/>
                 <span>
                   当前汇率：1USDT≈{
                     cashType == 1 ?
@@ -113,39 +154,44 @@ class EntryErc20 extends Component {
             <Descriptions.Item label={<span className={styles.itemLabel}>手续费</span>}>
               {gas || 0} USDT
             </Descriptions.Item>
-            <Descriptions.Item label={<span className={styles.itemLabel}>支付方式</span>}>
-              <Button
-                style={{ marginRight: 20 }}
-                type={payType == 1 ? 'primary' : null}
-                onClick={() => this.changeType(1)}
-              >
-                银行卡
-              </Button>
-              <Button
-                style={{ marginRight: 20 }}
-                type={payType == 2 ? 'primary' : null}
-                onClick={() => this.changeType(2)}
-              >
-                支付宝
-              </Button>
-              <Button
-                style={{ marginRight: 20 }}
-                type={payType == 3 ? 'primary' : null}
-                onClick={() => this.changeType(3)}
-              >
-                微信
-              </Button>
-              <Button
-                style={{ marginRight: 20 }}
-                type={payType == 4 ? 'primary' : null}
-                onClick={() => this.changeType(4)}
-              >
-                VISA
-              </Button>
-              <Button type={payType == 5 ? 'primary' : null} onClick={() => this.changeType(5)}>
-                Paypal
-              </Button>
-            </Descriptions.Item>
+            {cashType == 1 ? (
+              <Descriptions.Item label={<span className={styles.itemLabel}>支付方式</span>}>
+                <Button
+                  style={{ marginRight: 20 }}
+                  type={payType == 1 ? 'primary' : null}
+                  onClick={() => this.changeType(1)}
+                >
+                  银行卡
+                </Button>
+                <Button
+                  style={{ marginRight: 20 }}
+                  type={payType == 2 ? 'primary' : null}
+                  onClick={() => this.changeType(2)}
+                >
+                  支付宝
+                </Button>
+                <Button
+                  style={{ marginRight: 20 }}
+                  type={payType == 3 ? 'primary' : null}
+                  onClick={() => this.changeType(3)}
+                >
+                  微信
+                </Button>
+              </Descriptions.Item>
+            ) : (
+              <Descriptions.Item label={<span className={styles.itemLabel}>支付方式</span>}>
+                <Button
+                  style={{ marginRight: 20 }}
+                  type={payType == 4 ? 'primary' : null}
+                  onClick={() => this.changeType(4)}
+                >
+                  VISA
+                </Button>
+                <Button type={payType == 5 ? 'primary' : null} onClick={() => this.changeType(5)}>
+                  Paypal
+                </Button>
+              </Descriptions.Item>
+            )}
             <Descriptions.Item label={<span className={styles.itemLabel}>付款人姓名</span>}>
               <Input
                 placeholder="请输入付款人姓名"

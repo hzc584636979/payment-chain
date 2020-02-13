@@ -39,9 +39,9 @@ class YieldErc20 extends Component {
 
   componentWillUnmount() {}
 
-  submit = maxBalance => {
+  submit = (maxBalance, coin) => {
     const { currentUser } = this.props;
-    const { payType, imageUrl, payment_amount } = this.state;
+    const { payType, imageUrl, payment_amount, cashType } = this.state;
     const {
       bank_name,
       bank_number,
@@ -64,7 +64,7 @@ class YieldErc20 extends Component {
       return;
     }
 
-    if (payment_amount > maxBalance) {
+    if (coin > maxBalance) {
       message.error('超过最大可出金金额，可提金额为可出金金额 减去 手续费');
       return;
     }
@@ -164,6 +164,7 @@ class YieldErc20 extends Component {
         pay_type: payType,
         pay_amount: payment_amount,
         payment_pwd,
+        currency_type: cashType,
       },
     }).then(data => {
       if (data.status != 1) {
@@ -238,7 +239,18 @@ class YieldErc20 extends Component {
       paypal_number,
       payment_pwd,
     } = this.state.params;
-    const gas = new BigNumber(payment_amount)
+
+    const cashToCoin = 
+      cashType == 1 ?
+      new BigNumber(payment_amount || 0)
+      .dividedBy(new BigNumber(currentUser.token_price))
+      .dividedBy(new BigNumber(currentUser.rate))
+      .toNumber()
+      :
+      new BigNumber(payment_amount || 0)
+      .dividedBy(new BigNumber(currentUser.token_price))
+      .toNumber();
+    const gas = new BigNumber(cashToCoin)
       .multipliedBy(new BigNumber(currentUser.gas_percent))
       .toNumber();
     const allBalance = currentUser.id
@@ -260,33 +272,6 @@ class YieldErc20 extends Component {
       <ContLayout>
         <div className={styles.wrap}>
           <Descriptions column={1}>
-            <Descriptions.Item
-              label={<span className={styles.itemLabel}>出金金额</span>}
-              className={styles.textTop}
-            >
-              <Input
-                placeholder="请输入出金金额"
-                onChange={this.handlePaymentAmount}
-                style={{ width: 385, maxWidth: '100%' }}
-              />
-              <p style={{ fontSize: 14, color: '#333' }}>
-                <span>可出金余额:{new BigNumber(allBalance)
-                          .minus(new BigNumber(allLockBalance))
-                          .toNumber()} USDT</span>
-                <br />
-                <span>
-                  当前汇率：1USDT≈{
-                    cashType == 1 ?
-                    `￥${(1 * currentUser.token_price * currentUser.rate).toFixed(2)}`
-                    :
-                    `＄${(1 * currentUser.token_price).toFixed(2)}`
-                  }
-                </span>
-              </p>
-            </Descriptions.Item>
-            <Descriptions.Item label={<span className={styles.itemLabel}>手续费</span>}>
-              {gas || 0} USDT
-            </Descriptions.Item>
             <Descriptions.Item label={<span className={styles.itemLabel}>现金类型</span>}>
               <Button
                 style={{ marginRight: 20 }}
@@ -303,6 +288,41 @@ class YieldErc20 extends Component {
                 USD
               </Button>
             </Descriptions.Item>
+            <Descriptions.Item
+              label={<span className={styles.itemLabel}>出金金额</span>}
+              className={styles.textTop}
+            >
+              <Input
+                placeholder="请输入出金金额"
+                onChange={this.handlePaymentAmount}
+                style={{ width: 385, maxWidth: '100%' }}
+              />
+              <span style={{position: 'relative', right: 43, top: 0, color: '#999'}}>{
+                cashType == 1 ? 'CNY' : 'USD'
+              }</span>
+              <p style={{ fontSize: 14, color: '#333' }}>
+                <span>可出金余额：{new BigNumber(allBalance)
+                          .minus(new BigNumber(allLockBalance))
+                          .toNumber()} USDT</span>
+                <br />
+                <span>
+                  当前出金：{cashToCoin} USDT <span style={{color: '#ff4141'}}>(汇率实时变动，具体金额以订单为准)</span>
+                </span>
+                <br/>
+                <span>
+                  当前汇率：1USDT≈{
+                    cashType == 1 ?
+                    `￥${(1 * currentUser.token_price * currentUser.rate).toFixed(2)}`
+                    :
+                    `＄${(1 * currentUser.token_price).toFixed(2)}`
+                  }
+                </span>
+              </p>
+            </Descriptions.Item>
+            <Descriptions.Item label={<span className={styles.itemLabel}>手续费</span>}>
+              {gas || 0} USDT
+            </Descriptions.Item>
+            
             {cashType == 1 ? (
               <Descriptions.Item label={<span className={styles.itemLabel}>支付方式</span>}>
                 <Button
@@ -515,7 +535,7 @@ class YieldErc20 extends Component {
                 onClick={() => this.submit(new BigNumber(allBalance)
                           .minus(new BigNumber(allLockBalance))
                           .minus(new BigNumber(currentUser.gas))
-                          .toNumber())}
+                          .toNumber(), cashToCoin)}
               >
                 确定提交
               </Button>

@@ -307,6 +307,14 @@ export async function goldEntryOrderSearchAll(params) {
   });
 }
 
+/*订单管理-入金订单-确认已付款*/
+export async function goldEntryOrderConfirmPayment(params) {
+  return request(`${apiAddress}/order/confirmPayment`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
 /*订单管理-入金订单详情*/
 export async function queryGoldEntryOrderDetail(params) {
   return request(`${apiAddress}/order/orderDetail`, {

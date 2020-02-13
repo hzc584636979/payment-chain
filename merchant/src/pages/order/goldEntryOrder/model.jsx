@@ -1,4 +1,4 @@
-import { goldEntryOrder, goldEntryOrderSearchAll } from '@/services/api';
+import { goldEntryOrder, goldEntryOrderSearchAll, goldEntryOrderConfirmPayment } from '@/services/api';
 
 const Model = {
   namespace: 'goldEntryOrder',
@@ -41,6 +41,10 @@ const Model = {
     },
     *export({ payload }, { call, put }) {
       const response = yield call(goldEntryOrderSearchAll, payload);
+      return response;
+    },
+    *confirmPayment({ payload }, { call, put }) {
+      const response = yield call(goldEntryOrderConfirmPayment, payload);
       return response;
     },
   },
