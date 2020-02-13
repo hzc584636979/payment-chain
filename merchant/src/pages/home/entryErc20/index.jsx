@@ -136,6 +136,9 @@ class EntryErc20 extends Component {
                 onChange={this.handlePaymentAmount}
                 style={{ width: 385, maxWidth: '100%' }}
               />
+              <span style={{position: 'relative', right: 43, top: 0, color: '#999'}}>{
+                cashType == 1 ? 'CNY' : 'USD'
+              }</span>
               <p style={{ fontSize: 14, color: '#333' }}>
                 <span>
                   当前入金：{cashToCoin} USDT <span style={{color: '#ff4141'}}>(汇率实时变动，具体金额以订单为准)</span>
