@@ -54,6 +54,7 @@ class GoldYieldOrder extends Component {
 
   componentWillReceiveProps(nextProps) {
     if(nextProps.location.query.key && this.initKey != nextProps.location.query.key) {
+      clearInterval(this.interval);
       this.initKey = nextProps.location.query.key;
       this.getViewData();
     }
