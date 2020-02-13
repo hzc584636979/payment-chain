@@ -31,6 +31,8 @@ class Home extends Component {
     buyStatus: 'out',
     sellStatus: 'out',
     walletType: 1,
+    firstBuyStatus: g_getLocalStorage().buy_online || false,
+    firstSellStatus: g_getLocalStorage().sell_online || false,
   };
 
   componentDidMount() {
@@ -232,14 +234,14 @@ class Home extends Component {
             <Col xl={24}>
               <div className={`${styles.layoutLeft} ${styles.otherWrap}`} style={{padding: 0, height: 'auto'}}>
                 <div className={styles.item}>
-                  购买
+                  当前购买状态
                   <span style={{display: 'inline-block', width: '10px'}}></span>
                   <Button type={firstBuyStatus ? 'primary' : ''} onClick={() => this.firstOnlineLayerChangeStatus('firstBuyStatus', true)}>上线</Button>
                   <span style={{display: 'inline-block', width: '10px'}}></span>
                   <Button type={!firstBuyStatus ? 'primary' : ''} onClick={() => this.firstOnlineLayerChangeStatus('firstBuyStatus', false)}>下线</Button>
                 </div>
                 <div className={styles.item}>
-                  出售
+                  当前出售状态
                   <span style={{display: 'inline-block', width: '10px'}}></span>
                   <Button type={firstSellStatus ? 'primary' : ''} onClick={() => this.firstOnlineLayerChangeStatus('firstSellStatus', true)}>上线</Button>
                   <span style={{display: 'inline-block', width: '10px'}}></span>
@@ -251,9 +253,9 @@ class Home extends Component {
                 请准备充足资金后上线，否则订单失败将有降低信用的惩罚
               </div>
               <div style={{textAlign: 'center'}}>
-                <Button type="primary" style={{width: 120}} onClick={this.firstOnlineLayerSubmit}>确定上线</Button>
+                <Button type="primary" style={{width: 120}} onClick={this.firstOnlineLayerSubmit}>确定设置</Button>
                 <span style={{display: 'inline-block', width: '10px'}}></span>
-                <Button style={{width: 120}} onClick={this.firstOnlineLayerClose}>稍后上线</Button>
+                <Button style={{width: 120}} onClick={this.firstOnlineLayerClose}>稍后设置</Button>
               </div>
             </Col>
           </Row>

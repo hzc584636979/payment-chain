@@ -191,13 +191,13 @@ export default {
                   path: '/entry/entryOmni',
                   component: './home/entryOmni',
                 },*/
-                /*{
+                {
                   name: '详情页',
                   path: '/entry/entryUSDT/:id',
                   component: './home/entryErc20_detail',
                   hideInMenu: true,
                   expandPath: '/entry/entryErc20',
-                },*/
+                },
                 /*{
                   name: '详情页',
                   path: '/entry/entryOmni/:id',
