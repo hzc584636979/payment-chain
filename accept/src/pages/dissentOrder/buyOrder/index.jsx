@@ -181,9 +181,8 @@ class BuyDissentOrder extends Component {
               "客户姓名": i.payee_name,
               "收款方式": payName[i.pay_type],
               "商户昵称": i.m_user_name,
-              "币种": coinType[i.token_id],
-              "代币数量": i.pay_amount,
-              "等值（CNY）": i.pay_amount_cny,
+              "订单金额": `${i.pay_amount_cny} ${cashType[i.currency_type]}`,
+              "代币数量": `${i.pay_amount} ${coinType[i.token_id]}`,
               "订单状态": buyStatusType[i.state],
           };
           dataWCN.push(dataWObj);
@@ -274,12 +273,12 @@ class BuyDissentOrder extends Component {
         align: 'center',
       },
       {
-        title: '币种',
-        dataIndex: 'token_id',
-        key: 'token_id',
+        title: '订单金额',
+        dataIndex: 'pay_amount_cny',
+        key: 'pay_amount_cny',
         align: 'center',
         render: (val,record) => {
-          return coinType[val];
+          return `${val} ${cashType[record.currency_type]}`;
         }
       },
       {
@@ -287,12 +286,9 @@ class BuyDissentOrder extends Component {
         dataIndex: 'pay_amount',
         key: 'pay_amount',
         align: 'center',
-      },
-      {
-        title: '等值（CNY）',
-        dataIndex: 'pay_amount_cny',
-        key: 'pay_amount_cny',
-        align: 'center',
+        render: (val,record) => {
+          return `${val} ${coinType[record.token_id]}`;
+        }
       },
       {
         title: '订单状态',

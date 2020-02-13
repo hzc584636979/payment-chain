@@ -101,9 +101,9 @@ class SellOrderDetail extends Component {
       <ContLayout>
         <div className={styles.wrap}>
           <Descriptions column={1}>
-            <Descriptions.Item label="币种">{ coinType[sellOrderDetail.token_id || 1] }</Descriptions.Item>
-            <Descriptions.Item label="代币数量">{ sellOrderDetail.pay_amount }</Descriptions.Item>
-            <Descriptions.Item label="付款金额(CNY)">{ sellOrderDetail.pay_amount_cny }</Descriptions.Item>
+            <Descriptions.Item label="订单金额">{ `${sellOrderDetail.pay_amount_cny} ${cashType[sellOrderDetail.currency_type]}` }</Descriptions.Item>
+            <Descriptions.Item label="代币数量">{ `${sellOrderDetail.pay_amount} ${coinType[sellOrderDetail.token_id]}` }</Descriptions.Item>
+            
             {
               sellOrderDetail.state == 2 &&
               <Descriptions.Item label="时效"><span style={{color: '#EA0000'}}>{lessTime >= hoursTime ? `${lessTime.hours()} : ${lessTime.minutes()} : ${lessTime.seconds()}` : `${lessTime.minutes()} : ${lessTime.seconds()}`}</span></Descriptions.Item>

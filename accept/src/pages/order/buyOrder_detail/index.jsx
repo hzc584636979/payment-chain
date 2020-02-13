@@ -109,9 +109,9 @@ class buyOrderDetail extends Component {
       <ContLayout>
         <div className={styles.wrap}>
           <Descriptions column={1}>
-            <Descriptions.Item label="币种">{ coinType[buyOrderDetail.token_id] }</Descriptions.Item>
-            <Descriptions.Item label="代币数量">{ buyOrderDetail.pay_amount }</Descriptions.Item>
-            <Descriptions.Item label="等值 (CNY)">{ buyOrderDetail.pay_amount_cny }</Descriptions.Item>
+            <Descriptions.Item label="订单金额">{ `${buyOrderDetail.pay_amount_cny} ${cashType[buyOrderDetail.currency_type]}` }</Descriptions.Item>
+            <Descriptions.Item label="代币数量">{ `${buyOrderDetail.pay_amount} ${coinType[buyOrderDetail.token_id]}` }</Descriptions.Item>
+            
             {
               (buyOrderDetail.state == 4 || buyOrderDetail.state == 3) &&
               <Descriptions.Item label="时效"><span style={{color: '#EA0000'}}>{lessTime >= hoursTime ? `${lessTime.hours()} : ${lessTime.minutes()} : ${lessTime.seconds()}` : `${lessTime.minutes()} : ${lessTime.seconds()}`}</span></Descriptions.Item>

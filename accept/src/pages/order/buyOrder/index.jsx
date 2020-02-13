@@ -262,9 +262,8 @@ class BuyOrder extends Component {
         let dataWCN = [];
         data.data.rows.map((i) => {
           let dataWObj = {
-              "币种": coinType[i.token_id],
-              "代币数量": i.pay_amount,
-              "等值 (CNY)": i.pay_amount_cny,
+              "订单金额": `${i.pay_amount_cny} ${cashType[i.currency_type]}`,
+              "代币数量": `${i.pay_amount} ${coinType[i.token_id]}`,
               "客户姓名": i.payee_name,
               "收款方式": payName[i.pay_type],
               "平台订单号": i.order_id,
@@ -406,12 +405,12 @@ class BuyOrder extends Component {
         },
       },
       {
-        title: '币种',
-        dataIndex: 'token_id',
-        key: 'token_id',
+        title: '订单金额',
+        dataIndex: 'pay_amount_cny',
+        key: 'pay_amount_cny',
         align: 'center',
         render: (val,record) => {
-          return coinType[val];
+          return `${val} ${cashType[record.currency_type]}`;
         }
       },
       {
@@ -419,12 +418,9 @@ class BuyOrder extends Component {
         dataIndex: 'pay_amount',
         key: 'pay_amount',
         align: 'center',
-      },
-      {
-        title: '等值 (CNY)',
-        dataIndex: 'pay_amount_cny',
-        key: 'pay_amount_cny',
-        align: 'center',
+        render: (val,record) => {
+          return `${val} ${coinType[record.token_id]}`;
+        }
       },
       {
         title: '客户姓名',

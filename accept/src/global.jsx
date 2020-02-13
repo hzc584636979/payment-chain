@@ -98,6 +98,11 @@ window.coinType2 = {
   1: 'USDT(erc20)',
   2: 'USDT(omni)',
 }
+window.cashType = {
+  0: '全部',
+  1: 'CNY',
+  2: 'USD',
+}
 
 if (pwa) {
   // Notify user if offline now
