@@ -338,15 +338,15 @@ class GoldYieldOrder extends Component {
     if (yieldId == record.order_id) {
       renderStr = {
         children: (
-          <Row gutter={24} type="flex" justify="space-between" className={`${styles.itemLayer}`}>
-            <Col xl={14} sm={24}>
+          <Row type="flex" className={`${styles.itemLayer}`}>
+            <Col xl={11} sm={24}>
               <Input
                 type="password"
                 placeholder="输入交易密码"
                 maxLength={24}
                 onChange={this.handleMM}
                 value={MM}
-                style={{ width: '20%' }}
+                style={{ width: '25%' }}
               />
               <span style={{ display: 'inline-block', width: 15 }}></span>
               <Button type="primary" onClick={() => this.yield(record)}>
@@ -355,17 +355,17 @@ class GoldYieldOrder extends Component {
               <span style={{ display: 'inline-block', width: 15 }}></span>
               <Button onClick={this.cancelButton}>取消</Button>
               <span style={{ display: 'inline-block', width: 15 }}></span>
-              <Input disabled={true} value={`${record.pay_amount} USDT`} style={{ width: '15%' }} />
+              <Input disabled={true} value={`${record.pay_amount} USDT`} style={{ width: '20%' }} />
               <span style={{ color: '#999999', padding: '0 5px' }}>
                 <Icon type="swap" />
               </span>
               <Input
                 disabled={true}
                 value={`${record.pay_amount_cny} ${cashType[record.currency_type]}`}
-                style={{ width: '15%' }}
+                style={{ width: '20%' }}
               />
             </Col>
-            <Col xl={10} sm={24}>
+            <Col xl={6} sm={24}>
               <Row>
                 <Col span={12}>{record.a_user_name}</Col>
                 <Col span={12}>单价 {record.cny_price} CNY</Col>
