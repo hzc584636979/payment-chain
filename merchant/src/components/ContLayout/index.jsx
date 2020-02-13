@@ -81,7 +81,7 @@ class ContLayout extends Component {
   getMenuData = () => {
     let breadcrumb = this.matchBreadcrumb();
     let jsx = [];
-    breadcrumb && breadcrumb[0] && breadcrumb[0].routes.map((v, index) => {
+    breadcrumb && breadcrumb[0] && breadcrumb[0].routes && breadcrumb[0].routes.map((v, index) => {
       !v.hideInMenu && 
       jsx.push(
         <Item key={index} path={v.path}>
