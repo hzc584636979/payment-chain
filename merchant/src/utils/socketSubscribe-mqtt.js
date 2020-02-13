@@ -21,7 +21,7 @@ export function socketSubscribe(options) {
 	}
 
 	const client = mqtt.connect('mqtt://47.75.161.29', mqttOptions);
-	//console.log(client, options)
+	console.log(client, options)
 
 	client.on('reconnect', (error) => {
 	    console.log('正在重连:', error)

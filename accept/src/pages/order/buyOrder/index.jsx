@@ -86,6 +86,10 @@ class BuyOrder extends Component {
     clearInterval(this.interval);
   }
 
+/*  shouldComponentUpdate() {
+    console.log('1232321321')
+  }*/
+
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
     const { history } = this.props.buyOrder.data;

@@ -110,7 +110,7 @@ class BasicLayout extends PureComponent {
     });
 
     socketSubscribe({
-      subscribeList: `${window.g_getLocalStorage().user_id}order`,
+      subscribeList: `${window.g_getLocalStorage().id}order`,
       backList: (d) => {
         console.log(d)
         let msBody = JSON.parse(d.body);
@@ -149,7 +149,7 @@ class BasicLayout extends PureComponent {
     const args = {
       message,
       description: <p>您有一笔状态为{data.order_type == 1 ? buyStatusType[data.order_state] : sellStatusType[data.order_state]}的{data.order_type == 1 ? '购买' : '出售'}订单，<a onClick={() => {
-        window.g_app._store.dispatch(routerRedux.push(data.order_type == 1 ? '/order/buyOrder' : '/order/sellOrder'));
+        window.g_app._store.dispatch(routerRedux.push(data.order_type == 1 ? `/order/buyOrder?v=${key}` : '/order/sellOrder'));
         notification.close(key);
       }}>前往查看</a></p>,
       key,

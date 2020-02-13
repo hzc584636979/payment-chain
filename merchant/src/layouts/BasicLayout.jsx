@@ -8,7 +8,7 @@ import React, { PureComponent, Fragment, useEffect } from 'react';
 import Link from 'umi/link';
 import withRouter from 'umi/withRouter';
 import { connect, routerRedux } from 'dva';
-import { Icon, Result, Button, Divider, openNotification } from 'antd';
+import { Icon, Result, Button, Divider, notification } from 'antd';
 import Authorized from '@/utils/Authorized';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo1.png';
@@ -109,9 +109,8 @@ class BasicLayout extends PureComponent {
       type: 'user/getUserInfo',
     });
 
-    const { mqtt_theme } = window.g_getLocalStorage() || {};
     socketSubscribe({
-      subscribeList: `${window.g_getLocalStorage().user_id}order`,
+      subscribeList: `${window.g_getLocalStorage().id}order`,
       backList: (d) => {
         console.log(d)
         let msBody = JSON.parse(d.body);
@@ -152,12 +151,12 @@ class BasicLayout extends PureComponent {
     };
   }
 
-  openNotification = (message, msBody) => {
+  openNotification = (message, data) => {
     const key = `open${Date.now()}`;
     const args = {
       message,
-      description: <p>您有一笔状态为{msBody.order_type == 1 ? sellStatusType[msBody.order_state] : buyStatusType[msBody.order_state]}的{msBody.order_type == 1 ? '入金' : '出金'}订单，<a onClick={() => {
-        window.g_app._store.dispatch(routerRedux.push('/order'));
+      description: <p>您有一笔状态为{data.order_type == 1 ? sellStatusType[data.order_state] : buyStatusType[data.order_state]}的{data.order_type == 1 ? '入金' : '出金'}订单，<a onClick={() => {
+        window.g_app._store.dispatch(routerRedux.push(data.order_type == 1 ? '/order/goldEntryOrder' : '/order/goldYieldOrder'));
         notification.close(key);
       }}>前往查看</a></p>,
       key,
