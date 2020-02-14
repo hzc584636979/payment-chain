@@ -42,6 +42,7 @@ const statusType = {
   4: '交易广播失败',
   5: '交易上链失败',
   6: '已上链等待达到确认数',
+  7: '拒绝提币申请',
 };
 
 @connect(({ coinOrder, loading }) => ({
@@ -334,6 +335,12 @@ class CoinOrder extends Component {
             .local()
             .format('YYYY-MM-DD HH:mm:ss');
         },
+      },
+      {
+        title: '拒绝提币理由',
+        dataIndex: '',
+        key: '',
+        align: 'center',
       },
     ];
 

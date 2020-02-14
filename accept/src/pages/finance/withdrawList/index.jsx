@@ -42,6 +42,7 @@ const statusType = {
   4: '交易广播失败',
   5: '交易上链失败',
   6: '已上链等待达到确认数',
+  7: '拒绝提币申请',
 };
 
 @connect(({ withdrawList, loading }) => ({
@@ -294,6 +295,12 @@ class WithdrawList extends Component {
         render:(val,record)=>{
           return <a onClick={() => this.handleClipBoard(val)}>{ val }</a>;
         },
+      },
+      {
+        title: '拒绝提币理由',
+        dataIndex: '',
+        key: '',
+        align: 'center',
       },
     ];
 

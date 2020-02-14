@@ -32,7 +32,7 @@ const statusType = {
   1: '抵押中',
   2: '申请解冻中',
   3: '已退款',
-  4: '拒绝退款',
+  4: '拒绝退款申请',
 };
 
 @connect(({ depositList, loading }) => ({
@@ -219,7 +219,7 @@ class DepositList extends Component {
           return(
             <span>
               {
-                record.state == 1 &&
+                (record.state == 1 || record.state == 4) &&
                 <Popconfirm title="是否要申请解冻？" onConfirm={() => this.frozen(record.id)}>
                   <Button>申请解冻</Button>
                 </Popconfirm>
@@ -265,12 +265,6 @@ class DepositList extends Component {
         align: 'center',
       },
       {
-        title: '拒绝退款理由',
-        dataIndex: '',
-        key: '',
-        align: 'center',
-      },
-      {
         title: '退款时间',
         dataIndex: 'refund_time',
         key: 'refund_time',
@@ -278,6 +272,12 @@ class DepositList extends Component {
         render: (val, record) => {
           return val && moment(val).local().format('YYYY-MM-DD HH:mm:ss')
         }
+      },
+      {
+        title: '拒绝退款理由',
+        dataIndex: '',
+        key: '',
+        align: 'center',
       },
     ];
 
