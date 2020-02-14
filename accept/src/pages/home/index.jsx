@@ -518,7 +518,9 @@ class Home extends Component {
                         <Col xl={6} md={6} sm={12} xs={12}>
                           <div className={styles.item}>
                             <div className={styles.name}>总收益（USDT）</div>
-                            <div className={styles.num}>{ home.total_earnings }</div>
+                            <div className={styles.num}>{
+                              getDecimal(home.total_earnings, 4)
+                            }</div>
                           </div>
                         </Col>
                         <Col xl={6} md={6} sm={12} xs={12}>
@@ -530,7 +532,9 @@ class Home extends Component {
                         <Col xl={6} md={6} sm={12} xs={12}>
                           <div className={styles.item}>
                             <div className={styles.name}>今日收益（USDT）</div>
-                            <div className={styles.num}>{ home.today_earnings }</div>
+                            <div className={styles.num}>{
+                              getDecimal(home.today_earnings, 4)
+                            }</div>
                           </div>
                         </Col>
                         <Col xl={6} md={6} sm={12} xs={12}>

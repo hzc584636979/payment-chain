@@ -729,37 +729,49 @@ class Home extends Component {
                         <Col xl={4} md={8} sm={12} xs={12}>
                           <div className={styles.item}>
                             <div className={styles.name}>总出金（USDT）</div>
-                            <div className={styles.num}>{home.total_gold_yield}</div>
+                            <div className={styles.num}>{
+                              getDecimal(home.total_gold_yield, 4)
+                            }</div>
                           </div>
                         </Col>
                         <Col xl={4} md={8} sm={12} xs={12}>
                           <div className={styles.item}>
                             <div className={styles.name}>总入金（USDT）</div>
-                            <div className={styles.num}>{home.total_deposit}</div>
+                            <div className={styles.num}>{
+                              getDecimal(home.total_deposit, 4)
+                            }</div>
                           </div>
                         </Col>
                         <Col xl={4} md={8} sm={12} xs={12}>
                           <div className={styles.item}>
                             <div className={styles.name}>总提币（USDT）</div>
-                            <div className={styles.num}>{wei2USDT(home.total_cash_out)}</div>
+                            <div className={styles.num}>{
+                              getDecimal(wei2USDT(home.total_cash_out), 4)
+                            }</div>
                           </div>
                         </Col>
                         <Col xl={4} md={8} sm={12} xs={12}>
                           <div className={styles.item}>
                             <div className={styles.name}>今日出金（USDT）</div>
-                            <div className={styles.num}>{home.today_gold_yield}</div>
+                            <div className={styles.num}>{
+                              getDecimal(home.today_gold_yield, 4)
+                            }</div>
                           </div>
                         </Col>
                         <Col xl={4} md={8} sm={12} xs={12}>
                           <div className={styles.item}>
                             <div className={styles.name}>今日入金（USDT）</div>
-                            <div className={styles.num}>{home.today_deposit}</div>
+                            <div className={styles.num}>{
+                              getDecimal(home.today_deposit, 4)
+                            }</div>
                           </div>
                         </Col>
                         <Col xl={4} md={8} sm={12} xs={12}>
                           <div className={styles.item}>
                             <div className={styles.name}>今日提币（USDT）</div>
-                            <div className={styles.num}>{wei2USDT(home.today_cash_out)}</div>
+                            <div className={styles.num}>{
+                              getDecimal(wei2USDT(home.today_cash_out), 4)
+                            }</div>
                           </div>
                         </Col>
                       </Row>

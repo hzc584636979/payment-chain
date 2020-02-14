@@ -36,6 +36,17 @@ window.regBankNumber = number => {
   return /^(\d{16,19})$/.test(number);
 };
 
+window.getDecimal = (number, wei) => {
+  if(parseFloat(number) && number.toString().indexOf('.') > -1) {
+    let int = number.toString().split('.')[0];
+    let float = number.toString().split('.')[1];
+    if(float.length > wei) {
+      return int+'.'+float.substr(0, wei);
+    }
+  }
+  return number;
+}
+
 import weixin from '@/assets/icon_saoma_weixin.png';
 import yinlian from '@/assets/icon_saoma_yinlian.png';
 import zhifubao from '@/assets/icon_saoma_zhifubao.png';
