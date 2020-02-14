@@ -21,7 +21,7 @@ const statusType = {
   4: '交易广播失败',
   5: '交易上链失败',
   6: '已上链等待达到确认数',
-  7: '拒绝提币申请',
+  20: '拒绝提币申请',
 };
 
 @connect(({ coinOrderDetail, loading }) => ({
@@ -48,17 +48,13 @@ class CoinOrderDetail extends Component {
         <div className={styles.wrap}>
           <Descriptions column={1}>
             <Descriptions.Item label="订单状态">
-              {statusType[Number(coinOrderDetail.state) + 1]}
+              {statusType[coinOrderDetail.state >= 20 ? coinOrderDetail.state : Number(coinOrderDetail.state) + 1]}
             </Descriptions.Item>
-            <Descriptions.Item label="订单号">{coinOrderDetail.id}</Descriptions.Item>
             <Descriptions.Item label="订单分类">
               {orderType[coinOrderDetail.type]}
             </Descriptions.Item>
-            <Descriptions.Item label="币种">
-              {coinType2[coinOrderDetail.token_id]}
-            </Descriptions.Item>
             <Descriptions.Item label="代币数量">
-              {wei2USDT(coinOrderDetail.count, coinOrderDetail.token_id == 1 ? 'erc20' : 'omni')}
+              {`${wei2USDT(coinOrderDetail.count, coinOrderDetail.token_id == 1 ? 'erc20' : 'omni')} ${coinType2[coinOrderDetail.token_id]}`}
             </Descriptions.Item>
             <Descriptions.Item label="地址">{coinOrderDetail.to_address}</Descriptions.Item>
             <Descriptions.Item label="Txhash">{coinOrderDetail.txid}</Descriptions.Item>
@@ -68,7 +64,7 @@ class CoinOrderDetail extends Component {
                 .format('YYYY-MM-DD HH:mm:ss')}
             </Descriptions.Item>
             {
-              coinOrderDetail.state == 7 &&
+              coinOrderDetail.state == 20 &&
               <Descriptions.Item label="拒绝提币理由">
                 {}
               </Descriptions.Item>

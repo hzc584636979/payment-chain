@@ -42,7 +42,7 @@ const statusType = {
   4: '交易广播失败',
   5: '交易上链失败',
   6: '已上链等待达到确认数',
-  7: '拒绝提币申请',
+  20: '拒绝提币申请',
 };
 
 @connect(({ withdrawList, loading }) => ({
@@ -204,13 +204,12 @@ class WithdrawList extends Component {
         let dataWCN = [];
         data.data.list.map((i) => {
           let dataWObj = {
-              "币种": coinType2[i.token_id],
               "订单分类": orderType[i.type],
-              "金额 (USDT)": wei2USDT(i.count, i.token_id == 1 ? 'erc20' : 'omni'),
-              "地址": i.to_address,
-              "状态": statusType[Number(i.state)+1],
-              "时间": moment(i.create_time*1000).local().format('YYYY-MM-DD HH:mm:ss'),
               "Txhash": i.txid,
+              "代币数量": `${wei2USDT(i.count, i.token_id == 1 ? 'erc20' : 'omni')} ${coinType2[i.token_id]}`,
+              "地址": i.to_address,
+              "订单状态": statusType[i.state >= 20 ? i.state : Number(i.state)+1],
+              "创建时间": moment(i.create_time*1000).local().format('YYYY-MM-DD HH:mm:ss'),
           };
           dataWCN.push(dataWObj);
         })
@@ -232,15 +231,6 @@ class WithdrawList extends Component {
     const { history, list, pagination } = this.props.withdrawList.data;
     const columns = [
       {
-        title: '币种',
-        dataIndex: 'token_id',
-        key: 'token_id',
-        align: 'center',
-        render:(val,record)=>{
-          return coinType2[val];
-        },
-      },
-      {
         title: '订单分类',
         dataIndex: 'type',
         key: 'type',
@@ -250,13 +240,23 @@ class WithdrawList extends Component {
         },
       },
       {
-        title: '金额 (USDT)',
+        title: 'Txhash',
+        dataIndex: 'txid',
+        key: 'txid',
+        align: 'center',
+        ellipsis: true,
+        render:(val,record)=>{
+          return <a onClick={() => this.handleClipBoard(val)}>{ val }</a>;
+        },
+      },
+      {
+        title: '代币数量',
         dataIndex: 'count',
         key: 'count',
         align: 'center',
         render: (val, record) => {
-          return wei2USDT(val, record.token_id == 1 ? 'erc20' : 'omni')
-        }
+          return `${wei2USDT(val, record.token_id == 1 ? 'erc20' : 'omni')} ${coinType2[record.token_id]}`;
+        },
       },
       {
         title: '地址',
@@ -269,33 +269,23 @@ class WithdrawList extends Component {
         },
       },
       {
-        title: '状态',
+        title: '订单状态',
         dataIndex: 'state',
         key: 'state',
         align: 'center',
         render:(val,record)=>{
-          return statusType[Number(val)+1];
+          return statusType[val >= 20 ? val : Number(val) + 1];
         },
       },
       {
-        title: '时间',
+        title: '创建时间',
         dataIndex: 'create_time',
         key: 'create_time',
         align: 'center',
         render: (val, record) => {
           return moment(val*1000).local().format('YYYY-MM-DD HH:mm:ss')
         }
-      },
-      {
-        title: 'Txhash',
-        dataIndex: 'txid',
-        key: 'txid',
-        align: 'center',
-        ellipsis: true,
-        render:(val,record)=>{
-          return <a onClick={() => this.handleClipBoard(val)}>{ val }</a>;
-        },
-      },
+      }, 
       {
         title: '拒绝提币理由',
         dataIndex: '',

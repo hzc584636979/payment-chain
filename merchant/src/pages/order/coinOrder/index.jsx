@@ -42,7 +42,7 @@ const statusType = {
   4: '交易广播失败',
   5: '交易上链失败',
   6: '已上链等待达到确认数',
-  7: '拒绝提币申请',
+  20: '拒绝提币申请',
 };
 
 @connect(({ coinOrder, loading }) => ({
@@ -217,14 +217,12 @@ class CoinOrder extends Component {
         let dataWCN = [];
         data.data.list.map(i => {
           let dataWObj = {
-            订单号: i.id,
-            订单分类: orderType[i.type],
-            币种: coinType2[i.token_id],
-            代币数量: wei2USDT(i.count, i.token_id == 1 ? 'erc20' : 'omni'),
-            地址: i.to_address,
-            订单状态: statusType[Number(i.state) + 1],
-            Txhash: i.txid,
-            创建时间: moment(i.create_time * 1000)
+            "订单分类": orderType[i.type],
+            "Txhash": i.txid,
+            "代币数量": `${wei2USDT(i.count, i.token_id == 1 ? 'erc20' : 'omni')} ${coinType2[i.token_id]}`,
+            "地址": i.to_address,
+            "订单状态": statusType[i.state >= 20 ? i.state : Number(i.state)+1],
+            "创建时间": moment(i.create_time * 1000)
               .local()
               .format('YYYY-MM-DD HH:mm:ss'),
           };
@@ -264,12 +262,6 @@ class CoinOrder extends Component {
         },
       },
       {
-        title: '订单号',
-        dataIndex: 'id',
-        key: 'id',
-        align: 'center',
-      },
-      {
         title: '订单分类',
         dataIndex: 'type',
         key: 'type',
@@ -279,12 +271,13 @@ class CoinOrder extends Component {
         },
       },
       {
-        title: '币种',
-        dataIndex: 'token_id',
-        key: 'token_id',
+        title: 'Txhash',
+        dataIndex: 'txid',
+        key: 'txid',
         align: 'center',
+        ellipsis: true,
         render: (val, record) => {
-          return coinType2[val];
+          return <a onClick={() => this.handleClipBoard(val)}>{val}</a>;
         },
       },
       {
@@ -293,7 +286,7 @@ class CoinOrder extends Component {
         key: 'count',
         align: 'center',
         render: (val, record) => {
-          return wei2USDT(val, record.token_id == 1 ? 'erc20' : 'omni');
+          return `${wei2USDT(val, record.token_id == 1 ? 'erc20' : 'omni')} ${coinType2[record.token_id]}`;
         },
       },
       {
@@ -312,17 +305,7 @@ class CoinOrder extends Component {
         key: 'state',
         align: 'center',
         render: (val, record) => {
-          return statusType[Number(val) + 1];
-        },
-      },
-      {
-        title: 'Txhash',
-        dataIndex: 'txid',
-        key: 'txid',
-        align: 'center',
-        ellipsis: true,
-        render: (val, record) => {
-          return <a onClick={() => this.handleClipBoard(val)}>{val}</a>;
+          return statusType[val >= 20 ? val : Number(val) + 1];
         },
       },
       {
