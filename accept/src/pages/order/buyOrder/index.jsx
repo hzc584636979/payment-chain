@@ -227,7 +227,7 @@ class BuyOrder extends Component {
       content: (
         <div>
           <p>收款方式：<img src={payIcon[record.pay_type]} style={{maxWidth: 40}} /></p>
-          <p>客户姓名：{record.payee_account}</p>
+          <p>客户姓名：{record.payee_name}</p>
           {
             (record.pay_type == 1 || record.pay_type == 4) &&
             <Fragment>
