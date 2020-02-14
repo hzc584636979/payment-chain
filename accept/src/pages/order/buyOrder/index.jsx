@@ -195,7 +195,7 @@ class BuyOrder extends Component {
     );
   }
 
-  transfer = id => {
+  transfer = record => {
     const { dispatch } = this.props;
     const { pagination } = this.props.buyOrder.data;
 
@@ -207,7 +207,7 @@ class BuyOrder extends Component {
     dispatch({
       type: 'buyOrder/transfer',
       payload: {
-        order_id: id
+        order_id: record.order_id
       },
     }).then(data => {
       if(data.status != 1) {
@@ -215,9 +215,44 @@ class BuyOrder extends Component {
         return;
       }else {
         message.success('操作成功');
+        this.receiptInfo(record);
       }
       this.handleSearch(null, params);
     })
+  }
+
+  receiptInfo = record => {
+    Modal.info({
+      title: '转款信息',
+      content: (
+        <div>
+          <p>收款方式：<img src={payIcon[record.pay_type]} style={{maxWidth: 40}} /></p>
+          <p>客户姓名：{record.payee_account}</p>
+          {
+            (record.pay_type == 1 || record.pay_type == 4) &&
+            <Fragment>
+              <p>收款账户：{record.payee_account}</p>
+              <p>开户行：{record.account_bank_name}</p>
+            </Fragment>
+          }
+          {
+            (record.pay_type == 2 || record.pay_type == 3) &&
+            <Fragment>
+              <p>收款账户：{record.payee_account}</p>
+              <p>二维码：<img src={record.pay_code_url} style={{maxWidth: 100}} /></p>
+            </Fragment>
+          }
+          {
+            record.pay_type == 5 &&
+            <Fragment>
+              <p>收款账户：{record.payee_account}</p>
+            </Fragment>
+          }
+        </div>
+      ),
+      onOk() {},
+      okText: '关闭'
+    });
   }
 
   receipt = id => {
@@ -399,7 +434,7 @@ class BuyOrder extends Component {
                   </Fragment>
                   :
                   record.state == 3 ?
-                  <Popconfirm title="是否要确认接单？" onConfirm={() => this.transfer(record.order_id)}>
+                  <Popconfirm title="是否要确认接单？" onConfirm={() => this.transfer(record)}>
                     <Button>确认接单</Button>
                   </Popconfirm>
                   :
