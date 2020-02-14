@@ -33,6 +33,11 @@ class EntryErc20 extends Component {
       return;
     }
 
+    if (payment_amount < 10) {
+      message.error('最小入金金额为10元');
+      return;
+    }
+
     if (!payment_name) {
       message.error('请填写付款人姓名后提交');
       return;
@@ -141,7 +146,7 @@ class EntryErc20 extends Component {
               }</span>
               <p style={{ fontSize: 14, color: '#333' }}>
                 <span>
-                  当前入金：{cashToCoin} USDT <span style={{color: '#ff4141'}}>(汇率实时变动，具体金额以订单为准)</span>
+                  当前入金代币：{ cashToCoin } USDT <span style={{color: '#ff4141'}}>(汇率实时变动，具体金额以订单为准)</span>
                 </span>
                 <br/>
                 <span>
@@ -155,7 +160,11 @@ class EntryErc20 extends Component {
               </p>
             </Descriptions.Item>
             <Descriptions.Item label={<span className={styles.itemLabel}>手续费</span>}>
-              {gas || 0} USDT
+              {
+                `${new BigNumber(payment_amount || 0)
+                          .multipliedBy(new BigNumber(currentUser.gas_percent))
+                          .toNumber()} ${cashType == 1 ? 'CNY' : 'USD'}`
+              } ≈ {gas || 0} USDT
             </Descriptions.Item>
             {cashType == 1 ? (
               <Descriptions.Item label={<span className={styles.itemLabel}>支付方式</span>}>

@@ -19,13 +19,13 @@ const Model = {
     },
     *transfer({ payload }, { call, put }) {
       const match = pathToRegexp('/order/buyOrder_detail/:id').exec(window.location.pathname);
-      const payload1 = { ...payload1, order_id: match[1] };
+      const payload1 = { ...payload, order_id: match[1] };
       const response = yield call(buyOrderTakeOrder, payload1);
       return response;
     },
     *receipt({ payload }, { call, put }) {
       const match = pathToRegexp('/order/buyOrder_detail/:id').exec(window.location.pathname);
-      const payload1 = { ...payload1, order_id: match[1] };
+      const payload1 = { ...payload, order_id: match[1] };
       const response = yield call(buyOrderReceipt, payload1);
       return response;
     },

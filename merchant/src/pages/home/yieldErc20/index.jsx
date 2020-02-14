@@ -26,6 +26,7 @@ function beforeUpload(file) {
   currentUser: user.currentUser,
   yieldErc20,
   fetchLoading: loading.effects['yieldErc20/fetch'],
+  getUserInfoLoading: loading.effects['user/getUserInfo'],
 }))
 class YieldErc20 extends Component {
   state = {
@@ -64,8 +65,13 @@ class YieldErc20 extends Component {
       return;
     }
 
+    if (payment_amount < 10) {
+      message.error('最小出金金额为10元');
+      return;
+    }
+
     if (coin > maxBalance) {
-      message.error('超过最大可出金金额，可提金额为可出金金额 减去 手续费');
+      message.error('超过最大可出金金额');
       return;
     }
 
@@ -175,6 +181,9 @@ class YieldErc20 extends Component {
       this.setState({
         submitLock: false,
       });
+      this.props.dispatch({
+        type: 'user/getUserInfo',
+      })
     });
   };
 
@@ -187,9 +196,27 @@ class YieldErc20 extends Component {
     });
   };
 
-  handlePaymentAmount = e => {
+  handlePaymentAmount = (e, maxBalance) => {
+    const { cashType } = this.state;
+    const { currentUser } = this.props;
+    let maxCash = null;
+    if(cashType == 1) {
+      maxCash = (maxBalance * currentUser.token_price * currentUser.rate).toFixed(4);
+    }else {
+      maxCash = (maxBalance * currentUser.token_price).toFixed(4);
+    }
+    let payment_amount = e.target.value;
+    if(parseFloat(payment_amount) > maxCash) {
+      payment_amount = maxCash;
+    }else if(parseFloat(payment_amount) && payment_amount.indexOf('.') > -1) {
+      let int = payment_amount.split('.')[0];
+      let float = payment_amount.split('.')[1];
+      if(float.length > 4) {
+        payment_amount = int+'.'+float.substr(0, 4);
+      }
+    }
     this.setState({
-      payment_amount: e.target.value,
+      payment_amount,
     });
   };
 
@@ -222,7 +249,7 @@ class YieldErc20 extends Component {
   };
 
   render() {
-    const { currentUser, fetchLoading } = this.props;
+    const { currentUser, fetchLoading, getUserInfoLoading } = this.props;
     const { submitLock, payType, imageUrl, imageUrlLoading, payment_amount, cashType } = this.state;
     const {
       bank_name,
@@ -263,13 +290,16 @@ class YieldErc20 extends Component {
           .plus(new BigNumber(wei2USDT(currentUser.omni.lock_balance, 'omni')))
           .toNumber()
       : 0;
+    const useBalance = new BigNumber(allBalance)
+          .minus(new BigNumber(allLockBalance))
+          .toNumber();
 
     const uploadButton = (
       <div>{imageUrlLoading ? <Icon type="loading" /> : <Icon type="plus" />}</div>
     );
 
     return (
-      <ContLayout>
+      <ContLayout loading={getUserInfoLoading}>
         <div className={styles.wrap}>
           <Descriptions column={1}>
             <Descriptions.Item label={<span className={styles.itemLabel}>现金类型</span>}>
@@ -294,23 +324,39 @@ class YieldErc20 extends Component {
             >
               <Input
                 placeholder="请输入出金金额"
-                onChange={this.handlePaymentAmount}
+                onChange={e => this.handlePaymentAmount(e, new BigNumber(useBalance)
+                          .minus(new BigNumber(gas))
+                          .toNumber())}
                 style={{ width: 385, maxWidth: '100%' }}
+                value={payment_amount}
               />
               <span style={{position: 'relative', right: 43, top: 0, color: '#999'}}>{
                 cashType == 1 ? 'CNY' : 'USD'
               }</span>
               <p style={{ fontSize: 14, color: '#333' }}>
-                <span>可出金余额：{new BigNumber(allBalance)
-                          .minus(new BigNumber(allLockBalance))
-                          .toNumber()} USDT</span>
+                <span style={{color: '#ff4141'}}>(可出金金额为账户余额 减去 手续费)</span>
                 <br />
                 <span>
-                  当前出金：{cashToCoin} USDT <span style={{color: '#ff4141'}}>(汇率实时变动，具体金额以订单为准)</span>
+                  账户余额：
+                  {
+                    cashType == 1 ?
+                    `${(new BigNumber(useBalance)
+                          .multipliedBy(new BigNumber(currentUser.token_price))
+                          .multipliedBy(new BigNumber(currentUser.rate))
+                          .toNumber()).toFixed(4)} CNY`
+                    :
+                    `${(new BigNumber(useBalance)
+                          .multipliedBy(new BigNumber(currentUser.token_price))
+                          .toNumber()).toFixed(4)} USD`
+                  } ≈ { useBalance } USDT 
+                </span>
+                <br />
+                <span>
+                  当前出金代币：{cashToCoin} USDT <span style={{color: '#ff4141'}}>(汇率实时变动，具体金额以订单为准)</span>
                 </span>
                 <br/>
                 <span>
-                  当前汇率：1USDT≈{
+                  当前汇率：1USDT ≈ {
                     cashType == 1 ?
                     `￥${(1 * currentUser.token_price * currentUser.rate).toFixed(2)}`
                     :
@@ -320,7 +366,11 @@ class YieldErc20 extends Component {
               </p>
             </Descriptions.Item>
             <Descriptions.Item label={<span className={styles.itemLabel}>手续费</span>}>
-              {gas || 0} USDT
+              {
+                `${new BigNumber(payment_amount || 0)
+                          .multipliedBy(new BigNumber(currentUser.gas_percent))
+                          .toNumber()} ${cashType == 1 ? 'CNY' : 'USD'}`
+              } ≈ {gas || 0} USDT
             </Descriptions.Item>
             
             {cashType == 1 ? (
@@ -532,9 +582,8 @@ class YieldErc20 extends Component {
               <Button
                 type="primary"
                 loading={submitLock}
-                onClick={() => this.submit(new BigNumber(allBalance)
-                          .minus(new BigNumber(allLockBalance))
-                          .minus(new BigNumber(currentUser.gas))
+                onClick={() => this.submit(new BigNumber(useBalance)
+                          .minus(new BigNumber(gas))
                           .toNumber(), cashToCoin)}
               >
                 确定提交
