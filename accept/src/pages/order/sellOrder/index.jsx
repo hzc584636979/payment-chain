@@ -370,6 +370,12 @@ class SellOrder extends Component {
         },
       },
       {
+        title: '付款账号',
+        dataIndex: 'user_pay_account',
+        key: 'user_pay_account',
+        align: 'center',
+      },
+      {
         title: '时效',
         dataIndex: 'aging',
         key: 'aging',

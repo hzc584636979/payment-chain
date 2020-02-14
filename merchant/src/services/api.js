@@ -175,6 +175,30 @@ export async function homeEntryErc20(params) {
   });
 }
 
+/*首页-入金付款详情页-请求*/
+export async function entryUSDT_detail(params) {
+  return request(`${apiAddress}/order/user/orderDetail`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*首页-入金付款详情页-付款*/
+export async function entryTransferUSDT(params) {
+  return request(`${apiAddress}/order/confirmPayment`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*首页-入金付款详情页-取消*/
+export async function entryCancelUSDT(params) {
+  return request(`${apiAddress}/order/cancelDepositOrder`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
 /*首页-omni-提币*/
 export async function homeWithdrawApplyOmni(params) {
   return request(`${apiAddress}/financial/cashOutCoin`, {

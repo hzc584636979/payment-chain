@@ -28,9 +28,7 @@ class GoldEntryOrderDetail extends Component {
 
   render() {
     const { goldEntryOrderDetail, loading } = this.props;
-    const gas = new BigNumber(goldEntryOrderDetail.gas)
-          .multipliedBy(new BigNumber(goldEntryOrderDetail.pay_amount))
-          .toNumber();
+
     return (
       <ContLayout>
         <div className={styles.wrap}>
@@ -52,7 +50,7 @@ class GoldEntryOrderDetail extends Component {
             <Descriptions.Item label="承兑商姓名">
               {goldEntryOrderDetail.a_user_name}
             </Descriptions.Item>
-            <Descriptions.Item label="手续费">{ `${gas} ${coinType[goldEntryOrderDetail.token_id]}` }</Descriptions.Item>
+            <Descriptions.Item label="手续费">{ `${goldEntryOrderDetail.gas} ${cashType[goldEntryOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="创建时间">
               {moment(goldEntryOrderDetail.created_at)
                 .local()

@@ -28,9 +28,6 @@ class GoldYieldOrderDetail extends Component {
 
   render() {
     const { goldYieldOrderDetail, loading } = this.props;
-    const gas = new BigNumber(goldYieldOrderDetail.gas)
-          .multipliedBy(new BigNumber(goldYieldOrderDetail.pay_amount))
-          .toNumber();
 
     return (
       <ContLayout>
@@ -53,7 +50,7 @@ class GoldYieldOrderDetail extends Component {
             <Descriptions.Item label="单价(CNY)">
               {goldYieldOrderDetail.cny_price}
             </Descriptions.Item>
-            <Descriptions.Item label="手续费">{ `${gas} ${coinType[goldYieldOrderDetail.token_id]}` }</Descriptions.Item>
+            <Descriptions.Item label="手续费">{ `${goldYieldOrderDetail.gas} ${cashType[goldYieldOrderDetail.token_id]}` }</Descriptions.Item>
             {
               goldYieldOrderDetail.state == 5 &&
               <Descriptions.Item label="支付截图">

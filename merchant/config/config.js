@@ -192,7 +192,7 @@ export default {
                   component: './home/entryOmni',
                 },*/
                 {
-                  name: '详情页',
+                  name: '付款',
                   path: '/entry/entryUSDT/:id',
                   component: './home/entryErc20_detail',
                   hideInMenu: true,

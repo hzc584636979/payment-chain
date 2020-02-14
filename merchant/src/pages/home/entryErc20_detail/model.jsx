@@ -1,4 +1,4 @@
-import { fakeEntryUSDT_detail, fakeEntryTransferUSDT, fakeEntryCancelUSDT } from '@/services/api';
+import { entryUSDT_detail, entryTransferUSDT, entryCancelUSDT } from '@/services/api';
 import pathToRegexp from 'path-to-regexp';
 
 const Model = {
@@ -9,23 +9,23 @@ const Model = {
   effects: {
     *fetch({ payload }, { select,call, put }) {
       const match = pathToRegexp('/entry/entryUSDT/:id').exec(window.location.pathname);
-      const payload1 = { order_id: match[1], order_type: 1 };
-      const response = yield call(fakeEntryUSDT_detail, payload1);
+      const payload1 = { order_id: match[1] };
+      const response = yield call(entryUSDT_detail, payload1);
       yield put({
         type: 'save',
-        payload: response,
+        payload: response.data,
       });
     },
     *transfer({ payload }, { select,call, put }) {
       const match = pathToRegexp('/entry/entryUSDT/:id').exec(window.location.pathname);
-      const payload1 = { order_id: match[1], order_type: 1 };
-      const response = yield call(fakeEntryTransferUSDT, payload1);
+      const payload1 = { order_id: match[1] };
+      const response = yield call(entryTransferUSDT, payload1);
       return response;
     },
     *cancel({ payload }, { call, put }) {
       const match = pathToRegexp('/entry/entryUSDT/:id').exec(window.location.pathname);
-      const payload1 = { order_id: match[1], order_type: 1 };
-      const response = yield call(fakeEntryCancelUSDT, payload1);
+      const payload1 = { order_id: match[1] };
+      const response = yield call(entryCancelUSDT, payload1);
       return response;
     },
   },

@@ -256,16 +256,16 @@ class GoldEntryOrder extends Component {
         key: 'action',
         fixed: 'left',
         align: 'center',
-        width: 300,
+        width: 200,
         render: (val, record) => {
           return (
             <span>
               {
-                record.state == 1 &&
+                /*record.state == 1 &&
                 <Fragment>
                   <Button type="primary" onClick={() => this.confirmPayment(record.order_id)}>确认已付款</Button>
                   <span style={{ display: 'inline-block', width: '10px' }}></span>
-                </Fragment>
+                </Fragment>*/
               }
               <Button>
                 <Link to={`/order/goldEntryOrder_appeal/${record.order_id}`}>申诉</Link>
@@ -327,10 +327,7 @@ class GoldEntryOrder extends Component {
         key: 'gas',
         align: 'center',
         render: (val, record) => {
-          const gas = new BigNumber(val)
-            .multipliedBy(new BigNumber(record.pay_amount))
-            .toNumber();
-          return `${gas} ${coinType[record.token_id]}`
+          return `${val} ${cashType[record.currency_type]}`;
         },
       },
       {

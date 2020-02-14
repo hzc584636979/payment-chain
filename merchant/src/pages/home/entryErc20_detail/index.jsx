@@ -14,12 +14,12 @@ import {
   Popover,
 } from 'antd';
 import React, { Component, Fragment } from 'react';
-import { connect } from 'dva';
+import { connect, routerRedux } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
 import StandardTable from '@/components/StandardTable';
+import BigNumber from 'bignumber.js';
 import moment from 'moment';
-import QRCode  from 'qrcode.react';
 import styles from './style.less';
 
 const FormItem = Form.Item;
@@ -38,70 +38,44 @@ class EntryUSDT_detail extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    /*dispatch({
-      type: 'EntryUSDT_detail/fetch',
-      payload:{
-        pageSize:10,
-        page:0,
-        state: 0,
-        time: [moment().startOf('month'), moment().endOf('month')],
-      },
-    }).then(data => {
-      let count = 0;
-      this.interval = window.setInterval(() => {
-        count += 1;
-        this.setState({
-          count,
-        });
-      }, 1000);
-    })*/
+    dispatch({
+      type: 'entryUSDT_detail/fetch',
+    })
   }
 
   componentWillUnmount() {
     clearInterval(this.interval);
   }
 
-  transfer = id => {
+  transfer = () => {
+    const { dispatch } = this.props;
     dispatch({
       type: 'entryUSDT_detail/transfer',
-      payload: {
-        order_id: id,
-      },
     }).then(data => {
       if(data.status != 1) {
         message.error(data.msg);
         return;
       }else {
         message.success('操作成功');
+        dispatch(routerRedux.push(`/entry/entryErc20`));
+        //entry/entryErc20
+        //order/goldEntryOrder
       }
-      this.setState({
-        yieldId: null,
-        CNY: null,
-        DB: null,
-        MM: null,
-      })
     })
   }
 
-  cancel = id => {
+  cancel = () => {
+    const { dispatch } = this.props;
     dispatch({
       type: 'entryUSDT_detail/cancel',
-      payload: {
-        order_id: id,
-      },
     }).then(data => {
       if(data.status != 1) {
         message.error(data.msg);
         return;
       }else {
         message.success('操作成功');
+        dispatch(routerRedux.push(`/entry/entryErc20`));
       }
-      this.setState({
-        yieldId: null,
-        CNY: null,
-        DB: null,
-        MM: null,
-      })
     })
   }
 
@@ -117,6 +91,9 @@ class EntryUSDT_detail extends Component {
 
   render() {
     const { entryUSDT_detail, loading } = this.props;
+    const gas = new BigNumber(entryUSDT_detail.gas)
+          .multipliedBy(new BigNumber(entryUSDT_detail.pay_amount))
+          .toNumber();
 
     return (
       <ContLayout>
@@ -127,24 +104,24 @@ class EntryUSDT_detail extends Component {
             padding: '0 20px',
             fontSize: 16
           }}>
-            <Col>承兑商 金三胖</Col>
-            <Col style={{color: '#999'}}>订单编号:4856132845632131</Col>
+            <Col>承兑商 {entryUSDT_detail.a_user_name}</Col>
+            <Col style={{color: '#999'}}>订单编号:{entryUSDT_detail.order_id}</Col>
           </Row>
           <Row type="flex" justify="space-around" align="middle" style={{
             fontSize: 16,
             color: '#999'
           }}>
             <Col className={styles.itemClass1} span={6}>
-              总价<p>5,4560.00 CNY</p>
+              总价<p>{ `${entryUSDT_detail.pay_amount_cny} ${cashType[entryUSDT_detail.currency_type]}` }</p>
             </Col>
             <Col className={styles.itemClass1} span={6}>
-              数量<p>1320 USDT</p>
+              数量<p>{`${entryUSDT_detail.pay_amount} ${coinType[entryUSDT_detail.token_id]}`}</p>
             </Col>
             <Col className={styles.itemClass1} span={6}>
-              单价<p>7.00 CNY</p>
+              单价<p>{entryUSDT_detail.cny_price} CNY</p>
             </Col>
             <Col className={styles.itemClass1} span={6}>
-              手续费<p>1 USDT</p>
+              手续费<p>{ `${entryUSDT_detail.gas} ${cashType[entryUSDT_detail.token_id]}` }</p>
             </Col>
           </Row>
           <Divider orientation="left" style={{color: '#999999', fontSize: 20}}>承兑商收款方式</Divider>
@@ -159,19 +136,24 @@ class EntryUSDT_detail extends Component {
             </Col>
           </Row>
           <Row className={styles.itemClass2}>
-            <Col span={4}><span className={`${styles.payName} ${styles.c1}`}>银行卡</span></Col>
-            <Col span={5}>张三</Col>
-            <Col span={5}>2663 2316 5312 2131 5213</Col>
-            <Col span={5}>中国银行</Col>
-            <Col span={5}>崇明岛支行</Col>
+            <Col span={4}><img src={payIcon[entryUSDT_detail.pay_type]} /></Col>
+            <Col span={5}>{entryUSDT_detail.pay_real_name}</Col>
+            <Col span={5}>{entryUSDT_detail.pay_account}</Col>
+            <Col span={5}>
+              {
+                (entryUSDT_detail.pay_type == 1 || entryUSDT_detail.pay_type == 4) &&
+                entryUSDT_detail.account_bank_name
+              }
+              {
+                (entryUSDT_detail.pay_type == 2 || entryUSDT_detail.pay_type == 3) &&
+                <Popover content={<img src={entryUSDT_detail.pay_code_url} width="150" />}>
+                  <span style={{color: '#2194FF', cursor: 'pointer'}}><Icon type="qrcode" />二维码</span>
+                </Popover>
+              }
+            </Col>
           </Row>
-          <Row className={styles.itemClass2}>
-            <Col span={4}><span className={`${styles.payName} ${styles.c2}`}>支付宝</span></Col>
-            <Col span={5}>张三</Col>
-            <Col span={5}>2663 2316 5312 2131 5213</Col>
-          </Row>
-          <Row className={styles.itemClass2}>
-            <Col span={4}><span className={`${styles.payName} ${styles.c3}`}>微信</span></Col>
+          {/*<Row className={styles.itemClass2}>
+            <Col span={4}><span className={`${styles.payName} ${styles.c2}`}>微信</span></Col>
             <Col span={5}>张三</Col>
             <Col span={5}>2663 2316 5312 2131 5213</Col>
             <Col span={5}>
@@ -179,15 +161,15 @@ class EntryUSDT_detail extends Component {
                 <span style={{color: '#2194FF', cursor: 'pointer'}}><Icon type="qrcode" />二维码</span>
               </Popover>
             </Col>
-          </Row>
+          </Row>*/}
           <Row type="flex" justify="space-between" align="middle" style={{
             background: 'rgba(33, 148, 255, 0.05)',
             height: 60,
             padding: '0 20px',
             fontSize: 16
           }}>
-            <Col style={{color: '#333', fontWeight: 600, fontSize: 16}}>待转账，请向对方转账 {this.getLessTime(entryUSDT_detail.creatTime, entryUSDT_detail.aging)}</Col>
-            <Col><Button type="primary">我已完成转账， 下一步</Button></Col>
+            <Col style={{color: '#333', fontWeight: 600, fontSize: 16}}>待转账，请向对方转账 {/*this.getLessTime(entryUSDT_detail.creatTime, entryUSDT_detail.aging)*/}</Col>
+            <Col><Button type="primary" onClick={this.transfer}>我已完成转账， 下一步</Button></Col>
           </Row>
           <Row type="flex" justify="space-between" align="middle" style={{
             background: 'rgba(33, 148, 255, 0.05)',
@@ -195,8 +177,8 @@ class EntryUSDT_detail extends Component {
             padding: '0 20px',
             fontSize: 16,
           }}>
-            <Col style={{color: '#2194FF', fontWeight: 600, fontSize: 28}}>5,4560.00 CNY</Col>
-            <Col style={{color: '#2194FF', fontSize: 16, cursor: 'pointer'}}>取消订单</Col>
+            <Col style={{color: '#2194FF', fontWeight: 600, fontSize: 28}}>{`${entryUSDT_detail.pay_amount_cny} ${cashType[entryUSDT_detail.currency_type]}`}</Col>
+            <Col style={{color: '#2194FF', fontSize: 16, cursor: 'pointer'}} onClick={this.cancel}>取消订单</Col>
           </Row>
         </div>
       </ContLayout>

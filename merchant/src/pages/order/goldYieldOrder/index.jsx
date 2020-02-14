@@ -579,10 +579,7 @@ class GoldYieldOrder extends Component {
               },
             };
           } else {
-            const gas = new BigNumber(val)
-              .multipliedBy(new BigNumber(record.pay_amount))
-              .toNumber();
-            return `${gas} ${coinType[record.token_id]}`
+            return `${val} ${cashType[record.currency_type]}`;
           }
         },
       },

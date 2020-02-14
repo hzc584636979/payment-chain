@@ -109,7 +109,11 @@ class SellOrderDetail extends Component {
               <Descriptions.Item label="时效"><span style={{color: '#EA0000'}}>{lessTime >= hoursTime ? `${lessTime.hours()} : ${lessTime.minutes()} : ${lessTime.seconds()}` : `${lessTime.minutes()} : ${lessTime.seconds()}`}</span></Descriptions.Item>
             }
             <Descriptions.Item label="付款用户">{ sellOrderDetail.payee_name }</Descriptions.Item>
-            <Descriptions.Item label="付款账户">{ sellOrderDetail.payee_account }</Descriptions.Item>
+            <Descriptions.Item label="付款账户">{ sellOrderDetail.user_pay_account }</Descriptions.Item>
+            {
+              (sellOrderDetail.pay_type == 1 || sellOrderDetail.pay_type == 4) &&
+              <Descriptions.Item label="开户行">{ sellOrderDetail.user_account_bank_name }</Descriptions.Item>
+            }
             <Descriptions.Item label="付款方式"><img src={payIcon[sellOrderDetail.pay_type]} style={{maxWidth: 40}} /></Descriptions.Item>
             <Descriptions.Item label="订单状态">{ sellStatusType[sellOrderDetail.state] }</Descriptions.Item>
             <Descriptions.Item label="平台订单号">{ sellOrderDetail.order_id }</Descriptions.Item>
