@@ -135,6 +135,14 @@ export async function loginOut(params) {
   });
 }
 
+/*首页-获取用户代币信息*/
+export async function getCoinInfo(params) {
+  return request(`${apiAddress}/home/getSimpleUserInfo`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
 /*首页-获取用户信息*/
 export async function getUserInfo(params) {
   return request(`${apiAddress}/home/getUserInfo`, {

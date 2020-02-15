@@ -246,7 +246,7 @@ class Home extends Component {
               </div>
               <div className={styles.desc} style={{margin: '10px 0'}}>
                 温馨提示：<br/>
-                请准备充足资金后上线，否则订单失败将有降低信用的惩罚
+                请确认设置<Link to="/finance/settings">收款方式</Link>并且准备充足资金后上线，否则订单失败将有降低信用的惩罚
               </div>
               <div style={{textAlign: 'center'}}>
                 <Button type="primary" style={{width: 120}} onClick={this.firstOnlineLayerSubmit}>确定设置</Button>
@@ -312,7 +312,7 @@ class Home extends Component {
                         justify="space-between"
                       >
                         <Col>
-                          您已通过支付链商家认证
+                          您已通过支付链商家认证，<Link to="/finance/settings">设置收款方式></Link>
                         </Col>
                       </Row>
                       :

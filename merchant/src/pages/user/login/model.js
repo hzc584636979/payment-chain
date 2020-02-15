@@ -36,7 +36,6 @@ const Model = {
           type: 'changeLoginStatus',
           payload: response.data ? {
             success_order_percent: response.data.success_order_percent,
-            ...response.data.accountInfo,
             ...response.data.userInfo,
             gas: response.data.walletInfo[0].gas,
             gas_percent: response.data.walletInfo[0].gas_percent,
@@ -83,7 +82,6 @@ const Model = {
           type: 'changeLoginStatus',
           payload: response.data ? {
             success_order_percent: response.data.success_order_percent,
-            ...response.data.accountInfo,
             ...response.data.userInfo,
             gas: response.data.walletInfo[0].gas,
             gas_percent: response.data.walletInfo[0].gas_percent,

@@ -41,6 +41,8 @@ class SellOrder extends Component {
 
   interval = undefined;
 
+  basePageSize = 100;
+
   componentDidMount() {
     this.getViewData();
   }
@@ -62,8 +64,8 @@ class SellOrder extends Component {
     dispatch({
       type: 'sellOrder/fetch',
       payload:{
-        pageSize:1000,
-        page:0,
+        pageSize: this.basePageSize,
+        page: 0,
         state: 0,
         token_id: 0,
         order_id: null,
@@ -106,7 +108,7 @@ class SellOrder extends Component {
         ...fieldsValue,
         order_id: fieldsValue.order_id || null,
         page: pagination.page || 0,
-        pageSize: pagination.pageSize || 10,
+        pageSize: pagination.pageSize || this.basePageSize,
       };
       dispatch({
         type: 'sellOrder/search',
@@ -118,6 +120,7 @@ class SellOrder extends Component {
   renderForm() {
     const { getFieldDecorator } = this.props.form;
     const { history } = this.props.sellOrder.data;
+    const { exportLock } = this.state;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={24}>
@@ -166,7 +169,7 @@ class SellOrder extends Component {
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.exportOk}>
+              <Button loading={exportLock} style={{ marginLeft: 8 }} onClick={this.exportOk}>
                 导出
               </Button>
             </span>
@@ -228,19 +231,27 @@ class SellOrder extends Component {
 
   exportOk = fieldsValue => {
     const { dispatch, form } = this.props;
+
+    this.setState({
+      exportLock: true,
+    })
+
     form.validateFields((err, fieldsValue) => {
       if (err) return;
 
       const values = {
         ...fieldsValue,
         order_id: fieldsValue.order_id || null,
-        page:0,
-        pageSize:10,
+        page: 0,
+        pageSize: this.basePageSize,
       };
       dispatch({
         type: 'sellOrder/export',
         payload: values,
       }).then(data => {
+        this.setState({
+          exportLock: false,
+        })
         if(data.status != 1) {
           message.error(data.msg);
           return;

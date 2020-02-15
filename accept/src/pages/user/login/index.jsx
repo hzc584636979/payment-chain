@@ -9,7 +9,8 @@ const { Tab, UserName, Password, Mobile, Submit } = LoginComponents;
 
 @connect(({ userAndlogin, loading }) => ({
   userAndlogin,
-  submitting: loading.effects['userAndlogin/login'],
+  submitting1: loading.effects['userAndlogin/phoneLogin'],
+  submitting2: loading.effects['userAndlogin/emailLogin'],
 }))
 class Login extends Component {
   loginForm = undefined;
@@ -86,7 +87,7 @@ class Login extends Component {
   );
 
   render() {
-    const { userAndlogin, submitting } = this.props;
+    const { userAndlogin, submitting1, submitting2 } = this.props;
     const { status, type: loginType } = userAndlogin;
     const { type, loginErrorStatus, loginErrorMsg } = this.state;
     return (
@@ -107,7 +108,7 @@ class Login extends Component {
           >
             {status == 0 &&
               loginType === 'mobile' &&
-              !submitting &&
+              !submitting1 &&
               this.renderMessage('验证码错误')}
             <Mobile
               name="phoneUsername"
@@ -146,7 +147,7 @@ class Login extends Component {
           >
             {status == 0 &&
               loginType === 'account' &&
-              !submitting &&
+              !submitting2 &&
               this.renderMessage('账户或密码错误')}
             <UserName
               name="emailUsername"
@@ -179,7 +180,7 @@ class Login extends Component {
             />
           </Tab>
           <div className={`${styles.other} clearfix`}>
-            <Submit loading={submitting} >
+            <Submit loading={submitting1 || submitting2} >
               登录
             </Submit>
             <Link className={styles.forget} to="/user/forget">

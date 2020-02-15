@@ -19,7 +19,6 @@ const UserModel = {
         type: 'saveCurrentUser',
         payload: response.data ? {
           success_order_percent: response.data.success_order_percent,
-          ...response.data.accountInfo,
           ...response.data.userInfo,
           gas: response.data.walletInfo[0].gas,
           gas_percent: response.data.walletInfo[0].gas_percent,
@@ -29,7 +28,6 @@ const UserModel = {
         } : null,
       });
       return response.data ? {
-        ...response.data.accountInfo,
         ...response.data.userInfo,
         walletInfo: response.data.walletInfo[0],
         erc20: response.data.walletInfo[0],
@@ -46,7 +44,6 @@ const UserModel = {
         type: 'saveCurrentUser',
         payload: response.data ? {
           success_order_percent: response.data.success_order_percent,
-          ...response.data.accountInfo,
           ...response.data.userInfo,
           gas: response.data.walletInfo[0].gas,
           gas_percent: response.data.walletInfo[0].gas_percent,

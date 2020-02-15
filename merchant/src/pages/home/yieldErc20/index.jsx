@@ -22,11 +22,10 @@ function beforeUpload(file) {
   return true;
 }
 
-@connect(({ user, yieldErc20, loading }) => ({
-  currentUser: user.currentUser,
+@connect(({ yieldErc20, loading }) => ({
+  currentUser: yieldErc20.currentUser,
   yieldErc20,
-  fetchLoading: loading.effects['yieldErc20/fetch'],
-  getUserInfoLoading: loading.effects['user/getUserInfo'],
+  getUserInfoLoading: loading.effects['yieldErc20/getCoinInfo'],
 }))
 class YieldErc20 extends Component {
   state = {
@@ -36,7 +35,13 @@ class YieldErc20 extends Component {
     params: {},
   };
 
-  componentDidMount() {}
+  componentDidMount() {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'yieldErc20/getCoinInfo',
+    });
+  }
 
   componentWillUnmount() {}
 
@@ -173,16 +178,16 @@ class YieldErc20 extends Component {
         currency_type: cashType,
       },
     }).then(data => {
+      this.setState({
+        submitLock: false,
+      });
       if (data.status != 1) {
         message.error(data.msg);
       } else {
         message.success('操作成功');
       }
-      this.setState({
-        submitLock: false,
-      });
       this.props.dispatch({
-        type: 'user/getUserInfo',
+        type: 'yieldErc20/getCoinInfo',
       })
     });
   };
@@ -249,7 +254,7 @@ class YieldErc20 extends Component {
   };
 
   render() {
-    const { currentUser, fetchLoading, getUserInfoLoading } = this.props;
+    const { currentUser, getUserInfoLoading } = this.props;
     const { submitLock, payType, imageUrl, imageUrlLoading, payment_amount, cashType } = this.state;
     const {
       bank_name,

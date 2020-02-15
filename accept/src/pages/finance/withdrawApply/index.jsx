@@ -11,11 +11,10 @@ const { Option } = Select;
 @connect(({ user, withdrawApply, loading }) => ({
   currentUser: user.currentUser,
   withdrawApply,
-  fetchLoading: loading.effects['withdrawApply/getCoinInfo'],
 }))
 class WithdrawApply extends Component {
   state = {
-    
+    token_id: null,
   };
 
   interval = undefined;
@@ -38,26 +37,11 @@ class WithdrawApply extends Component {
   }
 
   handleType = e => {
-    const { dispatch } = this.props;
-
-    dispatch({
-      type: 'withdrawApply/getCoinInfo',
-      payload: {
-        walletType: Number(e) - 1,
-      }
-    }).then(data => {
-      if(data.status != 1) {
-        message.error(data.msg);
-        return;
-      }else {
-        message.success('操作成功');
-      }
-      this.setState({
-        token_id: e,
-        to_address: null,
-        coin_number: null,
-        telephone_verify_code: null,
-      })
+    this.setState({
+      token_id: e,
+      to_address: null,
+      coin_number: null,
+      telephone_verify_code: null,
     })
   }
 
@@ -175,17 +159,21 @@ class WithdrawApply extends Component {
 
   render() {
     const { currentUser, withdrawApply, fetchLoading } = this.props;
-    const allBalance = currentUser.id ? new BigNumber(wei2USDT(currentUser.erc20.balance)).plus(new BigNumber(wei2USDT(currentUser.omni.balance, 'omni'))).toNumber() : 0;
-    const allLockBalance = currentUser.id ? new BigNumber(wei2USDT(currentUser.erc20.lock_balance)).plus(new BigNumber(wei2USDT(currentUser.omni.lock_balance, 'omni'))).toNumber() : 0;
     const { 
       to_address,
       coin_number,
       submitLoading,
       count,
+      token_id,
     } = this.state;
+    const allBalance = currentUser.id ? new BigNumber(wei2USDT(currentUser.erc20.balance)).plus(new BigNumber(wei2USDT(currentUser.omni.balance, 'omni'))).toNumber() : 0;
+    const allLockBalance = currentUser.id ? new BigNumber(wei2USDT(currentUser.erc20.lock_balance)).plus(new BigNumber(wei2USDT(currentUser.omni.lock_balance, 'omni'))).toNumber() : 0;
+    const gas = currentUser.id
+      ? currentUser.erc20.gas
+      : 0;
 
     return (
-      <ContLayout loading={fetchLoading || submitLoading}>
+      <ContLayout>
         <div className={styles.wrap}>
           <div className={styles.inner}>
             <Descriptions column={1}>
@@ -206,10 +194,10 @@ class WithdrawApply extends Component {
               <Descriptions.Item label={<span className={styles.itemLabel}>提币数量</span>} className={styles.textTop}>
                 <Input onChange={this.handleCoin} style={{width: 385}} placeholder="请输入提币数量" value={coin_number} />
                 {
-                  withdrawApply.loading && 
+                  token_id && 
                   <Fragment>
                     <Button
-                      onClick={() => this.onGetAll(new BigNumber(allBalance).minus(new BigNumber(allLockBalance)).minus(new BigNumber(withdrawApply.gas)).toNumber())}
+                      onClick={() => this.onGetAll(new BigNumber(allBalance).minus(new BigNumber(allLockBalance)).minus(new BigNumber(gas)).toNumber())}
                       style={{
                         width: 140,
                         display: 'inline-block',
@@ -219,7 +207,7 @@ class WithdrawApply extends Component {
                       全部提币
                     </Button>
                     <p style={{fontSize: 14, color: '#333'}}>
-                      <span style={{paddingRight: 10}}>手续费:{ withdrawApply.gas } USDT</span><span>可用余额:{ new BigNumber(allBalance)
+                      <span style={{paddingRight: 10}}>手续费:{ gas } USDT</span><span>可用余额:{ new BigNumber(allBalance)
                           .minus(new BigNumber(allLockBalance))
                           .toNumber() } USDT</span>
                     </p>
@@ -243,7 +231,7 @@ class WithdrawApply extends Component {
                 </Button>
               </Descriptions.Item>
               <Descriptions.Item className={styles.noneBeforeIcon}>
-                <Button type="primary" loading={submitLoading} onClick={() => this.submit(new BigNumber(allBalance).minus(new BigNumber(allLockBalance)).minus(new BigNumber(withdrawApply.gas)).toNumber())}>确定提交</Button>
+                <Button type="primary" loading={submitLoading} onClick={() => this.submit(new BigNumber(allBalance).minus(new BigNumber(allLockBalance)).minus(new BigNumber(gas)).toNumber())}>确定提交</Button>
                 <Button
                   type="link"
                 >

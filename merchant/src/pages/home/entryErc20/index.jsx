@@ -147,15 +147,15 @@ class EntryErc20 extends Component {
         currency_type: cashType,
       },
     }).then(data => {
+      this.setState({
+        submitLock: false,
+      });
       if (data.status != 1) {
         message.error(data.msg);
       } else {
         /*message.success(<p>操作成功，<a onClick={() => {dispatch(routerRedux.push('/order/goldEntryOrder'))}}>请前往入金订单确认已付款</a></p>);*/
         dispatch(routerRedux.push(`/entry/entryUSDT/${data.data.order_id}`));
       }
-      this.setState({
-        submitLock: false,
-      });
     });
   };
 

@@ -40,6 +40,14 @@ class EntryUSDT_detail extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'entryUSDT_detail/fetch',
+    }).then(data => {
+      /*let count = 0;
+      this.interval = window.setInterval(() => {
+        count += 1;
+        this.setState({
+          count,
+        });
+      }, 1000);*/
     })
   }
 
