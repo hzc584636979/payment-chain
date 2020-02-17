@@ -1,4 +1,4 @@
-import { queryGoldYieldOrderDetail } from '@/services/api';
+import { queryGoldYieldOrderDetail, goldYieldOrderYield, goldYieldOrderWithdrawOrder } from '@/services/api';
 import pathToRegexp from 'path-to-regexp';
 
 const Model = {
@@ -15,6 +15,14 @@ const Model = {
         type: 'save',
         payload: response.data,
       });
+      return response;
+    },
+    *yieldOrder({ payload }, { call, put }) {
+      const response = yield call(goldYieldOrderYield, payload);
+      return response;
+    },
+    *withdrawOrder({ payload }, { call, put }) {
+      const response = yield call(goldYieldOrderWithdrawOrder, payload);
       return response;
     },
   },

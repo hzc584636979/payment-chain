@@ -56,7 +56,7 @@ class EntryUSDT_detail extends Component {
   }
 
   transfer = () => {
-    const { dispatch } = this.props;
+    const { dispatch, entryUSDT_detail } = this.props;
     dispatch({
       type: 'entryUSDT_detail/transfer',
     }).then(data => {
@@ -64,10 +64,8 @@ class EntryUSDT_detail extends Component {
         message.error(data.msg);
         return;
       }else {
-        message.success('操作成功');
-        dispatch(routerRedux.push(`/entry/entryErc20`));
-        //entry/entryErc20
-        //order/goldEntryOrder
+        // message.success('操作成功');
+        dispatch(routerRedux.push(`/order/goldEntryOrder_detail/${entryUSDT_detail.order_id}`));
       }
     })
   }

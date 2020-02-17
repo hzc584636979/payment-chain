@@ -41,7 +41,7 @@ class SellOrder extends Component {
 
   interval = undefined;
 
-  basePageSize = 100;
+  basePageSize = 30;
 
   componentDidMount() {
     this.getViewData();

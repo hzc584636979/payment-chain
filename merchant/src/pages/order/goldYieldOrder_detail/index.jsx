@@ -1,5 +1,5 @@
-import { Button, Descriptions, Popconfirm, Input } from 'antd';
-import React, { Component } from 'react';
+import { Button, Descriptions, Popconfirm, Input, message } from 'antd';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
@@ -18,16 +18,83 @@ class GoldYieldOrderDetail extends Component {
   state = {};
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'goldYieldOrderDetail/fetch',
-    });
+    this.getInfo();
   }
 
   componentWillUnmount() {}
 
+  getInfo = m => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'goldYieldOrderDetail/fetch',
+    }).then(data => {
+      if (data.status != 1) {
+        message.error(data.msg);
+        return;
+      } else {
+        m && message.success(m);
+      }
+    })
+  }
+
+  withdraw = () => {
+    const { dispatch, goldYieldOrderDetail } = this.props;
+
+    dispatch({
+      type: 'goldYieldOrderDetail/withdrawOrder',
+      payload: {
+        order_id: goldYieldOrderDetail.order_id,
+      },
+    }).then(data => {
+      if (data.status != 1) {
+        message.error(data.msg);
+        return;
+      } else {
+        message.success('操作成功');
+      }
+      this.getInfo();
+    });
+  };
+
+  yield = () => {
+    const { dispatch, goldYieldOrderDetail } = this.props;
+    const { MM } = this.state;
+    
+    if (!MM) {
+      message.error('请输入交易密码');
+      return;
+    }
+
+    dispatch({
+      type: 'goldYieldOrderDetail/yieldOrder',
+      payload: {
+        order_id: goldYieldOrderDetail.order_id,
+        payment_pwd: MM,
+        token_id: goldYieldOrderDetail.token_id,
+      },
+    }).then(data => {
+      if (data.status != 1) {
+        message.error(data.msg);
+        return;
+      } else {
+        message.success('操作成功');
+      }
+      this.getInfo();
+      this.setState({
+        MM: null,
+      });
+    });
+  };
+
+  handleMM = e => {
+    this.setState({
+      MM: e.target.value,
+    });
+  };
+
   render() {
     const { goldYieldOrderDetail, loading } = this.props;
+    const { MM } = this.state;
 
     return (
       <ContLayout>
@@ -61,6 +128,37 @@ class GoldYieldOrderDetail extends Component {
               {moment(goldYieldOrderDetail.created_at)
                 .local()
                 .format('YYYY-MM-DD HH:mm:ss')}
+            </Descriptions.Item>
+            <Descriptions.Item label="操作">
+              {
+                goldYieldOrderDetail.state < 5 &&
+                  <Fragment>
+                    <Button type="primary" onClick={this.withdraw}>撤回</Button>
+                    <span style={{ display: 'inline-block', width: 15 }}></span>
+                  </Fragment>
+              }
+
+              {
+                goldYieldOrderDetail.state == 5 &&
+                  <Fragment>
+                    <Input
+                      type="password"
+                      placeholder="输入交易密码"
+                      maxLength={24}
+                      onChange={this.handleMM}
+                      value={MM}
+                      style={{ width: 200 }}
+                    />
+                    <span style={{ display: 'inline-block', width: 15 }}></span>
+                    <Button type="primary" onClick={this.yield}>
+                      出金
+                    </Button>
+                    <span style={{ display: 'inline-block', width: 15 }}></span>
+                  </Fragment>
+              }
+              <Button onClick={() => this.getInfo('刷新成功')}>
+                刷新订单
+              </Button>
             </Descriptions.Item>
           </Descriptions>
         </div>

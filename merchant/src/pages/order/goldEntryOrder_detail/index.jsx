@@ -1,4 +1,4 @@
-import { Button, Descriptions, Popconfirm, Input } from 'antd';
+import { Button, Descriptions, Popconfirm, Input, message } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
@@ -18,13 +18,24 @@ class GoldEntryOrderDetail extends Component {
   state = {};
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'goldEntryOrderDetail/fetch',
-    });
+    this.getInfo();
   }
 
   componentWillUnmount() {}
+
+  getInfo = m => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'goldEntryOrderDetail/fetch',
+    }).then(data => {
+      if (data.status != 1) {
+        message.error(data.msg);
+        return;
+      } else {
+        m && message.success(m);
+      }
+    })
+  }
 
   render() {
     const { goldEntryOrderDetail, loading } = this.props;
@@ -55,6 +66,11 @@ class GoldEntryOrderDetail extends Component {
               {moment(goldEntryOrderDetail.created_at)
                 .local()
                 .format('YYYY-MM-DD HH:mm:ss')}
+            </Descriptions.Item>
+            <Descriptions.Item label="操作">
+              <Button onClick={() => this.getInfo('刷新成功')}>
+                刷新订单
+              </Button>
             </Descriptions.Item>
           </Descriptions>
         </div>

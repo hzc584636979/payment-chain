@@ -184,7 +184,8 @@ class YieldErc20 extends Component {
       if (data.status != 1) {
         message.error(data.msg);
       } else {
-        message.success('操作成功');
+        // message.success('操作成功');
+        dispatch(routerRedux.push(`/order/goldYieldOrder_detail${data.data.order_id}`));
       }
       this.props.dispatch({
         type: 'yieldErc20/getCoinInfo',
