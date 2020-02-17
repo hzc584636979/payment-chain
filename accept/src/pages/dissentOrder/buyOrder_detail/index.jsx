@@ -146,6 +146,7 @@ class BuyDissentOrderDetail extends Component {
             {
               buyDissentOrderDetail.pay_type == 2 && 
               <Fragment>
+                <Descriptions.Item label="客户支付宝账号">{buyDissentOrderDetail.payee_account}</Descriptions.Item>
                 <Descriptions.Item label="客户支付宝收款码"><img src={buyDissentOrderDetail.pay_code_url} style={{maxWidth: 150}} /></Descriptions.Item>
               </Fragment>
             }
@@ -153,6 +154,7 @@ class BuyDissentOrderDetail extends Component {
             {
               buyDissentOrderDetail.pay_type == 3 && 
               <Fragment>
+                <Descriptions.Item label="客户微信账号">{buyDissentOrderDetail.payee_account}</Descriptions.Item>
                 <Descriptions.Item label="客户微信收款码"><img src={buyDissentOrderDetail.pay_code_url} style={{maxWidth: 150}} /></Descriptions.Item>
               </Fragment>
             }

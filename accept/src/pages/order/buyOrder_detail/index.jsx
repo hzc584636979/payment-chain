@@ -182,7 +182,7 @@ class buyOrderDetail extends Component {
             {
               buyOrderDetail.pay_type == 2 && 
               <Fragment>
-                <Descriptions.Item label="客户支付宝账号"><img src={buyOrderDetail.payee_account} style={{maxWidth: 150}} /></Descriptions.Item>
+                <Descriptions.Item label="客户支付宝账号">{buyOrderDetail.payee_account}</Descriptions.Item>
                 <Descriptions.Item label="客户支付宝收款码"><img src={buyOrderDetail.pay_code_url} style={{maxWidth: 150}} /></Descriptions.Item>
               </Fragment>
             }
@@ -190,7 +190,7 @@ class buyOrderDetail extends Component {
             {
               buyOrderDetail.pay_type == 3 && 
               <Fragment>
-                <Descriptions.Item label="客户微信账号"><img src={buyOrderDetail.payee_account} style={{maxWidth: 150}} /></Descriptions.Item>
+                <Descriptions.Item label="客户微信账号">{buyOrderDetail.payee_account}</Descriptions.Item>
                 <Descriptions.Item label="客户微信收款码"><img src={buyOrderDetail.pay_code_url} style={{maxWidth: 150}} /></Descriptions.Item>
               </Fragment>
             }
