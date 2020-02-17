@@ -151,7 +151,7 @@ class buyOrderDetail extends Component {
     const { handleUploadImgLoading, receiptImg, visible } = this.state;
     const lessTime = this.getAging(buyOrderDetail);
     const hoursTime = 60 * 60 * 1000;
-console.log(visible)
+
     const uploadButton = (
       <div>
         <Icon type={handleUploadImgLoading ? 'loading' : 'plus'} />

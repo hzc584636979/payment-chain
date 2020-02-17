@@ -49,7 +49,13 @@ class BuyOrderAppeal extends Component {
 
   handleChange = file => {
     if(!beforeUpload(file)) return false;
-    getBase64(file, imageUrl =>
+    getBase64(file, imageUrl => {
+      if(!imageUrl) {
+        this.setState({
+          loading: false,
+        });
+        return;
+      }
       this.setState({
         fileList: [
           ...this.state.fileList,
@@ -57,8 +63,8 @@ class BuyOrderAppeal extends Component {
         ],
         upLock: this.state.fileList.length < 2 ? false : true,
         loading: false,
-      }),
-    );
+      })
+    });
     return false;
   }
 
@@ -115,12 +121,12 @@ class BuyOrderAppeal extends Component {
 
   render() {
     const { fetchLoading } = this.props;
+    const { upLock, submitLock, loading } = this.state;
     const uploadButton = (
       <div>
-        <Icon type={this.state.loading ? 'loading' : 'plus'} />
+        <Icon type={loading ? 'loading' : 'plus'} />
       </div>
     );
-    const { upLock, submitLock } = this.state;
 
     return (
       <ContLayout>
@@ -153,7 +159,7 @@ class BuyOrderAppeal extends Component {
               <div className={styles.upImgDesc}>图片上传限制:最多3张，最大2MB</div>
             </Descriptions.Item>
             <Descriptions.Item className={styles.noneBeforeIcon}>
-              <Button type="primary" loading={submitLock} onClick={this.submit}>确定提交</Button>
+              <Button type="primary" loading={submitLock || loading} onClick={this.submit}>确定提交</Button>
               <span style={{display: 'inline-block', width: '10px'}}></span>
               <Button>
                 <Link to="/order/buyOrder?history">返回</Link>

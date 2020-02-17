@@ -531,7 +531,7 @@ class UserBase extends Component {
               {
                 !disabled &&
                 <Descriptions.Item className={styles.noneBeforeIcon}>
-                  <Button type="primary" loading={submitLoading} onClick={this.submit}>确定提交</Button>
+                  <Button type="primary" loading={submitLoading || identityZloading || identityFloading} onClick={this.submit}>确定提交</Button>
                 </Descriptions.Item>
               }
             </Descriptions>

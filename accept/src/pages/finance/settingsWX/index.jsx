@@ -269,7 +269,7 @@ class FinanceSettingsWX extends Component {
                 </Button>
               </Descriptions.Item>
               <Descriptions.Item className={styles.noneBeforeIcon}>
-                <Button type="primary" loading={submitLoading} onClick={this.submit}>确定提交</Button>
+                <Button type="primary" loading={submitLoading || loading} onClick={this.submit}>确定提交</Button>
                 <span style={{display: 'inline-block', width: '10px'}}></span>
                 <Button>
                   <Link to="/finance/settings">返回</Link>

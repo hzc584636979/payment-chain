@@ -1,6 +1,8 @@
 import { parse } from 'querystring';
 import pathRegexp from 'path-to-regexp';
 import moment from 'moment';
+import OSS from 'ali-oss';
+import { message } from 'antd';
 
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
@@ -109,16 +111,55 @@ export const compressBase64 = (base64, callback, maxMB) => {
   }
 }
 
+function getCode(n) {
+  var all = "azxcvbnmsdfghjklqwertyuiopZXCVBNMASDFGHJKLQWERTYUIOP0123456789";
+  var b = "";
+  for (var i = 0; i < n; i++) {
+    var index = Math.floor(Math.random() * 62);
+    b += all.charAt(index);
+  }
+  return b;
+};
+
+const client = new OSS({
+  region: 'oss-cn-beijing',
+  //云账号AccessKey有所有API访问权限，建议遵循阿里云安全最佳实践，部署在服务端使用RAM子账号或STS，部署在客户端使用STS。
+  accessKeyId: 'LTAI4FsTLQKitdN1Ye9VD2Wm',
+  accessKeySecret: 'H9VotwP7iACImD8EHL5lsM0sFTze8x',
+  bucket: 'zhifulian'
+});
+
 export const getBase64 = (img, callback, maxMB = 2) => {
   const reader = new FileReader();
   reader.readAsDataURL(img);
-  reader.addEventListener('load', () => {
-    console.log(reader.result.length / 1024 / 1024)
-    if(reader.result.length / 1024 / 1024  > maxMB) {
-      compressBase64(reader.result, callback, maxMB)
-    }else {
-      callback(reader.result)
+  const suffix = img.type == 'image/png' ? 'png' : 'jpg';
+  const fileName = getCode(4) + 'issue_file_' + new Date().getTime() + getCode(4) + '.' + suffix;
+
+  async function put(img) {
+    try {
+      //object-name可以自定义为文件名（例如file.txt）或目录（例如abc/test/file.txt）的形式，实现将文件上传至当前Bucket或Bucket下的指定目录。
+      let result = await client.put(fileName, img);
+      /*const expires = new Date(new Date().getTime() + 3600 * 1000 * 24 * 365 * 1000).getTime();
+      let url = await client.signatureUrl(fileName, {expires});*/
+      callback(result.url);
+    } catch (e) {
+      callback(null);
+      message.error('上传失败，请重新上传', e);
+      console.log(e);
     }
+  }
+
+  reader.addEventListener('load', () => {
+    const file = reader.result.replace(/^data:\w+\/\w+;base64,/, "");
+    put(new OSS.Buffer(file, "base64"));
+    /*
+      console.log(reader.result.length / 1024 / 1024)
+      if(reader.result.length / 1024 / 1024  > maxMB) {
+        compressBase64(reader.result, callback, maxMB)
+      }else {
+        callback(reader.result)
+      }
+    */
   });
 }
 

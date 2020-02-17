@@ -409,7 +409,13 @@ class UserSafe extends Component {
       loading: true,
     })
 
-    getBase64(file, imageUrl =>
+    getBase64(file, imageUrl => {
+      if(!imageUrl) {
+        this.setState({
+          loading: false,
+        })
+        return;
+      };
       dispatch({
         type: 'userSafe/modifyLogo',
         payload: {
@@ -429,7 +435,7 @@ class UserSafe extends Component {
           type: 'user/getUserInfo',
         })
       })
-    );
+    });
     return false;
   }
 

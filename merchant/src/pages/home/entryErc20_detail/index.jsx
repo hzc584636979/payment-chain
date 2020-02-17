@@ -141,7 +141,7 @@ class EntryUSDT_detail extends Component {
               请务必使用本人已绑定的支付方式向以下账户自行转账
             </Col>
           </Row>
-          <Row className={styles.itemClass2}>
+          <Row className={styles.itemClass2} type="flex" align='middle'>
             <Col span={4}><img src={payIcon[entryUSDT_detail.pay_type]} /></Col>
             <Col span={5}>{entryUSDT_detail.pay_real_name}</Col>
             <Col span={5}>{entryUSDT_detail.pay_account}</Col>
@@ -152,9 +152,10 @@ class EntryUSDT_detail extends Component {
               }
               {
                 (entryUSDT_detail.pay_type == 2 || entryUSDT_detail.pay_type == 3) &&
-                <Popover content={<img src={entryUSDT_detail.pay_code_url} width="150" />}>
+                /*<Popover content={<img src={entryUSDT_detail.pay_code_url} width="150" />}>
                   <span style={{color: '#2194FF', cursor: 'pointer'}}><Icon type="qrcode" />二维码</span>
-                </Popover>
+                </Popover>*/
+                <img src={entryUSDT_detail.pay_code_url} width="150" />
               }
             </Col>
           </Row>

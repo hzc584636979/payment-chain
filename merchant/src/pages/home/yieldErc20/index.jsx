@@ -1,6 +1,6 @@
 import { Button, Descriptions, Input, Select, Upload, Icon, message, Popover } from 'antd';
 import React, { Component, Fragment } from 'react';
-import { connect } from 'dva';
+import { connect, routerRedux } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
 import QRCode from 'qrcode.react';
@@ -587,7 +587,7 @@ class YieldErc20 extends Component {
             <Descriptions.Item className={styles.noneBeforeIcon}>
               <Button
                 type="primary"
-                loading={submitLock}
+                loading={submitLock || imageUrlLoading}
                 onClick={() => this.submit(new BigNumber(useBalance)
                           .minus(new BigNumber(gas))
                           .toNumber(), cashToCoin)}
