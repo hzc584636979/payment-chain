@@ -277,11 +277,11 @@ class UserBase extends Component {
       payment_pwd,
       telephone_number,
       email_address,
-      qq_number,
-      wechat_number,
-      // payment_link,
       telephone_verify_code,
-      email_verify_code,
+      // qq_number,
+      // wechat_number,
+      // payment_link,
+      // email_verify_code,
     } = this.state.params;
 
     if(!user_name) {
@@ -308,22 +308,22 @@ class UserBase extends Component {
     }else if(!email_address || !(/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(email_address))) {
       message.error('请填写正确的绑定邮箱后提交');
       return;
-    }else if(!qq_number) {
+    }else if(!telephone_verify_code) {
+      message.error('请填写手机验证码后提交');
+      return;
+    }/*else if(!qq_number) {
       message.error('请填写绑定QQ后提交');
       return;
     }else if(!wechat_number) {
       message.error('请填写绑定微信后提交');
       return;
-    }/*else if(!payment_link) {
+    }else if(!payment_link) {
       message.error('请填写收款链接后提交');
       return;
-    }*/else if(!email_verify_code) {
+    }else if(!email_verify_code) {
       message.error('请填写邮箱验证码后提交');
       return;
-    }else if(!telephone_verify_code) {
-      message.error('请填写手机验证码后提交');
-      return;
-    }
+    }*/
 
     this.setState({
       submitLoading: true,
@@ -341,11 +341,11 @@ class UserBase extends Component {
         payment_pwd,
         telephone_number,
         email_address,
-        qq_number,
-        wechat_number,
-        // payment_link,
         telephone_verify_code,
-        email_verify_code,
+        // qq_number,
+        // wechat_number,
+        // payment_link,
+        // email_verify_code,
       },
     }).then(data => {
       this.setState({
@@ -464,6 +464,29 @@ class UserBase extends Component {
                 <Input type="password" disabled={disabled} onChange={this.handleTx} style={{width: 385}} placeholder="输入交易密码" maxLength={24} value={payment_pwd} />
                 <p style={{fontSize: 14, color: '#EA0000'}}>必须由大写字母，小写字母，数字且不含有特殊字符组成的6位~24位密码</p>
               </Descriptions.Item>
+              <Descriptions.Item label={<span className={styles.itemLabel}>绑定邮箱</span>}>
+                <Input disabled={disabled} onChange={this.handleEmail} style={{width: 385}} placeholder="输入邮箱号" value={email_address} />
+              </Descriptions.Item>
+              {
+                /*!disabled && 
+                <Descriptions.Item label={<span className={styles.itemLabel}>邮箱验证码</span>}>
+                  <Input disabled={disabled} onChange={this.handleEmailCaptcha} style={{width: 385}} placeholder="输入邮箱验证码" maxLength={6} />
+                  <Button
+                    disabled={!!emailCount}
+                    className={styles.getCaptcha}
+                    onClick={this.onGetEmailCaptcha}
+                    style={{
+                      width: 140,
+                      display: 'inline-block',
+                      marginLeft: 20
+                    }}
+                  >
+                    {emailCount
+                      ? `${emailCount} s`
+                      : '获取邮箱验证码'}
+                  </Button>
+                </Descriptions.Item>*/
+              }
               <Descriptions.Item label={<span className={styles.itemLabel}>绑定手机</span>}>
                 <Input disabled={disabled} onChange={this.handlePhone} style={{width: 385}} placeholder="输入手机号" maxLength={11} value={telephone_number} />
               </Descriptions.Item>
@@ -487,35 +510,12 @@ class UserBase extends Component {
                   </Button>
                 </Descriptions.Item>
               }
-              <Descriptions.Item label={<span className={styles.itemLabel}>绑定邮箱</span>}>
-                <Input disabled={disabled} onChange={this.handleEmail} style={{width: 385}} placeholder="输入邮箱号" value={email_address} />
-              </Descriptions.Item>
-              {
-                !disabled && 
-                <Descriptions.Item label={<span className={styles.itemLabel}>邮箱验证码</span>}>
-                  <Input disabled={disabled} onChange={this.handleEmailCaptcha} style={{width: 385}} placeholder="输入邮箱验证码" maxLength={6} />
-                  <Button
-                    disabled={!!emailCount}
-                    className={styles.getCaptcha}
-                    onClick={this.onGetEmailCaptcha}
-                    style={{
-                      width: 140,
-                      display: 'inline-block',
-                      marginLeft: 20
-                    }}
-                  >
-                    {emailCount
-                      ? `${emailCount} s`
-                      : '获取邮箱验证码'}
-                  </Button>
-                </Descriptions.Item>
-              }
-              <Descriptions.Item label={<span className={styles.itemLabel}>绑定QQ</span>}>
+              {/*<Descriptions.Item label={<span className={styles.itemLabel}>绑定QQ</span>}>
                 <Input disabled={disabled} onChange={this.handleQQ} style={{width: 385}} placeholder="输入QQ号" value={qq_number} maxLength={20} />
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>绑定微信</span>}>
                 <Input disabled={disabled} onChange={this.handleWX} style={{width: 385}} placeholder="输入微信号" value={wechat_number} />
-              </Descriptions.Item>
+              </Descriptions.Item>*/}
               {/*<Descriptions.Item label={<span className={styles.itemLabel}>收款链接</span>}>
                 <Input disabled={disabled} onChange={this.handlePaymentLink} style={{width: 385}} placeholder="输入收款链接" value={payment_link} />
                 {
