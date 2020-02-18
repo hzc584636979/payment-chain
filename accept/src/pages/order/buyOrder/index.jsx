@@ -493,7 +493,7 @@ class BuyOrder extends Component {
         render:(val,record)=>{
           return (
             val ?
-            <Popover content={<img src={val} style={{maxWidth: 100}} />}>
+            <Popover content={<a target="_blank" href={val}><img src={val} style={{maxWidth: 100}} /></a>}>
               <Icon type="qrcode" />
             </Popover>
             :

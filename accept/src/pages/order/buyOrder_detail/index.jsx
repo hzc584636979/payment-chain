@@ -162,6 +162,7 @@ class buyOrderDetail extends Component {
       <ContLayout>
         <div className={styles.wrap}>
           <Descriptions column={1}>
+            <Descriptions.Item label="订单状态">{ buyStatusType[buyOrderDetail.state] }</Descriptions.Item>
             <Descriptions.Item label="订单金额">{ `${buyOrderDetail.pay_amount_cny} ${cashType[buyOrderDetail.currency_type]}` }</Descriptions.Item>
             <Descriptions.Item label="代币数量">{ `${buyOrderDetail.pay_amount} ${coinType[buyOrderDetail.token_id]}` }</Descriptions.Item>
             
@@ -210,7 +211,6 @@ class buyOrderDetail extends Component {
               </Fragment>
             }
             
-            <Descriptions.Item label="订单状态">{ buyStatusType[buyOrderDetail.state] }</Descriptions.Item>
             <Descriptions.Item label="平台订单号">{ buyOrderDetail.order_id }</Descriptions.Item>
             <Descriptions.Item label="商户订单号">{ buyOrderDetail.out_order_id }</Descriptions.Item>
             <Descriptions.Item label="商户昵称">{ buyOrderDetail.m_user_name }</Descriptions.Item>

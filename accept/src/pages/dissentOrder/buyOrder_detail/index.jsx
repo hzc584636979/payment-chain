@@ -132,6 +132,9 @@ class BuyDissentOrderDetail extends Component {
             <Descriptions.Item label="问题描述">{ buyDissentOrderDetail.issue_desc }</Descriptions.Item>
             <Descriptions.Item label="平台订单号">{ buyDissentOrderDetail.order_id }</Descriptions.Item>
             <Descriptions.Item label="商户订单号">{ buyDissentOrderDetail.out_order_id }</Descriptions.Item>
+            <Descriptions.Item label="订单状态">{ buyStatusType[buyDissentOrderDetail.state] }</Descriptions.Item>
+            <Descriptions.Item label="订单金额">{ `${buyDissentOrderDetail.pay_amount_cny} ${cashType[buyDissentOrderDetail.currency_type]}` }</Descriptions.Item>
+            <Descriptions.Item label="代币数量">{ `${buyDissentOrderDetail.pay_amount} ${coinType[buyDissentOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="商户昵称">{ buyDissentOrderDetail.m_user_name }</Descriptions.Item>
             <Descriptions.Item label="客户姓名">{buyDissentOrderDetail.payee_name}</Descriptions.Item>
 
@@ -174,9 +177,6 @@ class BuyDissentOrderDetail extends Component {
               </Fragment>
             }
 
-            <Descriptions.Item label="订单金额">{ `${buyDissentOrderDetail.pay_amount_cny} ${cashType[buyDissentOrderDetail.currency_type]}` }</Descriptions.Item>
-            <Descriptions.Item label="代币数量">{ `${buyDissentOrderDetail.pay_amount} ${coinType[buyDissentOrderDetail.token_id]}` }</Descriptions.Item>
-            <Descriptions.Item label="订单状态">{ buyStatusType[buyDissentOrderDetail.state] }</Descriptions.Item>
             <Descriptions.Item label="创建时间">{ moment(buyDissentOrderDetail.created_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
             <Descriptions.Item label="订单更新时间">{ moment(buyDissentOrderDetail.updated_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
             <Descriptions.Item label="接单时间">{ buyDissentOrderDetail.transfer_time ? moment(buyDissentOrderDetail.transfer_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>

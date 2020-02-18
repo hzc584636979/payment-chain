@@ -124,9 +124,6 @@ class GoldEntryDissentOrderDetail extends Component {
       <ContLayout>
         <div className={styles.wrap}>
           <Descriptions column={1}>
-            <Descriptions.Item label="订单状态">
-              {sellStatusType[goldEntryDissentOrderDetail.state]}
-            </Descriptions.Item>
             <Descriptions.Item label="异议时间">
               {moment(goldEntryDissentOrderDetail.issue_create_time)
                 .local()
@@ -144,11 +141,14 @@ class GoldEntryDissentOrderDetail extends Component {
             <Descriptions.Item label="商户订单号">
               {goldEntryDissentOrderDetail.out_order_id}
             </Descriptions.Item>
-            <Descriptions.Item label="承兑商姓名">
-              {goldEntryDissentOrderDetail.a_user_name}
+            <Descriptions.Item label="订单状态">
+              {sellStatusType[goldEntryDissentOrderDetail.state]}
             </Descriptions.Item>
             <Descriptions.Item label="订单金额">{ `${goldEntryDissentOrderDetail.pay_amount_cny} ${cashType[goldEntryDissentOrderDetail.currency_type]}` }</Descriptions.Item>
             <Descriptions.Item label="代币数量">{ `${goldEntryDissentOrderDetail.pay_amount} ${coinType[goldEntryDissentOrderDetail.token_id]}` }</Descriptions.Item>
+            <Descriptions.Item label="承兑商姓名">
+              {goldEntryDissentOrderDetail.a_user_name}
+            </Descriptions.Item>
             <Descriptions.Item label="订单创建时间">
               {moment(goldEntryDissentOrderDetail.created_at)
                 .local()

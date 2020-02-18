@@ -132,6 +132,9 @@ class SellDissentOrderDetail extends Component {
             <Descriptions.Item label="问题描述">{ sellDissentOrderDetail.issue_desc }</Descriptions.Item>
             <Descriptions.Item label="平台订单号">{ sellDissentOrderDetail.order_id }</Descriptions.Item>
             <Descriptions.Item label="商户订单号">{ sellDissentOrderDetail.out_order_id }</Descriptions.Item>
+            <Descriptions.Item label="订单状态">{ sellStatusType[sellDissentOrderDetail.state] }</Descriptions.Item>
+            <Descriptions.Item label="订单金额">{ `${sellDissentOrderDetail.pay_amount_cny} ${cashType[sellDissentOrderDetail.currency_type]}` }</Descriptions.Item>
+            <Descriptions.Item label="代币数量">{ `${sellDissentOrderDetail.pay_amount} ${coinType[sellDissentOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="付款用户">{ sellDissentOrderDetail.payee_name }</Descriptions.Item>
             <Descriptions.Item label="付款账户">{ sellDissentOrderDetail.user_pay_account }</Descriptions.Item>
             {
@@ -139,10 +142,7 @@ class SellDissentOrderDetail extends Component {
               <Descriptions.Item label="开户行">{ sellDissentOrderDetail.user_account_bank_name }</Descriptions.Item>
             }
             <Descriptions.Item label="付款方式"><img src={payIcon[sellDissentOrderDetail.pay_type]} style={{maxWidth: 40}} /></Descriptions.Item>
-            <Descriptions.Item label="订单金额">{ `${sellDissentOrderDetail.pay_amount_cny} ${cashType[sellDissentOrderDetail.currency_type]}` }</Descriptions.Item>
-            <Descriptions.Item label="代币数量">{ `${sellDissentOrderDetail.pay_amount} ${coinType[sellDissentOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="收币商户">{ sellDissentOrderDetail.m_user_name }</Descriptions.Item>
-            <Descriptions.Item label="订单状态">{ sellStatusType[sellDissentOrderDetail.state] }</Descriptions.Item>
             <Descriptions.Item label="创建时间">{ moment(sellDissentOrderDetail.created_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
             <Descriptions.Item label="订单更新时间">{ moment(sellDissentOrderDetail.updated_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
             <Descriptions.Item label="付款时间">{ sellDissentOrderDetail.transfer_time ? moment(sellDissentOrderDetail.transfer_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
