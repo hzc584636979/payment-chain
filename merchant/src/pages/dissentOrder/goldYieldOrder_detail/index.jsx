@@ -119,6 +119,7 @@ class GoldYieldDissentOrderDetail extends Component {
   render() {
     const { goldYieldDissentOrderDetail, loading } = this.props;
     const { KFVisible, submitLock, closeLock } = this.state;
+    const fileList = goldYieldDissentOrderDetail.issue_file ? goldYieldDissentOrderDetail.issue_file.split(',') : [];
 
     return (
       <ContLayout>
@@ -136,6 +137,9 @@ class GoldYieldDissentOrderDetail extends Component {
             <Descriptions.Item label="问题描述">
               {goldYieldDissentOrderDetail.issue_desc}
             </Descriptions.Item>
+            <Descriptions.Item label="问题图片">
+              { fileList.map((v, i) => <a key={i} target="_blank" href={v}><img src={v} style={{maxWidth: 150}} /></a>) }
+            </Descriptions.Item>
             <Descriptions.Item label="平台订单号">
               {goldYieldDissentOrderDetail.order_id}
             </Descriptions.Item>
@@ -150,7 +154,17 @@ class GoldYieldDissentOrderDetail extends Component {
             <Descriptions.Item label="承兑商姓名">
               {goldYieldDissentOrderDetail.a_user_name}
             </Descriptions.Item>
-            <Descriptions.Item label="订单创建时间">
+            <Descriptions.Item label="单价(CNY)">
+              {goldYieldDissentOrderDetail.cny_price}
+            </Descriptions.Item>
+            <Descriptions.Item label="手续费">{ `${goldYieldDissentOrderDetail.gas} ${cashType[goldYieldDissentOrderDetail.token_id]}` }</Descriptions.Item>
+            {
+              goldYieldDissentOrderDetail.state == 5 &&
+              <Descriptions.Item label="支付截图">
+                <a target="_blank" href={goldYieldDissentOrderDetail.payment_screenshot}><img src={goldYieldDissentOrderDetail.payment_screenshot} width="150" height="150" /></a>
+              </Descriptions.Item>
+            }
+            <Descriptions.Item label="创建时间">
               {moment(goldYieldDissentOrderDetail.created_at)
                 .local()
                 .format('YYYY-MM-DD HH:mm:ss')}

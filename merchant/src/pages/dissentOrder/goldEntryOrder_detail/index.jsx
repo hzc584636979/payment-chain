@@ -119,6 +119,7 @@ class GoldEntryDissentOrderDetail extends Component {
   render() {
     const { goldEntryDissentOrderDetail, loading } = this.props;
     const { KFVisible, submitLock, closeLock } = this.state;
+    const fileList = goldEntryDissentOrderDetail.issue_file ? goldEntryDissentOrderDetail.issue_file.split(',') : [];
 
     return (
       <ContLayout>
@@ -134,6 +135,9 @@ class GoldEntryDissentOrderDetail extends Component {
             </Descriptions.Item>
             <Descriptions.Item label="问题描述">
               {goldEntryDissentOrderDetail.issue_desc}
+            </Descriptions.Item>
+            <Descriptions.Item label="问题图片">
+              { fileList.map((v, i) => <a key={i} target="_blank" href={v}><img src={v} style={{maxWidth: 150}} /></a>) }
             </Descriptions.Item>
             <Descriptions.Item label="平台订单号">
               {goldEntryDissentOrderDetail.order_id}

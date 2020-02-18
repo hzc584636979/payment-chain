@@ -453,6 +453,10 @@ class BuyOrder extends Component {
                 :
                 null
               }
+              {/*<span style={{display: 'inline-block', width: '10px'}}></span>
+              <Button>
+                <Link to={`/order/buyOrder_appeal/${record.order_id}`}>申诉</Link>
+              </Button>*/}
               <span style={{display: 'inline-block', width: '10px'}}></span>
               <Button>
                 <Link to={`/order/buyOrder_detail/${record.order_id}`}>查看</Link>

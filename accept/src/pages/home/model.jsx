@@ -12,6 +12,7 @@ const Model = {
         type: 'save',
         payload: response.data,
       });
+      return response;
     },
     *buyStatus({ payload }, { call, put }) {
       const response = yield call(homeBuyOnline, payload);

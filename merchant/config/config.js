@@ -159,10 +159,10 @@ export default {
             },
             {
               path: '/yield',
-              name: '模拟用户端出金',
+              name: '出金',
               routes: [
                 {
-                  name: '模拟用户端USDT出金',
+                  name: 'USDT出金',
                   icon: 'shopping-cart',
                   path: '/yield/yieldErc20',
                   component: './home/yieldErc20',
@@ -177,10 +177,10 @@ export default {
             },
             {
               path: '/entry',
-              name: '模拟用户端入金',
+              name: '入金',
               routes: [
                 {
-                  name: '模拟用户端USDT入金',
+                  name: 'USDT入金',
                   icon: 'shopping-cart',
                   path: '/entry/entryErc20',
                   component: './home/entryErc20',

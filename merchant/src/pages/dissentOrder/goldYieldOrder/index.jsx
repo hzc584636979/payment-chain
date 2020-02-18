@@ -214,6 +214,17 @@ class GoldYieldDissentOrder extends Component {
         },
       },
       {
+        title: '订单创建时间',
+        dataIndex: 'created_at',
+        key: 'created_at',
+        align: 'center',
+        render: (val, record) => {
+          return moment(val)
+            .local()
+            .format('YYYY-MM-DD HH:mm:ss');
+        },
+      },
+      {
         title: '异议时间',
         dataIndex: 'issue_create_time',
         key: 'issue_create_time',
@@ -273,17 +284,6 @@ class GoldYieldDissentOrder extends Component {
         align: 'center',
         render: (val, record) => {
           return buyStatusType[val];
-        },
-      },
-      {
-        title: '订单创建时间',
-        dataIndex: 'created_at',
-        key: 'created_at',
-        align: 'center',
-        render: (val, record) => {
-          return moment(val)
-            .local()
-            .format('YYYY-MM-DD HH:mm:ss');
         },
       },
     ];

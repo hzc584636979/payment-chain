@@ -260,6 +260,21 @@ class Home extends Component {
     );
   }
 
+  getTxInfo = () => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'home/fetch',
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('刷新成功');
+      }
+    })
+  }
+
   render() {
     const { accountBalance1, tokenBalance1, tokenBalance2, payVisible, mortgageVisible, buyStatus, sellStatus, mortgageValue, walletType } = this.state;
     const { currentUser, home, loading, getUserInfoLoading } = this.props;
@@ -468,7 +483,12 @@ class Home extends Component {
                 <Col xl={19} md={24} sm={24} xs={24}>
                   <div className={`${styles.layoutLeft} ${styles.orderWrap}`}>
                     <div className={styles.itemBox} style={{borderBottom: '1px solid #ECECEC'}}>
-                      <div className={styles.title}>待处理</div>
+                      <div className={styles.title}>
+                        待处理
+                        <span style={{fontSize: 15, fontWeight: 600, padding: '0 15px', color: '#1890ff'}}>出售交易槽：{ `${home.sell_order_pending} / ${home.sell_accept_slot_max}` }</span>
+                        <span style={{fontSize: 15, fontWeight: 600, padding: '0 15px', color: '#1890ff'}}>购买交易槽：{ `${home.buy_order_pending} / ${home.buy_accept_slot_max}` }</span>
+                        <Button loading={loading} onClick={this.getTxInfo}>刷新交易槽</Button>
+                      </div>
                       <Row
                         gutter={24}
                         type="flex"
