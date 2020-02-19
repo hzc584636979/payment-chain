@@ -129,7 +129,7 @@ const client = new OSS({
   bucket: 'zhifulian'
 });
 
-export const getBase64 = (img, callback, maxMB = 2) => {
+export const getBase64 = (img, callback, maxMB) => {
   const reader = new FileReader();
   reader.readAsDataURL(img);
   const suffix = img.type == 'image/png' ? 'png' : 'jpg';
@@ -150,16 +150,15 @@ export const getBase64 = (img, callback, maxMB = 2) => {
   }
 
   reader.addEventListener('load', () => {
+    if(maxMB && reader.result.length / 1024 / 1024  > maxMB) {
+      compressBase64(reader.result, (newBase64) => {
+        const file = newBase64.replace(/^data:\w+\/\w+;base64,/, "");
+        put(new OSS.Buffer(file, "base64"));
+      }, maxMB);
+      return;
+    }
     const file = reader.result.replace(/^data:\w+\/\w+;base64,/, "");
     put(new OSS.Buffer(file, "base64"));
-    /*
-      console.log(reader.result.length / 1024 / 1024)
-      if(reader.result.length / 1024 / 1024  > maxMB) {
-        compressBase64(reader.result, callback, maxMB)
-      }else {
-        callback(reader.result)
-      }
-    */
   });
 }
 

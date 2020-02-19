@@ -14,9 +14,9 @@ function beforeUpload(file) {
     message.error('只能上传JPG/PNG文件!');
     return false;
   }
-  const isLt2M = file.size / 1024 < 500;
+  const isLt2M = file.size / 1024 / 1024 < 1;
   if (!isLt2M) {
-    message.error('图片超过500KB!');
+    message.error('图片超过1MB!');
     return false;
   }
   return true;
@@ -66,6 +66,7 @@ class UserBase extends Component {
         },
         identityZloading: false,
       }),
+      0.3
     );
     return false;
   }
@@ -80,6 +81,7 @@ class UserBase extends Component {
         },
         identityFloading: false,
       }),
+      0.3
     );
     return false;
   }
