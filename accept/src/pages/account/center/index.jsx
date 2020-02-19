@@ -49,6 +49,7 @@ class UserBase extends Component {
         }
       })
     })
+
   }
 
   componentWillUnmount() {
@@ -351,7 +352,12 @@ class UserBase extends Component {
         submitLoading: false,
       })
       if(data.status != 1) {
-        message.error(data.msg);
+        if(data.msg.indexOf('ResponseTimeoutError') > -1) {
+          message.error('阿里实名认证服务响应超时，请重试');
+          console.log(data.msg)
+        }else {
+          message.error(data.msg);
+        }
         return;
       }else {
         message.success('操作成功');
