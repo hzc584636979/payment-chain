@@ -197,6 +197,7 @@ class DepositList extends Component {
               "抵押时间": moment(i.pledge_time).local().format('YYYY-MM-DD HH:mm:ss'),
               "退款金额(USDT)": i.refund_amount,
               "退款时间": i.refund_time && moment(i.refund_time).local().format('YYYY-MM-DD HH:mm:ss'),
+              "拒绝退款理由": i.reason, 
           };
           dataWCN.push(dataWObj);
         })
@@ -275,8 +276,8 @@ class DepositList extends Component {
       },
       {
         title: '拒绝退款理由',
-        dataIndex: '',
-        key: '',
+        dataIndex: 'reason',
+        key: 'reason',
         align: 'center',
       },
     ];
