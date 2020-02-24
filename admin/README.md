@@ -1,11 +1,5 @@
 # 开发屏蔽逻辑，上线需开启
 
-layouts/BasicLayout
-
-```
-!g_getLocalStorage() && dispatch(routerRedux.push('/user/login'));
-```
-
 utils/request
 
 ```
@@ -14,23 +8,6 @@ if(status == 504) {
     type: 'login/logout',
   });
 }
-```
-
-page/Authorized
-
-```
-let currentUser_type = 1; //获取服务端返回的，临时写死
-```
-
-page/user/login/model
-
-```
-yield put({
-	type: 'changeLoginStatus',
-	payload: {
-	  user_type: 2,//获取服务端返回的，临时写死
-	},
-}); 
 ```
 
 # Ant Design Pro
