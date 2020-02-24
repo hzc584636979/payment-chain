@@ -105,10 +105,6 @@ export default {
           authority: ['user'],
           routes: [
             {
-              path: '/',
-              redirect: '/super',
-            },
-            {
               path: '/super',
               redirect: '/super/accept',
             },
@@ -148,25 +144,67 @@ export default {
                     {
                       name: '承兑商余额冷钱包',
                       path: '/super/coldwallet/coldwalletAccept',
-                      component: './super/coldwalletAccept',
+                      component: './super/coldwalletAcceptList',
                     },
                     {
                       name: '商户余额冷钱包',
                       path: '/super/coldwallet/coldwalletMerchant',
-                      component: './super/coldwalletMerchant',
+                      component: './super/coldwalletMerchantList',
                     },
                     {
                       name: '手续费冷钱包',
                       path: '/super/coldwallet/coldwalletGas',
-                      component: './super/coldwalletGas',
+                      component: './super/coldwalletGasList',
                     },
                     {
+                      name: '查账',
+                      path: '/super/coldwallet/coldwalletAccept/erc20',
+                      component: './super/coldwalletAccept',
+                      hideInMenu: true,
+                      expandPath: '/super/coldwallet/coldwalletAccept',
+                    },
+                    {
+                      name: '查账',
+                      path: '/super/coldwallet/coldwalletAccept/omni',
+                      component: './super/coldwalletAccept',
+                      hideInMenu: true,
+                      expandPath: '/super/coldwallet/coldwalletAccept',
+                    },
+                    {
+                      name: '查账',
+                      path: '/super/coldwallet/coldwalletMerchant/erc20',
+                      component: './super/coldwalletMerchant',
+                      hideInMenu: true,
+                      expandPath: '/super/coldwallet/coldwalletMerchant',
+                    },
+                    {
+                      name: '查账',
+                      path: '/super/coldwallet/coldwalletMerchant/omni',
+                      component: './super/coldwalletMerchant',
+                      hideInMenu: true,
+                      expandPath: '/super/coldwallet/coldwalletMerchant',
+                    },
+                    {
+                      name: '查账',
+                      path: '/super/coldwallet/coldwalletGas/erc20',
+                      component: './super/coldwalletGas',
+                      hideInMenu: true,
+                      expandPath: '/super/coldwallet/coldwalletGas',
+                    },
+                    {
+                      name: '查账',
+                      path: '/super/coldwallet/coldwalletGas/omni',
+                      component: './super/coldwalletGas',
+                      hideInMenu: true,
+                      expandPath: '/super/coldwallet/coldwalletGas',
+                    },
+                    /*{
                       name: '查看',
                       path: '/super/coldwallet/coldwalletGas_detail/:id',
                       component: './super/coldwalletGas_detail',
                       hideInMenu: true,
                       expandPath: '/super/coldwallet/coldwalletGas',
-                    },
+                    },*/
                   ]
                 },
                 {

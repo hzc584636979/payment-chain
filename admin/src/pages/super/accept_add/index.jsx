@@ -249,8 +249,8 @@ class SuperAcceptMember extends Component {
       },
       {
         title: '注册时间',
-        dataIndex: 'out_order_id',
-        key: 'out_order_id',
+        dataIndex: 'created_at',
+        key: 'created_at',
         align: 'center',
         render: (val, record) => {
           return moment(val).local().format('YYYY-MM-DD HH:mm:ss');

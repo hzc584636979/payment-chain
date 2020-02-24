@@ -292,6 +292,9 @@ class SuperAccept extends Component {
       }else {
         message.success('操作成功');
       }
+      this.setState({
+        'modifyVisible': false,
+      });
       this.handleSearch(null, params);
     })
   }
@@ -358,8 +361,8 @@ class SuperAccept extends Component {
       },
       {
         title: '已管理人数',
-        dataIndex: '',
-        key: '',
+        dataIndex: 'managed_peoples',
+        key: 'managed_peoples',
         align: 'center',
       },
       {

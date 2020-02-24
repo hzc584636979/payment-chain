@@ -1,4 +1,4 @@
-import { coldwalletGas, coldwalletGasSearchAll } from '@/services/api';
+import { coldwalletGas, coldwalletGasSearchAll, coldwalletGasDetailFrozen } from '@/services/api';
 
 const Model = {
   namespace: 'coldwalletGas',
@@ -38,6 +38,10 @@ const Model = {
         type: 'save',
         payload: responseResult,
       });
+    },
+    *frozen({ payload }, { call, put }) {
+      const response = yield call(coldwalletGasDetailFrozen, payload);
+      return response;
     },
   },
   reducers: {

@@ -62,9 +62,9 @@ class ColdwalletGasDetail extends Component {
             <Descriptions.Item label="商户手机号">{coldwalletGasDetail.payee_name}</Descriptions.Item>
             <Descriptions.Item label="商户地址">{coldwalletGasDetail.payee_name}</Descriptions.Item>
             <Descriptions.Item label="订单金额">{ `${coldwalletGasDetail.pay_amount_cny} ${cashType[coldwalletGasDetail.currency_type]}` }</Descriptions.Item>
-            <Descriptions.Item label="手续费">{ `${coldwalletGasDetail.pay_amount_cny} ${cashType[coldwalletGasDetail.currency_type]}` }</Descriptions.Item>
-            <Descriptions.Item label="冻结资金">{ `${coldwalletGasDetail.pay_amount_cny} ${cashType[coldwalletGasDetail.currency_type]}` }</Descriptions.Item>
-            <Descriptions.Item>
+            <Descriptions.Item label="手续费">{ `${coldwalletGasDetail.pay_amount_cny} ${coinType[coldwalletGasDetail.currency_type]}` }</Descriptions.Item>
+            <Descriptions.Item label="冻结资金">{ `${coldwalletGasDetail.pay_amount_cny} ${coinType[coldwalletGasDetail.currency_type]}` }</Descriptions.Item>
+            <Descriptions.Item label="操作">
               <Popconfirm title="是否要确认冻结商户资金？" onConfirm={this.frozen}>
                 <Button loading={lock} type="primary">冻结商户资金</Button>
               </Popconfirm>

@@ -1,4 +1,6 @@
 import { coldwalletAccept, coldwalletAcceptSearchAll } from '@/services/api';
+import pathToRegexp from 'path-to-regexp';
+import { getPageQuery } from '@/utils/utils';
 
 const Model = {
   namespace: 'coldwalletAccept',
@@ -11,14 +13,10 @@ const Model = {
   },
   effects: {
     *fetch({ payload }, { select,call, put }) {
-      let response = {};
-      const his = yield select(state => state.coldwalletAccept.data.history);
-      if(window.location.href.indexOf('?history') > -1 && Object.keys(his).length != 0){
-        payload = { ...his, page: his.page || payload.page, pageSize: his.pageSize || payload.pageSize };
-        response = yield call(coldwalletAcceptSearchAll, payload);
-      }else{
-        response = yield call(coldwalletAccept, payload);
-      }
+      const match = pathToRegexp('/super/coldwallet/coldwalletAccept/:id').exec(window.location.pathname);
+      const address = getPageQuery(window.location).address;
+      const payload1 = { ...payload, token_id: match[1], address };
+      const response = yield call(coldwalletAccept, payload1);
       let { list, total } = response.data || {};
       let page = payload && payload.page;
       let pageSize = payload && payload.pageSize;
@@ -29,7 +27,10 @@ const Model = {
       });
     },
     *search({ payload }, { call, put }) {
-      const response = yield call(coldwalletAcceptSearchAll, payload);
+      const match = pathToRegexp('/super/coldwallet/coldwalletAccept/:id').exec(window.location.pathname);
+      const address = getPageQuery(window.location).address;
+      const payload1 = { ...payload, token_id: match[1], address };
+      const response = yield call(coldwalletAcceptSearchAll, payload1);
       let { list, total } = response.data || {};
       let page = payload && payload.page;
       let pageSize = payload && payload.pageSize;

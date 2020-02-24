@@ -46,7 +46,7 @@ class ColdwalletGas extends Component {
         pageSize: 10,
         page: 0,
         order_type: 0,
-        search_value: 0,
+        search_value: null,
         time: [moment().startOf('month'), moment().endOf('month')],
       },
     });
@@ -114,22 +114,33 @@ class ColdwalletGas extends Component {
     );
   }
 
+  frozen = id => {
+    const { dispatch } = this.props;
+    const { pagination } = this.props.superAccept.data;
+
+    const params = {
+      page: pagination.current -1,
+      pageSize: pagination.pageSize,
+    };
+    
+    dispatch({
+      type: 'coldwalletGas/frozen',
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      this.handleSearch(null, params);
+    })
+  }
+
   render() {
     const { loading } = this.props;
     const { history, list, pagination } = this.props.coldwalletGas.data;
     const columns = [
-      {
-        title: '姓名',
-        dataIndex: '',
-        key: '',
-        align: 'center',
-      },
-      {
-        title: '手机号',
-        dataIndex: '',
-        key: '',
-        align: 'center',
-      },
+      
       {
         title: '商户姓名',
         dataIndex: '',
@@ -143,12 +154,30 @@ class ColdwalletGas extends Component {
         align: 'center',
       },
       {
+        title: '订单金额',
+        dataIndex: '12313',
+        key: '123213',
+        align: 'center',
+        render: (val, record) => {
+          return `${val} ${cashType[record.currency_type]}`;
+        },
+      },
+      {
         title: '手续费',
         dataIndex: 'count',
         key: 'count',
         align: 'center',
         render: (val, record) => {
-          return `${wei2USDT(val, record.token_id == 1 ? 'erc20' : 'omni')} ${coinType2[record.token_id]}`;
+          return `${wei2USDT(val, record.token_id == 1 ? 'erc20' : 'omni')} ${coinType[record.token_id]}`;
+        },
+      }, 
+      {
+        title: '冻结资金',
+        dataIndex: '123213',
+        key: '123123',
+        align: 'center',
+        render: (val, record) => {
+          return `${wei2USDT(val, record.token_id == 1 ? 'erc20' : 'omni')} ${coinType[record.token_id]}`;
         },
       }, 
       {
@@ -160,9 +189,9 @@ class ColdwalletGas extends Component {
         render: (val, record) => {
           return(
             <span>
-              <Button>
-                <Link to={`/super/coldwallet/coldwalletGas_detail/${record.order_id}`}>查看</Link>
-              </Button>
+              <Popconfirm title="是否要确认冻结商户资金？" onConfirm={this.frozen}>
+                <Button>冻结商户资金</Button>
+              </Popconfirm>
             </span>
           );
         },

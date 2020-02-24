@@ -189,6 +189,14 @@ export async function superMerchantMemberDelete(params) {
   });
 }
 
+/*超级管理员-承兑商冷钱包-主页面*/
+export async function coldwalletAcceptList(params) {
+  return request(`${apiAddress}/order/buyOrder`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
 /*超级管理员-承兑商冷钱包-请求*/
 export async function coldwalletAccept(params) {
   let time = params.time && formatMomentTime(params.time);
@@ -219,6 +227,14 @@ export async function coldwalletAcceptSearchAll(params) {
   });
 }
 
+/*超级管理员-商户余额冷钱包-主页面*/
+export async function coldwalletMerchantList(params) {
+  return request(`${apiAddress}/order/buyOrder`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
 /*超级管理员-商户余额冷钱包-请求*/
 export async function coldwalletMerchant(params) {
   let time = params.time && formatMomentTime(params.time);
@@ -246,6 +262,14 @@ export async function coldwalletMerchantSearchAll(params) {
       begin_time,
       end_time
     },
+  });
+}
+
+/*超级管理员-手续费冷钱包-主页面*/
+export async function coldwalletGasList(params) {
+  return request(`${apiAddress}/order/buyOrder`, {
+    method: 'POST',
+    data: params,
   });
 }
 

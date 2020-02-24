@@ -51,7 +51,7 @@ class ColdwalletMerchant extends Component {
         pageSize: 10,
         page: 0,
         order_type: 0,
-        search_value: 0,
+        search_value: null,
         time: [moment().startOf('month'), moment().endOf('month')],
       },
     });
