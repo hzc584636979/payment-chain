@@ -250,7 +250,7 @@ export default {
                 },
               ],
             },
-            {
+            /*{
               path: '/accept',
               icon: 'user',
               name: '承兑商管理',
@@ -306,7 +306,7 @@ export default {
                   expandPath: '/accept/buyDissentOrder',
                 },
               ],
-            },
+            },*/
             {
               path: '/Merchant',
               icon: 'user',
@@ -349,7 +349,7 @@ export default {
                 },
               ],
             },
-            {
+            /*{
               path: '/system',
               icon: 'setting',
               name: '系统管理',
@@ -378,7 +378,7 @@ export default {
                   expandPath: '/system/message',
                 },
               ],
-            },
+            },*/
             {
               component: '404',
             },
