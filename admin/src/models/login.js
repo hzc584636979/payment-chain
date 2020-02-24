@@ -23,9 +23,9 @@ const Model = {
       if (window.location.pathname !== '/user/login' && !redirect) {
         router.replace({
           pathname: '/user/login',
-          search: stringify({
+          /*search: stringify({
             redirect: window.location.href,
-          }),
+          }),*/
         });
       }
     },
