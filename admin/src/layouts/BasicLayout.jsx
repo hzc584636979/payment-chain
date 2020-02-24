@@ -60,7 +60,7 @@ const BasicLayout = props => {
             <div className={styles.Leftlogo}>支付链管理员后台</div>
           </Col>
           <Col>
-            <Link to="/account">{ currentUser && currentUser.telephone_number }</Link>
+            <span style={{color: '#fff'}}>{ currentUser && currentUser.telephone_number }</span>
             <Divider type="vertical" />
             <a onClick={onLogoutClick}>退出</a>
           </Col>
