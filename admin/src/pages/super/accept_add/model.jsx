@@ -2,9 +2,6 @@ import { superAcceptMember, superAcceptMemberSearchAll, superAcceptMemberAdd, su
 import pathToRegexp from 'path-to-regexp';
 import { getPageQuery } from '@/utils/utils';
 
-const match = pathToRegexp('/super/accept_add/:id').exec(window.location.pathname);
-const parent_name = getPageQuery(window.location).parent_name;
-
 const Model = {
   namespace: 'superAcceptMember',
   state: {
@@ -38,6 +35,8 @@ const Model = {
       });
     },
     *add({ payload }, { call, put }) {
+      const match = pathToRegexp('/super/accept_add/:id').exec(window.location.pathname);
+      const parent_name = getPageQuery(window.location).parent_name;
       const response = yield call(superAcceptMemberAdd, { ...payload, parent_id: match[1], parent_name: parent_name });
       return response;
     },

@@ -75,7 +75,7 @@ const CreateModifyForm = Form.create()(props => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       form.resetFields();
-      submit(fieldsValue);
+      submit(fieldsValue, params.id);
     });
   };
 
@@ -101,7 +101,7 @@ const CreateModifyForm = Form.create()(props => {
       okText='确认'
     >
       <Form>
-        <div style={{paddingBottom: '28px', textAlign: 'center'}}>商户 <span style={{color: '#308AFF'}}>asdasdsad</span> 可管理人数 <span style={{color: '#EB9211'}}>123</span></div>
+        <div style={{paddingBottom: '28px', textAlign: 'center'}}>商户 <span style={{color: '#308AFF'}}>{ params && params.user_name }</span> 可管理人数 <span style={{color: '#EB9211'}}>{ params && params.manageable_peoples }</span></div>
         <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="修改管理人数">
           {form.getFieldDecorator('manageable_peoples', {
             rules: [
@@ -208,7 +208,7 @@ class SuperMerchant extends Component {
               <Button onClick={this.handleAddModalVisible} type="primary">
                 添加
               </Button>
-              <Button onClick={this.delete} type="danger" disabled={selectedRowKeys.length > 1 ? false : true} style={{ marginLeft: 8 }}>
+              <Button onClick={this.delete} type="danger" disabled={selectedRowKeys.length > 0 ? false : true} style={{ marginLeft: 8 }}>
                 删除
               </Button>
             </span>
@@ -340,32 +340,32 @@ class SuperMerchant extends Component {
     const columns = [
       {
         title: '姓名',
-        dataIndex: 'aging',
-        key: 'aging',
+        dataIndex: 'user_name',
+        key: 'user_name',
         align: 'center',
       },
       {
         title: '手机号',
-        dataIndex: 'order_id',
-        key: 'order_id',
+        dataIndex: 'telephone_number',
+        key: 'telephone_number',
         align: 'center',
       },
       {
         title: '可管理人数',
-        dataIndex: 'out_order_id',
-        key: 'out_order_id',
+        dataIndex: 'manageable_peoples',
+        key: 'manageable_peoples',
         align: 'center',
       },
       {
         title: '已管理人数',
-        dataIndex: 'out_order_id1',
-        key: 'out_order_id1',
+        dataIndex: '',
+        key: '',
         align: 'center',
       },
       {
         title: '添加时间',
-        dataIndex: 'payee_name',
-        key: 'payee_name',
+        dataIndex: 'created_at',
+        key: 'created_at',
         align: 'center',
         render: (val, record) => {
           return moment(val).local().format('YYYY-MM-DD HH:mm:ss');
@@ -379,7 +379,7 @@ class SuperMerchant extends Component {
           return(
             <span>
               <Button>
-                <Link to={`/super/merchant_add/${record.order_id}`}>成员管理</Link>
+                <Link to={`/super/merchant_add/${record.id}?parent_name=${record.user_name}`}>成员管理</Link>
               </Button>
               <span style={{ display: 'inline-block', width: '10px' }}></span>
               <Button onClick={() => this.handleModifyModalVisible(record)}>修改</Button>
@@ -398,7 +398,7 @@ class SuperMerchant extends Component {
             rowKey={'id'}
             onSelectRow={this.handleSelectRows}
             loading={loading}
-            data={{ list: [{id:1},{id:2},{id:3},{id:4},{id:5},{id:6}], pagination }}
+            data={{ list, pagination }}
             columns={columns}
             onChange={this.handleStandardTableChange}
           />

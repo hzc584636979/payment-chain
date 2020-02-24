@@ -155,10 +155,10 @@ class SuperAcceptMember extends Component {
           </Col>
           <Col xl={6} lg={12} sm={24} style={{textAlign: 'right'}}>
             <span className={styles.submitButtons} style={{paddingTop: 4, display: 'inline-block'}}>
-              <Button onClick={this.add} type="primary" disabled={selectedRowKeys.length > 1 ? false : true} style={{ marginLeft: 8 }}>
+              <Button onClick={this.add} type="primary" disabled={selectedRowKeys.length > 0 ? false : true} style={{ marginLeft: 8 }}>
                 绑定
               </Button>
-              <Button onClick={this.delete} type="danger" disabled={selectedRowKeys.length > 1 ? false : true} style={{ marginLeft: 8 }}>
+              <Button onClick={this.delete} type="danger" disabled={selectedRowKeys.length > 0 ? false : true} style={{ marginLeft: 8 }}>
                 解绑
               </Button>
             </span>
@@ -231,14 +231,20 @@ class SuperAcceptMember extends Component {
     const columns = [
       {
         title: '承兑商姓名',
-        dataIndex: 'aging',
-        key: 'aging',
+        dataIndex: 'real_name',
+        key: 'real_name',
         align: 'center',
       },
       {
         title: '手机号',
-        dataIndex: 'order_id',
-        key: 'order_id',
+        dataIndex: 'telephone_number',
+        key: 'telephone_number',
+        align: 'center',
+      },
+      {
+        title: '已绑定管理员姓名',
+        dataIndex: 'parent_name',
+        key: 'parent_name',
         align: 'center',
       },
       {
@@ -261,7 +267,7 @@ class SuperAcceptMember extends Component {
             rowKey={'id'}
             onSelectRow={this.handleSelectRows}
             loading={loading}
-            data={{ list: [{id:1},{id:2},{id:3},{id:4},{id:5},{id:6}], pagination }}
+            data={{ list, pagination }}
             columns={columns}
             onChange={this.handleStandardTableChange}
           />
