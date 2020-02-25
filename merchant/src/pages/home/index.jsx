@@ -177,7 +177,7 @@ class Home extends Component {
       walletType,
     } = this.state;
 
-    if (!withdrawApplyType) {
+    if (!walletType) {
       message.error('请选择币种后提交');
       return;
     } else if (!withdrawApplyAddress) {
@@ -205,7 +205,7 @@ class Home extends Component {
       withdrawApplyStatus: true,
     });
 
-    let url = withdrawApplyType == 'erc20' ? 'home/withdrawApplyErc20' : 'home/withdrawApplyOmni';
+    let url = walletType == 1 ? 'home/withdrawApplyErc20' : 'home/withdrawApplyOmni';
 
     dispatch({
       type: url,
@@ -213,7 +213,6 @@ class Home extends Component {
         coin_number: withdrawApplyValue,
         to_address: withdrawApplyAddress,
         telephone_verify_code: withdrawApplyCaptcha,
-        token_id: walletType,
       },
     }).then(data => {
       this.setState({
@@ -256,6 +255,7 @@ class Home extends Component {
   changeWallet1 = walletType => {
     this.setState({
       walletType,
+
     });
   };
 

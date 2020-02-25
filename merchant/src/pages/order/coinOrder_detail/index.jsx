@@ -66,7 +66,7 @@ class CoinOrderDetail extends Component {
             {
               coinOrderDetail.state == 20 &&
               <Descriptions.Item label="拒绝提币理由">
-                {}
+                {coinOrderDetail.refuse_reason}
               </Descriptions.Item>
             }
           </Descriptions>

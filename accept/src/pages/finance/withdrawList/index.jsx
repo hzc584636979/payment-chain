@@ -288,8 +288,8 @@ class WithdrawList extends Component {
       }, 
       {
         title: '拒绝提币理由',
-        dataIndex: '',
-        key: '',
+        dataIndex: 'refuse_reason',
+        key: 'refuse_reason',
         align: 'center',
       },
     ];

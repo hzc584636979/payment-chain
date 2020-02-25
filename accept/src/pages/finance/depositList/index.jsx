@@ -276,8 +276,8 @@ class DepositList extends Component {
       },
       {
         title: '拒绝退款理由',
-        dataIndex: 'reason',
-        key: 'reason',
+        dataIndex: 'refuse_reason',
+        key: 'refuse_reason',
         align: 'center',
       },
     ];
