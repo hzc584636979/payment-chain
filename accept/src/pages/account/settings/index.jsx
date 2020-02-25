@@ -473,7 +473,7 @@ class UserSafe extends Component {
       payload: params,
     }).then(data => {
       if(data.status != 1) {
-        message.error(data.msg);
+        message.error(captchaError(data.msg));
         return;
       }else {
         message.success('操作成功');
@@ -670,7 +670,7 @@ class UserSafe extends Component {
       payload: params,
     }).then(data => {
       if(data.status != 1) {
-        message.error(data.msg);
+        message.error(captchaError(data.msg));
         return;
       }else {
         message.success('操作成功');

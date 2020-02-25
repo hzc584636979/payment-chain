@@ -37,10 +37,10 @@ const Model = {
           payload: response.data ? {
             ...response.data.accountInfo,
             ...response.data.userInfo,
-            gas: response.data.walletInfo[0].gas,
+            gas: response.data.walletInfo[0] ? response.data.walletInfo[0].gas : 0,
             walletInfo: response.data.walletInfo,
-            erc20: response.data.walletInfo[0],
-            omni: response.data.walletInfo[1],
+            erc20: response.data.walletInfo[0] || {},
+            omni: response.data.walletInfo[1] || {},
           } : null,
         });
 
@@ -83,8 +83,8 @@ const Model = {
             ...response.data.accountInfo,
             ...response.data.userInfo,
             walletInfo: response.data.walletInfo,
-            erc20: response.data.walletInfo[0],
-            omni: response.data.walletInfo[1],
+            erc20: response.data.walletInfo[0] || {},
+            omni: response.data.walletInfo[1] || {},
           } : null,
         });
         

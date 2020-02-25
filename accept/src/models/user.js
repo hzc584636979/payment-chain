@@ -22,18 +22,18 @@ const UserModel = {
         payload: response.data ? {
           ...response.data.accountInfo,
           ...response.data.userInfo,
-          gas: response.data.walletInfo[0].gas,
-          walletInfo: response.data.walletInfo[0],
-          erc20: response.data.walletInfo[0],
-          omni: response.data.walletInfo[1],
+          gas: response.data.walletInfo[0] ? response.data.walletInfo[0].gas : 0,
+          walletInfo: response.data.walletInfo[0] || {},
+          erc20: response.data.walletInfo[0] || {},
+          omni: response.data.walletInfo[1] || {},
         } : null,
       });
       return response.data ? {
         ...response.data.accountInfo,
         ...response.data.userInfo,
-        walletInfo: response.data.walletInfo[0],
-        erc20: response.data.walletInfo[0],
-        omni: response.data.walletInfo[1],
+        walletInfo: response.data.walletInfo[0] || {},
+        erc20: response.data.walletInfo[0] || {},
+        omni: response.data.walletInfo[1] || {},
       } : null
     },
     *changeWalletInfo({ payload }, { call, put }) {
@@ -47,10 +47,10 @@ const UserModel = {
         payload: response.data ? {
           ...response.data.accountInfo,
           ...response.data.userInfo,
-          gas: response.data.walletInfo[0].gas,
-          walletInfo: response.data.walletInfo[payload.walletType],
-          erc20: response.data.walletInfo[0],
-          omni: response.data.walletInfo[1],
+          gas: response.data.walletInfo[0] ? response.data.walletInfo[0].gas : 0,
+          walletInfo: response.data.walletInfo[payload.walletType] || {},
+          erc20: response.data.walletInfo[0] || {},
+          omni: response.data.walletInfo[1] || {},
         } : null,
       });
       return response;
