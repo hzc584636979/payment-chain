@@ -284,7 +284,7 @@ class YieldErc20 extends Component {
       .dividedBy(new BigNumber(currentUser.token_price))
       .toNumber();
     const gas = new BigNumber(cashToCoin)
-      .multipliedBy(new BigNumber(currentUser.gas_percent))
+      .multipliedBy(new BigNumber(currentUser.chu_gas_percent))
       .toNumber();
     const allBalance = currentUser.id
       ? new BigNumber(wei2USDT(currentUser.erc20.balance))
@@ -374,7 +374,7 @@ class YieldErc20 extends Component {
             <Descriptions.Item label={<span className={styles.itemLabel}>手续费</span>}>
               {
                 `${new BigNumber(payment_amount || 0)
-                          .multipliedBy(new BigNumber(currentUser.gas_percent))
+                          .multipliedBy(new BigNumber(currentUser.chu_gas_percent))
                           .toNumber()} ${cashType == 1 ? 'CNY' : 'USD'}`
               } ≈ {gas || 0} USDT
             </Descriptions.Item>

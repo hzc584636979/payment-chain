@@ -8,8 +8,8 @@ import BigNumber from 'bignumber.js';
 import { getBase64 } from '@/utils/utils';
 import styles from './style.less';
 
-@connect(({ user, entryErc20, loading }) => ({
-  currentUser: user.currentUser,
+@connect(({ entryErc20, loading }) => ({
+  currentUser: entryErc20.currentUser,
   entryErc20,
   fetchLoading: loading.effects['entryErc20/fetch'],
 }))
@@ -20,7 +20,13 @@ class EntryErc20 extends Component {
     params: {},
   };
 
-  componentDidMount() {}
+  componentDidMount() {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'entryErc20/getCoinInfo',
+    });
+  }
 
   componentWillUnmount() {}
 
@@ -228,7 +234,7 @@ class EntryErc20 extends Component {
       .dividedBy(new BigNumber(currentUser.token_price))
       .toNumber();
     const gas = new BigNumber(cashToCoin)
-      .multipliedBy(new BigNumber(currentUser.gas_percent))
+      .multipliedBy(new BigNumber(currentUser.ru_gas_percent))
       .toNumber();
 
     return (
@@ -282,7 +288,7 @@ class EntryErc20 extends Component {
             <Descriptions.Item label={<span className={styles.itemLabel}>手续费</span>}>
               {
                 `${new BigNumber(payment_amount || 0)
-                          .multipliedBy(new BigNumber(currentUser.gas_percent))
+                          .multipliedBy(new BigNumber(currentUser.ru_gas_percent))
                           .toNumber()} ${cashType == 1 ? 'CNY' : 'USD'}`
               } ≈ {gas || 0} USDT
             </Descriptions.Item>
