@@ -64,7 +64,13 @@ const request = extend({
 });
 
 request.interceptors.request.use((url, options) => {
-  const user_id = g_getLocalStorage() ? {user_id: g_getLocalStorage().id} : {};
+  const newOpt = g_getLocalStorage() ? 
+                  {
+                    user_id: g_getLocalStorage().id,
+                    manage_type: g_getLocalStorage().type,
+                  }
+                  :
+                  {}
 
   return {
     url,
@@ -72,7 +78,7 @@ request.interceptors.request.use((url, options) => {
       ...options,
       data: {
         ...(options.data || {}),
-        ...user_id,
+        ...newOpt,
       }
     },
   };
