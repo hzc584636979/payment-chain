@@ -98,7 +98,7 @@ class Register extends Component {
       payload: tabType == 'phone' ? {telephone_number: params.phone} : {email_address: params.email},
     }).then(data => {
       if(data.status != 1) {
-        message.error(data.msg);
+        message.error(captchaError(data.msg));
         return;
       }else {
         message.success('操作成功');

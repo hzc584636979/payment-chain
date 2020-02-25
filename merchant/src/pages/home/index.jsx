@@ -147,7 +147,7 @@ class Home extends Component {
       type: 'home/getCode',
     }).then(data => {
       if (data.status != 1) {
-        message.error(data.msg);
+        message.error(captchaError(data.msg));
         return;
       }
       let count = 59;

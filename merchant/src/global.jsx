@@ -47,6 +47,14 @@ window.getDecimal = (number, wei) => {
   return number;
 }
 
+window.captchaError = (msg) => {
+  if(msg.indexOf('isv.BUSINESS_LIMIT_CONTROLError') > -1) {
+    return '阿里短信服务控流，发送验证码失败，请稍后重试'
+  }else {
+    return msg
+  }
+}
+
 import weixin from '@/assets/icon_saoma_weixin.png';
 import yinlian from '@/assets/icon_saoma_yinlian.png';
 import zhifubao from '@/assets/icon_saoma_zhifubao.png';

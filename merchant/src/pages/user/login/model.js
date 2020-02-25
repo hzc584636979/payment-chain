@@ -37,12 +37,12 @@ const Model = {
           payload: response.data ? {
             success_order_percent: response.data.success_order_percent,
             ...response.data.userInfo,
-            gas: response.data.walletInfo[0].gas,
-            chu_gas_percent: response.data.walletInfo[0].chu_gas_percent,
-            ru_gas_percent: response.data.walletInfo[0].ru_gas_percent,
-            walletInfo: response.data.walletInfo[0],
-            erc20: response.data.walletInfo[0],
-            omni: response.data.walletInfo[1],
+            gas: response.data.walletInfo[0] ? response.data.walletInfo[0].gas : 0,
+            chu_gas_percent: response.data.walletInfo[0] ? response.data.walletInfo[0].chu_gas_percent : 0,
+            ru_gas_percent: response.data.walletInfo[0] ? response.data.walletInfo[0].ru_gas_percent : 0,
+            walletInfo: response.data.walletInfo[0] || {},
+            erc20: response.data.walletInfo[0] || {},
+            omni: response.data.walletInfo[1] || {},
           } : null,
         });
 
@@ -84,12 +84,12 @@ const Model = {
           payload: response.data ? {
             success_order_percent: response.data.success_order_percent,
             ...response.data.userInfo,
-            gas: response.data.walletInfo[0].gas,
-            chu_gas_percent: response.data.walletInfo[0].chu_gas_percent,
-            ru_gas_percent: response.data.walletInfo[0].ru_gas_percent,
-            walletInfo: response.data.walletInfo[0],
-            erc20: response.data.walletInfo[0],
-            omni: response.data.walletInfo[1],
+            gas: response.data.walletInfo[0] ? response.data.walletInfo[0].gas : 0,
+            chu_gas_percent: response.data.walletInfo[0] ? response.data.walletInfo[0].chu_gas_percent : 0,
+            ru_gas_percent: response.data.walletInfo[0] ? response.data.walletInfo[0].ru_gas_percent : 0,
+            walletInfo: response.data.walletInfo[0] || {},
+            erc20: response.data.walletInfo[0] || {},
+            omni: response.data.walletInfo[1] || {},
           } : null,
         });
 

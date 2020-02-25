@@ -55,7 +55,7 @@ class WithdrawApply extends Component {
       type: 'withdrawApply/getCode',
     }).then(data => {
       if(data.status != 1) {
-        message.error(data.msg);
+        message.error(captchaError(data.msg));
         return;
       }else {
         message.success('操作成功');
