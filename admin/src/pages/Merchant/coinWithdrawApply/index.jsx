@@ -55,7 +55,7 @@ const CreateForm = Form.create()(props => {
       okText='确认'
     >
       <Form>
-        <div style={{paddingBottom: '28px', textAlign: 'center'}}>承兑商 <span style={{color: '#308AFF'}}>{ params && params.real_name }</span> 申请金额 <span style={{color: '#EB9211'}}>{ params && `${wei2USDT(params['withdraws.coin_number'], params['withdraws.token_id'] == 1 ? 'erc20' : 'omni')} ${coinType2[params['withdraws.token_id']]}` }</span></div>
+        <div style={{paddingBottom: '28px', textAlign: 'center'}}>商户 <span style={{color: '#308AFF'}}>{ params && params.real_name }</span> 申请金额 <span style={{color: '#EB9211'}}>{ params && `${wei2USDT(params['withdraws.coin_number'], params['withdraws.token_id'] == 1 ? 'erc20' : 'omni')} ${coinType2[params['withdraws.token_id']]}` }</span></div>
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="拒绝理由">
           {form.getFieldDecorator('reason', {
             rules: [
