@@ -29,6 +29,12 @@ const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
+const statusType = {
+  0: '全部',
+  1: '申请提现中',
+  2: '已退款',
+  3: '拒绝退款',
+};
 
 const CreateForm = Form.create()(props => {
   const { modalVisible, form, submit, cancel, params } = props;
@@ -55,7 +61,7 @@ const CreateForm = Form.create()(props => {
       okText='确认'
     >
       <Form>
-        <div style={{paddingBottom: '28px', textAlign: 'center'}}>商户 <span style={{color: '#308AFF'}}>{ params && params['user.real_name'] }</span> 申请金额 <span style={{color: '#EB9211'}}>{ params && `${wei2USDT(params.coin_number, params.token_id == 1 ? 'erc20' : 'omni')} ${coinType2[params.token_id]}` }</span></div>
+        <div style={{paddingBottom: '28px', textAlign: 'center'}}>商户 <span style={{color: '#308AFF'}}>{ params && params['user.real_name'] }</span> 申请金额 <span style={{color: '#EB9211'}}>{ params && `${params.coin_number} ${coinType2[params.token_id]}` }</span></div>
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="拒绝理由">
           {form.getFieldDecorator('reason', {
             rules: [
@@ -235,6 +241,22 @@ class MerchantCoinWithdrawApply extends Component {
 
     const columns = [
       {
+        title: '申请金额',
+        dataIndex: 'coin_number',
+        key: 'coin_number',
+        align: 'center',
+        render: (val, record) => {
+          //return `${wei2USDT(val, record.token_id == 1 ? 'erc20' : 'omni')} ${coinType2[record.token_id]}`;
+          return <span style={{color: '#ea8a00'}}>{ `${val} ${coinType2[record.token_id]}` }</span>
+        },
+      },
+      {
+        title: '余额',
+        dataIndex: '',
+        key: '',
+        align: 'center',
+      },
+      {
         title: '姓名',
         dataIndex: 'user.real_name',
         key: 'real_name',
@@ -247,32 +269,42 @@ class MerchantCoinWithdrawApply extends Component {
         align: 'center',
       },
       {
-        title: '余额',
-        dataIndex: '',
-        key: '',
-        align: 'center',
-      },
-      {
-        title: '申请金额',
-        dataIndex: 'coin_number',
-        key: 'coin_number',
+        title: '状态',
+        dataIndex: 'state',
+        key: 'state',
         align: 'center',
         render: (val, record) => {
-          return `${wei2USDT(val, record.token_id == 1 ? 'erc20' : 'omni')} ${coinType2[record.token_id]}`;
+          return statusType[val];
+        }
+      },
+      {
+        title: '申请时间',
+        dataIndex: 'createdAt',
+        key: 'createdAt',
+        align: 'center',
+        render: (val, record) => {
+          return moment(val).local().format('YYYY-MM-DD HH:mm:ss');
         },
       },
       {
         title: '操作',
         key: 'action',
+        fixed: 'right',
         align: 'center',
+        width: 200,
         render: (val, record) => {
           return(
             <span>
-              <Popconfirm title="是否要确认同意？" onConfirm={() => this.agree(record.id)}>
-                <Button>同意</Button>
-              </Popconfirm>
-              <span style={{display: 'inline-block', width: '10px'}}></span>
-              <Button onClick={() => this.handleModalVisible(record)}>拒绝</Button>
+              {
+                record.state == 1 &&
+                <Fragment>
+                  <Popconfirm title="是否要确认同意？" onConfirm={() => this.agree(record.id)}>
+                    <Button>同意</Button>
+                  </Popconfirm>
+                  <span style={{display: 'inline-block', width: '10px'}}></span>
+                  <Button onClick={() => this.handleModalVisible(record)}>拒绝</Button>
+                </Fragment>
+              }
             </span>
           );
         },
@@ -284,12 +316,12 @@ class MerchantCoinWithdrawApply extends Component {
         <div className={styles.wrap}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           <StandardTable
-            rowKey='withdraws.token_id'
             noRowSelection={true}
             loading={loading}
             data={{ list, pagination }}
             columns={columns}
             onChange={this.handleStandardTableChange}
+            scroll={list && list.length > 0 ? { x: 800 } : {}}
           />
         </div>
         <CreateForm {...methods} modalVisible={ visible } />
