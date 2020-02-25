@@ -35,7 +35,7 @@ const CreateForm = Form.create()(props => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       form.resetFields();
-      submit(fieldsValue);
+      submit(fieldsValue, params.id);
     });
   };
 
@@ -50,7 +50,7 @@ const CreateForm = Form.create()(props => {
 	    	callback('请输入数字的手续费');
 	    }else if(value > 100) {
 	    	callback('手续费不能大于100');
-	    }else if(value.indexOf('.') > -1 && value.split('.')[1].length > 2) {
+	    }else if(value.toString().indexOf('.') > -1 && value.toString().split('.')[1].length > 2) {
 	        callback('手续费的小数不能多于2位');
 	    }
   	}
@@ -67,10 +67,9 @@ const CreateForm = Form.create()(props => {
       okText='确认'
     >
       <Form>
-        <div style={{paddingBottom: '28px', textAlign: 'center'}}>商户 <span style={{color: '#308AFF'}}>asdasdsad</span> <span style={{color: '#308AFF'}}>313123123213123</span> </div>
         <FormItem labelCol={{ span: 9 }} wrapperCol={{ span: 15 }} label="出金手续费设置">
           {form.getFieldDecorator('out_gas', {
-            initialValue: 1.2,
+            initialValue: params ? params['wallets.chu_gas_percent'] * 100 : null,
             rules: [
               { 
                 required: true, 
@@ -84,7 +83,7 @@ const CreateForm = Form.create()(props => {
         </FormItem>
         <FormItem labelCol={{ span: 9 }} wrapperCol={{ span: 15 }} label="入金手续费设置">
           {form.getFieldDecorator('in_gas', {
-            initialValue: 1.2,
+            initialValue: params ? params['wallets.ru_gas_percent'] * 100 : null,
             rules: [
               { 
                 required: true, 
@@ -243,26 +242,26 @@ class MerchantBrokerage extends Component {
     const columns = [
       {
         title: '姓名',
-        dataIndex: 'aging',
-        key: 'aging',
+        dataIndex: 'real_name',
+        key: 'real_name',
         align: 'center',
       },
       {
         title: '手机号',
-        dataIndex: 'order_id',
-        key: 'order_id',
+        dataIndex: 'telephone_number',
+        key: 'telephone_number',
         align: 'center',
       },
       {
         title: '历史成交总量(单)',
-        dataIndex: '',
-        key: '',
+        dataIndex: 'total_success_order',
+        key: 'total_success_order',
         align: 'center',
       },
       {
         title: '出金手续费',
-        dataIndex: 'out_gas',
-        key: 'out_gas',
+        dataIndex: 'wallets.chu_gas_percent',
+        key: 'chu_gas_percent',
         align: 'center',
         render: (val, record) => {
           return val && <span style={{color: '#EA8A00'}}>{ val * 100 }%</span>;
@@ -270,8 +269,8 @@ class MerchantBrokerage extends Component {
       },
       {
         title: '入金手续费',
-        dataIndex: 'in_gas',
-        key: 'in_gas',
+        dataIndex: 'wallets.ru_gas_percent',
+        key: 'ru_gas_percent',
         align: 'center',
         render: (val, record) => {
           return val && <span style={{color: '#EA8A00'}}>{ val * 100 }%</span>;
@@ -298,7 +297,7 @@ class MerchantBrokerage extends Component {
           <StandardTable
             noRowSelection={true}
             loading={loading}
-            data={{ list: [{id:1},{id:2},{id:3},{id:4},{id:5},{id:6}], pagination }}
+            data={{ list, pagination }}
             columns={columns}
             onChange={this.handleStandardTableChange}
           />

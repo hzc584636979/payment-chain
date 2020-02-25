@@ -20,6 +20,33 @@ window.wei2USDT = (val) => {
   return Number(val) ? Number(val) / Math.pow(10, 6) : 0;
 }
 
+window.regPhone = phone => {
+  return /^1\d{10}$/.test(phone);
+};
+
+window.regBankNumber = number => {
+  return /^(\d{16,19})$/.test(number);
+};
+
+window.getDecimal = (number, wei) => {
+  if(parseFloat(number) && number.toString().indexOf('.') > -1) {
+    let int = number.toString().split('.')[0];
+    let float = number.toString().split('.')[1];
+    if(float.length > wei) {
+      return int+'.'+float.substr(0, wei);
+    }
+  }
+  return number;
+}
+
+window.captchaError = (msg) => {
+  if(msg.indexOf('isv.BUSINESS_LIMIT_CONTROLError') > -1) {
+    return '阿里短信服务控流，发送验证码失败，请稍后重试'
+  }else {
+    return msg
+  }
+}
+
 import weixin from '@/assets/icon_saoma_weixin.png';
 import yinlian from '@/assets/icon_saoma_yinlian.png';
 import zhifubao from '@/assets/icon_saoma_zhifubao.png';

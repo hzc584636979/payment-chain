@@ -1,5 +1,5 @@
 import { Button, Descriptions, Popconfirm, Input, message } from 'antd';
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
@@ -118,24 +118,63 @@ class MerchantSellDissentOrderDetail extends Component {
             </Descriptions.Item>
             <Descriptions.Item label="平台订单号">{ merchantSellDissentOrderDetail.order_id }</Descriptions.Item>
             <Descriptions.Item label="商户订单号">{ merchantSellDissentOrderDetail.out_order_id }</Descriptions.Item>
-            <Descriptions.Item label="订单状态">{ sellStatusType[merchantSellDissentOrderDetail.state] }</Descriptions.Item>
+            <Descriptions.Item label="订单状态">{ buyStatusType[merchantSellDissentOrderDetail.state] }</Descriptions.Item>
             <Descriptions.Item label="订单金额">{ `${merchantSellDissentOrderDetail.pay_amount_cny} ${cashType[merchantSellDissentOrderDetail.currency_type]}` }</Descriptions.Item>
             <Descriptions.Item label="代币数量">{ `${merchantSellDissentOrderDetail.pay_amount} ${coinType[merchantSellDissentOrderDetail.token_id]}` }</Descriptions.Item>
-            <Descriptions.Item label="承兑商姓名">{ merchantSellDissentOrderDetail.issue_desc }</Descriptions.Item>
-            <Descriptions.Item label="承兑商手机号">{ merchantSellDissentOrderDetail.issue_desc }</Descriptions.Item>
-            <Descriptions.Item label="商户姓名">{ merchantSellDissentOrderDetail.payee_name }</Descriptions.Item>
-            <Descriptions.Item label="商户手机号">{ merchantSellDissentOrderDetail.payee_name }</Descriptions.Item>
-            <Descriptions.Item label="付款用户">{ merchantSellDissentOrderDetail.payee_name }</Descriptions.Item>
-            <Descriptions.Item label="付款账户">{ merchantSellDissentOrderDetail.user_pay_account }</Descriptions.Item>
+            <Descriptions.Item label="承兑商姓名">{ merchantSellDissentOrderDetail.a_user_name }</Descriptions.Item>
+            {/*<Descriptions.Item label="承兑商手机号">{  }</Descriptions.Item>*/}
             {
-              (merchantSellDissentOrderDetail.pay_type == 1 || merchantSellDissentOrderDetail.pay_type == 4) &&
-              <Descriptions.Item label="开户行">{ merchantSellDissentOrderDetail.user_account_bank_name }</Descriptions.Item>
+              merchantSellDissentOrderDetail.state == 5 &&
+              <Descriptions.Item label="承兑商支付截图">
+                <a target="_blank" href={merchantSellDissentOrderDetail.payment_screenshot}><img src={merchantSellDissentOrderDetail.payment_screenshot} width="150" height="150" /></a>
+              </Descriptions.Item>
             }
-            <Descriptions.Item label="付款方式"><img src={payIcon[merchantSellDissentOrderDetail.pay_type]} style={{maxWidth: 40}} /></Descriptions.Item>
+            <Descriptions.Item label="商户姓名">{ merchantSellDissentOrderDetail.m_user_name }</Descriptions.Item>
+            {/*<Descriptions.Item label="商户手机号">{  }</Descriptions.Item>*/}
+            <Descriptions.Item label="客户姓名">{merchantSellDissentOrderDetail.payee_name}</Descriptions.Item>
+
+            {
+              merchantSellDissentOrderDetail.pay_type == 1 && 
+              <Fragment>
+                <Descriptions.Item label="客户银行卡号">{merchantSellDissentOrderDetail.payee_account}</Descriptions.Item>
+                <Descriptions.Item label="客户开户行">{merchantSellDissentOrderDetail.account_bank_name}</Descriptions.Item>
+              </Fragment>
+            }
+
+            {
+              merchantSellDissentOrderDetail.pay_type == 2 && 
+              <Fragment>
+                <Descriptions.Item label="客户支付宝账号">{merchantSellDissentOrderDetail.payee_account}</Descriptions.Item>
+                <Descriptions.Item label="客户支付宝收款码"><img src={merchantSellDissentOrderDetail.pay_code_url} style={{maxWidth: 150}} /></Descriptions.Item>
+              </Fragment>
+            }
+
+            {
+              merchantSellDissentOrderDetail.pay_type == 3 && 
+              <Fragment>
+                <Descriptions.Item label="客户微信账号">{merchantSellDissentOrderDetail.payee_account}</Descriptions.Item>
+                <Descriptions.Item label="客户微信收款码"><img src={merchantSellDissentOrderDetail.pay_code_url} style={{maxWidth: 150}} /></Descriptions.Item>
+              </Fragment>
+            }
+
+            {
+              merchantSellDissentOrderDetail.pay_type == 4 && 
+              <Fragment>
+                <Descriptions.Item label="客户银行卡号">{merchantSellDissentOrderDetail.payee_account}</Descriptions.Item>
+                <Descriptions.Item label="客户开户行">{merchantSellDissentOrderDetail.account_bank_name}</Descriptions.Item>
+              </Fragment>
+            }
+
+            {
+              merchantSellDissentOrderDetail.pay_type == 5 && 
+              <Fragment>
+                <Descriptions.Item label="客户Paypal账号">{merchantSellDissentOrderDetail.payee_account}</Descriptions.Item>
+              </Fragment>
+            }
             <Descriptions.Item label="创建时间">{ moment(merchantSellDissentOrderDetail.created_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
             <Descriptions.Item label="订单更新时间">{ moment(merchantSellDissentOrderDetail.updated_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
-            <Descriptions.Item label="付款时间">{ merchantSellDissentOrderDetail.transfer_time ? moment(merchantSellDissentOrderDetail.transfer_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
-            <Descriptions.Item label="承兑商确认时间">{ merchantSellDissentOrderDetail.confirm_time ? moment(merchantSellDissentOrderDetail.confirm_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
+            <Descriptions.Item label="接单时间">{ merchantSellDissentOrderDetail.transfer_time ? moment(merchantSellDissentOrderDetail.transfer_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
+            <Descriptions.Item label="转款时间">{ merchantSellDissentOrderDetail.confirm_time ? moment(merchantSellDissentOrderDetail.confirm_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
             <Descriptions.Item label="操作">
               <Popconfirm title="是否要确认释放给承兑商？" onConfirm={this.toAccept}>
                 <Button loading={toAcceptLock} disabled={operLock} type="primary">释放给承兑商</Button>

@@ -352,7 +352,7 @@ export async function withdrawListSearchAll(params) {
 }
 
 /*承兑商管理员-信用评分-请求*/
-export async function accpetCredit(params) {
+export async function acceptCredit(params) {
   return request(`${apiAddress}/accept/credit/list`, {
     method: 'POST',
     data: params,
@@ -360,7 +360,7 @@ export async function accpetCredit(params) {
 }
 
 /*承兑商管理员-信用评分-搜索*/
-export async function accpetCreditSearchAll(params) {
+export async function acceptCreditSearchAll(params) {
   return request(`${apiAddress}/accept/credit/list`, {
     method: 'POST',
     data: params,
@@ -368,7 +368,7 @@ export async function accpetCreditSearchAll(params) {
 }
 
 /*承兑商管理员-信用评分-修改*/
-export async function accpetCreditModify(params) {
+export async function acceptCreditModify(params) {
   return request(`${apiAddress}/accept/credit/update`, {
     method: 'POST',
     data: params,
@@ -376,7 +376,7 @@ export async function accpetCreditModify(params) {
 }
 
 /*承兑商管理员-浮动费率-请求*/
-export async function accpetRate(params) {
+export async function acceptRate(params) {
   return request(`${apiAddress}/accept/rate/list`, {
     method: 'POST',
     data: params,
@@ -384,7 +384,7 @@ export async function accpetRate(params) {
 }
 
 /*承兑商管理员-浮动费率-搜索*/
-export async function accpetRateSearchAll(params) {
+export async function acceptRateSearchAll(params) {
   return request(`${apiAddress}/accept/rate/list`, {
     method: 'POST',
     data: params,
@@ -392,7 +392,7 @@ export async function accpetRateSearchAll(params) {
 }
 
 /*承兑商管理员-浮动费率-调整*/
-export async function accpetRateModify(params) {
+export async function acceptRateModify(params) {
   return request(`${apiAddress}/accept/rate/update`, {
     method: 'POST',
     data: params,
@@ -400,7 +400,7 @@ export async function accpetRateModify(params) {
 }
 
 /*承兑商管理员-押金管理-请求*/
-export async function accpetDeposit(params) {
+export async function acceptDeposit(params) {
   return request(`${apiAddress}/accept/deposit/list`, {
     method: 'POST',
     data: params,
@@ -408,7 +408,7 @@ export async function accpetDeposit(params) {
 }
 
 /*承兑商管理员-押金管理-搜索*/
-export async function accpetDepositSearchAll(params) {
+export async function acceptDepositSearchAll(params) {
   return request(`${apiAddress}/accept/deposit/list`, {
     method: 'POST',
     data: params,
@@ -416,7 +416,7 @@ export async function accpetDepositSearchAll(params) {
 }
 
 /*承兑商管理员-押金管理-退还*/
-export async function accpetDepositAgree(params) {
+export async function acceptDepositAgree(params) {
   return request(`${apiAddress}/accept/deposit/agree`, {
     method: 'POST',
     data: params,
@@ -424,7 +424,7 @@ export async function accpetDepositAgree(params) {
 }
 
 /*承兑商管理员-押金管理-拒绝*/
-export async function accpetDepositRefuse(params) {
+export async function acceptDepositRefuse(params) {
   return request(`${apiAddress}/accept/deposit/refuse`, {
     method: 'POST',
     data: params,
@@ -432,7 +432,7 @@ export async function accpetDepositRefuse(params) {
 }
 
 /*承兑商管理员-交易槽设置-请求*/
-export async function accpetTradingSlot(params) {
+export async function acceptTradingSlot(params) {
   return request(`${apiAddress}/accept/slot/list`, {
     method: 'POST',
     data: params,
@@ -440,7 +440,7 @@ export async function accpetTradingSlot(params) {
 }
 
 /*承兑商管理员-交易槽设置-搜索*/
-export async function accpetTradingSlotSearchAll(params) {
+export async function acceptTradingSlotSearchAll(params) {
   return request(`${apiAddress}/accept/slot/list`, {
     method: 'POST',
     data: params,
@@ -448,7 +448,7 @@ export async function accpetTradingSlotSearchAll(params) {
 }
 
 /*承兑商管理员-交易槽设置-修改*/
-export async function accpetTradingSlotModify(params) {
+export async function acceptTradingSlotModify(params) {
   return request(`${apiAddress}/accept/slot/update`, {
     method: 'POST',
     data: params,
@@ -456,7 +456,7 @@ export async function accpetTradingSlotModify(params) {
 }
 
 /*承兑商管理员-提币申请-请求*/
-export async function accpetCoinWithdrawApply(params) {
+export async function acceptCoinWithdrawApply(params) {
   return request(`${apiAddress}/order/buyOrder`, {
     method: 'POST',
     data: params,
@@ -464,7 +464,7 @@ export async function accpetCoinWithdrawApply(params) {
 }
 
 /*承兑商管理员-提币申请-搜索*/
-export async function accpetCoinWithdrawApplySearchAll(params) {
+export async function acceptCoinWithdrawApplySearchAll(params) {
   return request(`${apiAddress}/order/buyOrder`, {
     method: 'POST',
     data: params,
@@ -472,7 +472,7 @@ export async function accpetCoinWithdrawApplySearchAll(params) {
 }
 
 /*承兑商管理员-提币申请-同意*/
-export async function accpetCoinWithdrawApplyAgree(params) {
+export async function acceptCoinWithdrawApplyAgree(params) {
   return request(`${apiAddress}/order/buyOrder`, {
     method: 'POST',
     data: params,
@@ -480,7 +480,7 @@ export async function accpetCoinWithdrawApplyAgree(params) {
 }
 
 /*承兑商管理员-提币申请-拒绝*/
-export async function accpetCoinWithdrawApplyRefuse(params) {
+export async function acceptCoinWithdrawApplyRefuse(params) {
   return request(`${apiAddress}/order/buyOrder`, {
     method: 'POST',
     data: params,
@@ -488,7 +488,7 @@ export async function accpetCoinWithdrawApplyRefuse(params) {
 }
 
 /*承兑商管理员-出售异议订单-请求*/
-export async function accpetSellDissentOrder(params) {
+export async function acceptSellDissentOrder(params) {
   return request(`${apiAddress}/accept/objection/sell`, {
     method: 'POST',
     data: params,
@@ -496,7 +496,7 @@ export async function accpetSellDissentOrder(params) {
 }
 
 /*承兑商管理员-出售异议订单-搜索*/
-export async function accpetSellDissentOrderSearchAll(params) {
+export async function acceptSellDissentOrderSearchAll(params) {
   return request(`${apiAddress}/accept/objection/sell`, {
     method: 'POST',
     data: params,
@@ -512,7 +512,7 @@ export async function queryAccpetSellDissentOrderDetail(params) {
 }
 
 /*承兑商管理员-出售异议订单-释放给承兑商*/
-export async function accpetSellDissentOrderToAccept(params) {
+export async function acceptSellDissentOrderToAccept(params) {
   return request(`${apiAddress}/accept/objection/releaseAccept`, {
     method: 'POST',
     data: params,
@@ -520,7 +520,7 @@ export async function accpetSellDissentOrderToAccept(params) {
 }
 
 /*承兑商管理员-出售异议订单-释放给商户*/
-export async function accpetSellDissentOrderToMerchant(params) {
+export async function acceptSellDissentOrderToMerchant(params) {
   return request(`${apiAddress}/accept/objection/releaseMerchant`, {
     method: 'POST',
     data: params,
@@ -528,7 +528,7 @@ export async function accpetSellDissentOrderToMerchant(params) {
 }
 
 /*承兑商管理员-出售异议订单-取消订单*/
-export async function accpetSellDissentOrderClose(params) {
+export async function acceptSellDissentOrderClose(params) {
   return request(`${apiAddress}/accept/objection/cancelOrder`, {
     method: 'POST',
     data: params,
@@ -536,7 +536,7 @@ export async function accpetSellDissentOrderClose(params) {
 }
 
 /*承兑商管理员-购买异议订单-请求*/
-export async function accpetBuyDissentOrder(params) {
+export async function acceptBuyDissentOrder(params) {
   return request(`${apiAddress}/accept/objection/buy`, {
     method: 'POST',
     data: params,
@@ -544,7 +544,7 @@ export async function accpetBuyDissentOrder(params) {
 }
 
 /*承兑商管理员-购买异议订单-搜索*/
-export async function accpetBuyDissentOrderSearchAll(params) {
+export async function acceptBuyDissentOrderSearchAll(params) {
   return request(`${apiAddress}/accept/objection/buy`, {
     method: 'POST',
     data: params,
@@ -560,7 +560,7 @@ export async function queryAccpetBuyDissentOrderDetail(params) {
 }
 
 /*承兑商管理员-购买异议订单-释放给承兑商*/
-export async function accpetBuyDissentOrderToAccept(params) {
+export async function acceptBuyDissentOrderToAccept(params) {
   return request(`${apiAddress}/accept/objection/releaseAccept`, {
     method: 'POST',
     data: params,
@@ -568,7 +568,7 @@ export async function accpetBuyDissentOrderToAccept(params) {
 }
 
 /*承兑商管理员-购买异议订单-释放给商户*/
-export async function accpetBuyDissentOrderToMerchant(params) {
+export async function acceptBuyDissentOrderToMerchant(params) {
   return request(`${apiAddress}/accept/objection/releaseMerchant`, {
     method: 'POST',
     data: params,
@@ -576,7 +576,7 @@ export async function accpetBuyDissentOrderToMerchant(params) {
 }
 
 /*承兑商管理员-购买异议订单-取消订单*/
-export async function accpetBuyDissentOrderClose(params) {
+export async function acceptBuyDissentOrderClose(params) {
   return request(`${apiAddress}/accept/objection/cancelOrder`, {
     method: 'POST',
     data: params,

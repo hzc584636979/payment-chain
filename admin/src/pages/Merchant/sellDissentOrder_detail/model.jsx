@@ -14,7 +14,7 @@ const Model = {
   effects: {
     *fetch({ payload }, { call, put }) {
       const match = pathToRegexp('/Merchant/sellDissentOrder_detail/:id').exec(window.location.pathname);
-      const payload1 = { order_id: match[1], order_type: 2 };
+      const payload1 = { order_id: match[1], order_type: 1 };
       const response = yield call(queryMerchantSellDissentOrderDetail, payload1);
       yield put({
         type: 'save',
@@ -24,19 +24,19 @@ const Model = {
     },
     *toAccept({ payload }, { call, put }) {
       const match = pathToRegexp('/Merchant/sellDissentOrder_detail/:id').exec(window.location.pathname);
-      const payload1 = { order_id: match[1], order_type: 2 };
+      const payload1 = { order_id: match[1], order_type: 1 };
       const response = yield call(merchantSellDissentOrderToAccept, payload1);
       return response;
     },
     *toMerchant({ payload }, { call, put }) {
       const match = pathToRegexp('/Merchant/sellDissentOrder_detail/:id').exec(window.location.pathname);
-      const payload1 = { order_id: match[1], order_type: 2 };
+      const payload1 = { order_id: match[1], order_type: 1 };
       const response = yield call(merchantSellDissentOrderToMerchant, payload1);
       return response;
     },
     *close({ payload }, { call, put }) {
       const match = pathToRegexp('/Merchant/sellDissentOrder_detail/:id').exec(window.location.pathname);
-      const payload1 = { order_id: match[1], order_type: 2 };
+      const payload1 = { order_id: match[1], order_type: 1 };
       const response = yield call(merchantSellDissentOrderClose, payload1);
       return response;
     },
