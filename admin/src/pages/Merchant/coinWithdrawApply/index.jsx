@@ -36,7 +36,7 @@ const CreateForm = Form.create()(props => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       form.resetFields();
-      submit(fieldsValue, params['withdraws.id']);
+      submit(fieldsValue, params.id);
     });
   };
 
@@ -55,7 +55,7 @@ const CreateForm = Form.create()(props => {
       okText='确认'
     >
       <Form>
-        <div style={{paddingBottom: '28px', textAlign: 'center'}}>商户 <span style={{color: '#308AFF'}}>{ params && params.real_name }</span> 申请金额 <span style={{color: '#EB9211'}}>{ params && `${wei2USDT(params['withdraws.coin_number'], params['withdraws.token_id'] == 1 ? 'erc20' : 'omni')} ${coinType2[params['withdraws.token_id']]}` }</span></div>
+        <div style={{paddingBottom: '28px', textAlign: 'center'}}>商户 <span style={{color: '#308AFF'}}>{ params && params['user.real_name'] }</span> 申请金额 <span style={{color: '#EB9211'}}>{ params && `${wei2USDT(params.coin_number, params.token_id == 1 ? 'erc20' : 'omni')} ${coinType2[params.token_id]}` }</span></div>
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="拒绝理由">
           {form.getFieldDecorator('reason', {
             rules: [
@@ -156,7 +156,7 @@ class MerchantCoinWithdrawApply extends Component {
     );
   }
 
-  agree = id => {
+  agree = order_id => {
     const { dispatch } = this.props;
     const { pagination } = this.props.merchantCoinWithdrawApply.data;
 
@@ -167,7 +167,7 @@ class MerchantCoinWithdrawApply extends Component {
     dispatch({
       type: 'merchantCoinWithdrawApply/agree',
       payload: {
-        order_id: id
+        order_id
       },
     }).then(data => {
       if(data.status != 1) {
@@ -236,13 +236,13 @@ class MerchantCoinWithdrawApply extends Component {
     const columns = [
       {
         title: '姓名',
-        dataIndex: 'real_name',
+        dataIndex: 'user.real_name',
         key: 'real_name',
         align: 'center',
       },
       {
         title: '手机号',
-        dataIndex: 'telephone_number',
+        dataIndex: 'user.telephone_number',
         key: 'telephone_number',
         align: 'center',
       },
@@ -254,11 +254,11 @@ class MerchantCoinWithdrawApply extends Component {
       },
       {
         title: '申请金额',
-        dataIndex: 'withdraws.coin_number',
+        dataIndex: 'coin_number',
         key: 'coin_number',
         align: 'center',
         render: (val, record) => {
-          return `${wei2USDT(val, record['withdraws.token_id'] == 1 ? 'erc20' : 'omni')} ${coinType2[record['withdraws.token_id']]}`;
+          return `${wei2USDT(val, record.token_id == 1 ? 'erc20' : 'omni')} ${coinType2[record.token_id]}`;
         },
       },
       {
@@ -268,7 +268,7 @@ class MerchantCoinWithdrawApply extends Component {
         render: (val, record) => {
           return(
             <span>
-              <Popconfirm title="是否要确认同意？" onConfirm={() => this.agree(record['withdraws.id'])}>
+              <Popconfirm title="是否要确认同意？" onConfirm={() => this.agree(record.id)}>
                 <Button>同意</Button>
               </Popconfirm>
               <span style={{display: 'inline-block', width: '10px'}}></span>
