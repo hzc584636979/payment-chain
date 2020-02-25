@@ -141,7 +141,7 @@ class MerchantCoinWithdrawApply extends Component {
         <Row gutter={24}>
           <Col xl={8} lg={12} sm={24}>
             <FormItem>
-              {getFieldDecorator('order_id',{ initialValue: history.order_id })(<Input placeholder="姓名/手机号" />)}
+              {getFieldDecorator('search_value',{ initialValue: history.search_value })(<Input placeholder="姓名/手机号" />)}
             </FormItem>
           </Col>
           <Col xl={8} lg={12} sm={24}>
@@ -284,6 +284,7 @@ class MerchantCoinWithdrawApply extends Component {
         <div className={styles.wrap}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           <StandardTable
+            rowKey='withdraws.token_id'
             noRowSelection={true}
             loading={loading}
             data={{ list, pagination }}
