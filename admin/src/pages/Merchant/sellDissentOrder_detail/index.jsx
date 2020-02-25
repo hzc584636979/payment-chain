@@ -121,7 +121,7 @@ class MerchantSellDissentOrderDetail extends Component {
             <Descriptions.Item label="订单状态">{ buyStatusType[merchantSellDissentOrderDetail.state] }</Descriptions.Item>
             <Descriptions.Item label="订单金额">{ `${merchantSellDissentOrderDetail.pay_amount_cny} ${cashType[merchantSellDissentOrderDetail.currency_type]}` }</Descriptions.Item>
             <Descriptions.Item label="代币数量">{ `${merchantSellDissentOrderDetail.pay_amount} ${coinType[merchantSellDissentOrderDetail.token_id]}` }</Descriptions.Item>
-            <Descriptions.Item label="承兑商姓名">{ merchantSellDissentOrderDetail.a_user_name }</Descriptions.Item>
+            <Descriptions.Item label="承兑商昵称">{ merchantSellDissentOrderDetail.a_user_name }</Descriptions.Item>
             {/*<Descriptions.Item label="承兑商手机号">{  }</Descriptions.Item>*/}
             {
               merchantSellDissentOrderDetail.state == 5 &&
@@ -129,7 +129,7 @@ class MerchantSellDissentOrderDetail extends Component {
                 <a target="_blank" href={merchantSellDissentOrderDetail.payment_screenshot}><img src={merchantSellDissentOrderDetail.payment_screenshot} width="150" height="150" /></a>
               </Descriptions.Item>
             }
-            <Descriptions.Item label="商户姓名">{ merchantSellDissentOrderDetail.m_user_name }</Descriptions.Item>
+            <Descriptions.Item label="商户昵称">{ merchantSellDissentOrderDetail.m_user_name }</Descriptions.Item>
             {/*<Descriptions.Item label="商户手机号">{  }</Descriptions.Item>*/}
             <Descriptions.Item label="客户姓名">{merchantSellDissentOrderDetail.payee_name}</Descriptions.Item>
 

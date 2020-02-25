@@ -120,7 +120,7 @@ class MerchantBuyDissentOrder extends Component {
     const columns = [
       {
         title: '订单创建时间',
-        dataIndex: 'collection_orders.created_at',
+        dataIndex: 'created_at',
         key: 'created_at',
         align: 'center',
         render: (val, record) => {
@@ -129,7 +129,7 @@ class MerchantBuyDissentOrder extends Component {
       },
       {
         title: '异议时间',
-        dataIndex: 'collection_orders.issue_create_time',
+        dataIndex: 'issue_create_time',
         key: 'issue_create_time',
         align: 'center',
         render: (val, record) => {
@@ -138,61 +138,61 @@ class MerchantBuyDissentOrder extends Component {
       },
       {
         title: '问题类型',
-        dataIndex: 'collection_orders.issue_type',
+        dataIndex: 'issue_type',
         key: 'issue_type',
         align: 'center',
       },
       {
         title: '平台订单号',
-        dataIndex: 'collection_orders.order_id',
+        dataIndex: 'order_id',
         key: 'order_id',
         align: 'center',
       },
       {
         title: '商户订单号',
-        dataIndex: 'collection_orders.out_order_id',
+        dataIndex: 'out_order_id',
         key: 'out_order_id',
         align: 'center',
       },
       {
-        title: '承兑商姓名',
-        dataIndex: 'collection_orders.a_user_name',
+        title: '承兑商昵称',
+        dataIndex: 'a_user_name',
         key: 'a_user_name',
         align: 'center',
       },
       {
-        title: '商户姓名',
-        dataIndex: 'collection_orders.m_user_name',
+        title: '商户昵称',
+        dataIndex: 'm_user_name',
         key: 'm_user_name',
         align: 'center',
       },
       {
         title: '客户姓名',
-        dataIndex: 'collection_orders.pay_real_name',
+        dataIndex: 'pay_real_name',
         key: 'pay_real_name',
         align: 'center',
       },
       {
         title: '订单金额',
-        dataIndex: 'collection_orders.pay_amount_cny',
+        dataIndex: 'pay_amount_cny',
         key: 'pay_amount_cny',
         align: 'center',
         render: (val,record) => {
-          return `${val} ${cashType[record['collection_orders.currency_type']]}`;
+          return `${val} ${cashType[record.currency_type]}`;
         }
       },
       {
         title: '代币数量',
-        dataIndex: 'collection_orders.pay_amount',
+        dataIndex: 'pay_amount',
         key: 'pay_amount',
         align: 'center',
         render: (val,record) => {
-          return `${val} ${coinType[record['collection_orders.token_id']]}`;
+          return `${val} ${coinType[record.token_id]}`;
         }
       },
       {
         title: '订单状态',
-        dataIndex: 'collection_orders.state',
+        dataIndex: 'state',
         key: 'state',
         align: 'center',
         render: (val, record) => {
@@ -209,7 +209,7 @@ class MerchantBuyDissentOrder extends Component {
           return(
             <span>
               <Button>
-                <Link to={`/Merchant/buyDissentOrder_detail/${record['collection_orders.order_id']}`}>查看</Link>
+                <Link to={`/Merchant/buyDissentOrder_detail/${record.order_id}`}>查看</Link>
               </Button>
             </span>
           );
@@ -222,7 +222,6 @@ class MerchantBuyDissentOrder extends Component {
         <div className={styles.wrap}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           <StandardTable
-            rowKey='collection_orders.order_id'
             noRowSelection={true}
             loading={loading}
             data={{ list, pagination }}

@@ -35,7 +35,7 @@ const CreateForm = Form.create()(props => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       form.resetFields();
-      submit(fieldsValue, params.id);
+      submit(fieldsValue, params.user_id);
     });
   };
 
@@ -69,7 +69,7 @@ const CreateForm = Form.create()(props => {
       <Form>
         <FormItem labelCol={{ span: 9 }} wrapperCol={{ span: 15 }} label="出金手续费设置">
           {form.getFieldDecorator('out_gas', {
-            initialValue: params ? params['wallets.chu_gas_percent'] * 100 : null,
+            initialValue: params ? params.chu_gas_percent * 100 : null,
             rules: [
               { 
                 required: true, 
@@ -83,7 +83,7 @@ const CreateForm = Form.create()(props => {
         </FormItem>
         <FormItem labelCol={{ span: 9 }} wrapperCol={{ span: 15 }} label="入金手续费设置">
           {form.getFieldDecorator('in_gas', {
-            initialValue: params ? params['wallets.ru_gas_percent'] * 100 : null,
+            initialValue: params ? params.ru_gas_percent * 100 : null,
             rules: [
               { 
                 required: true, 
@@ -242,13 +242,13 @@ class MerchantBrokerage extends Component {
     const columns = [
       {
         title: '姓名',
-        dataIndex: 'real_name',
+        dataIndex: 'user.real_name',
         key: 'real_name',
         align: 'center',
       },
       {
         title: '手机号',
-        dataIndex: 'telephone_number',
+        dataIndex: 'user.telephone_number',
         key: 'telephone_number',
         align: 'center',
       },
@@ -260,7 +260,7 @@ class MerchantBrokerage extends Component {
       },
       {
         title: '出金手续费',
-        dataIndex: 'wallets.chu_gas_percent',
+        dataIndex: 'chu_gas_percent',
         key: 'chu_gas_percent',
         align: 'center',
         render: (val, record) => {
@@ -269,7 +269,7 @@ class MerchantBrokerage extends Component {
       },
       {
         title: '入金手续费',
-        dataIndex: 'wallets.ru_gas_percent',
+        dataIndex: 'ru_gas_percent',
         key: 'ru_gas_percent',
         align: 'center',
         render: (val, record) => {

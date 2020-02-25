@@ -121,9 +121,9 @@ class MerchantBuyDissentOrderDetail extends Component {
             <Descriptions.Item label="订单状态">{ sellStatusType[merchantBuyDissentOrderDetail.state] }</Descriptions.Item>
             <Descriptions.Item label="订单金额">{ `${merchantBuyDissentOrderDetail.pay_amount_cny} ${cashType[merchantBuyDissentOrderDetail.currency_type]}` }</Descriptions.Item>
             <Descriptions.Item label="代币数量">{ `${merchantBuyDissentOrderDetail.pay_amount} ${coinType[merchantBuyDissentOrderDetail.token_id]}` }</Descriptions.Item>
-            <Descriptions.Item label="承兑商姓名">{ merchantBuyDissentOrderDetail.a_user_name }</Descriptions.Item>
+            <Descriptions.Item label="承兑商昵称">{ merchantBuyDissentOrderDetail.a_user_name }</Descriptions.Item>
             {/*<Descriptions.Item label="承兑商手机号">{  }</Descriptions.Item>*/}
-            <Descriptions.Item label="商户姓名">{ merchantBuyDissentOrderDetail.m_user_name }</Descriptions.Item>
+            <Descriptions.Item label="商户昵称">{ merchantBuyDissentOrderDetail.m_user_name }</Descriptions.Item>
             {/*<Descriptions.Item label="商户手机号">{  }</Descriptions.Item>*/}
             <Descriptions.Item label="付款用户">{ merchantBuyDissentOrderDetail.pay_real_name }</Descriptions.Item>
             <Descriptions.Item label="付款账户">{ merchantBuyDissentOrderDetail.user_pay_account }</Descriptions.Item>
