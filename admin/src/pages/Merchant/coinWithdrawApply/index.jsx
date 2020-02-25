@@ -36,7 +36,7 @@ const CreateForm = Form.create()(props => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       form.resetFields();
-      submit(fieldsValue);
+      submit(fieldsValue, params['withdraws.id']);
     });
   };
 
@@ -55,9 +55,9 @@ const CreateForm = Form.create()(props => {
       okText='确认'
     >
       <Form>
-        <div style={{paddingBottom: '28px', textAlign: 'center'}}>承兑商 <span style={{color: '#308AFF'}}>asdasdsad</span> <span style={{color: '#308AFF'}}>313123123213123</span> 申请金额 <span style={{color: '#EB9211'}}>123231312323213 USDT</span></div>
+        <div style={{paddingBottom: '28px', textAlign: 'center'}}>承兑商 <span style={{color: '#308AFF'}}>{ params && params.real_name }</span> 申请金额 <span style={{color: '#EB9211'}}>{ params && `${wei2USDT(params['withdraws.coin_number'], params['withdraws.token_id'] == 1 ? 'erc20' : 'omni')} ${coinType2[params['withdraws.token_id']]}` }</span></div>
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="拒绝理由">
-          {form.getFieldDecorator('desc', {
+          {form.getFieldDecorator('reason', {
             rules: [
               { 
                 required: true, 
@@ -86,9 +86,9 @@ class MerchantCoinWithdrawApply extends Component {
     dispatch({
       type: 'merchantCoinWithdrawApply/fetch',
       payload:{
-        pageSize:10,
-        page:0,
-        order_id: null,
+        pageSize: 10,
+        page: 0,
+        search_value: null,
       },
     })
   }
@@ -121,7 +121,7 @@ class MerchantCoinWithdrawApply extends Component {
 
       const values = {
         ...fieldsValue,
-        order_id: fieldsValue.order_id || null,
+        search_value: fieldsValue.search_value || null,
         page: pagination.page || 0,
         pageSize: pagination.pageSize || 10,
       };
@@ -180,10 +180,10 @@ class MerchantCoinWithdrawApply extends Component {
     })
   }
 
-  refuse = arg => {
+  refuse = (arg, order_id) => {
     const { dispatch } = this.props;
     const { pagination } = this.props.merchantCoinWithdrawApply.data;
-console.log(arg)
+
     const params = {
       page: pagination.current -1,
       pageSize: pagination.pageSize,
@@ -191,7 +191,10 @@ console.log(arg)
 
     dispatch({
       type: 'merchantCoinWithdrawApply/refuse',
-      payload: arg,
+      payload: {
+        order_id,
+        reason: arg.reason,
+      },
     }).then(data => {
       if(data.status != 1) {
         message.error(data.msg);
@@ -233,14 +236,14 @@ console.log(arg)
     const columns = [
       {
         title: '姓名',
-        dataIndex: 'aging',
-        key: 'aging',
+        dataIndex: 'real_name',
+        key: 'real_name',
         align: 'center',
       },
       {
         title: '手机号',
-        dataIndex: 'order_id',
-        key: 'order_id',
+        dataIndex: 'telephone_number',
+        key: 'telephone_number',
         align: 'center',
       },
       {
@@ -251,13 +254,11 @@ console.log(arg)
       },
       {
         title: '申请金额',
-        dataIndex: 'out_order_id',
-        key: 'out_order_id',
+        dataIndex: 'withdraws.coin_number',
+        key: 'coin_number',
         align: 'center',
         render: (val, record) => {
-          return(
-            <span style={{color: '#EA8A00'}}>{val} USDT</span>
-          );
+          return `${wei2USDT(val, record['withdraws.token_id'] == 1 ? 'erc20' : 'omni')} ${coinType2[record['withdraws.token_id']]}`;
         },
       },
       {
@@ -267,7 +268,7 @@ console.log(arg)
         render: (val, record) => {
           return(
             <span>
-              <Popconfirm title="是否要确认同意？" onConfirm={() => this.agree(record.order_id)}>
+              <Popconfirm title="是否要确认同意？" onConfirm={() => this.agree(record['withdraws.id'])}>
                 <Button>同意</Button>
               </Popconfirm>
               <span style={{display: 'inline-block', width: '10px'}}></span>
@@ -285,7 +286,7 @@ console.log(arg)
           <StandardTable
             noRowSelection={true}
             loading={loading}
-            data={{ list: [{id:1},{id:2},{id:3},{id:4},{id:5},{id:6}], pagination }}
+            data={{ list, pagination }}
             columns={columns}
             onChange={this.handleStandardTableChange}
           />

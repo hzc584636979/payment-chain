@@ -705,7 +705,7 @@ export async function merchantBuyDissentOrderClose(params) {
 
 /*商户管理员-提币申请-请求*/
 export async function merchantCoinWithdrawApply(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
+  return request(`${apiAddress}/merchant/withdrawal/list`, {
     method: 'POST',
     data: params,
   });
@@ -713,7 +713,7 @@ export async function merchantCoinWithdrawApply(params) {
 
 /*商户管理员-提币申请-搜索*/
 export async function merchantCoinWithdrawApplySearchAll(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
+  return request(`${apiAddress}/merchant/withdrawal/list`, {
     method: 'POST',
     data: params,
   });
@@ -721,7 +721,7 @@ export async function merchantCoinWithdrawApplySearchAll(params) {
 
 /*商户管理员-提币申请-同意*/
 export async function merchantCoinWithdrawApplyAgree(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
+  return request(`${apiAddress}/merchant/withdrawal/agree`, {
     method: 'POST',
     data: params,
   });
@@ -729,7 +729,7 @@ export async function merchantCoinWithdrawApplyAgree(params) {
 
 /*商户管理员-提币申请-拒绝*/
 export async function merchantCoinWithdrawApplyRefuse(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
+  return request(`${apiAddress}/merchant/withdrawal/refuse`, {
     method: 'POST',
     data: params,
   });
