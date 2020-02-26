@@ -740,7 +740,7 @@ export async function systemLog(params) {
   let time = params.time && formatMomentTime(params.time);
   let begin_time = time[0];
   let end_time = time[1];
-  return request(`${apiAddress}/order/buyOrder`, {
+  return request(`${apiAddress}/system/log/list`, {
     method: 'POST',
     data: {
       ...params,
@@ -755,7 +755,7 @@ export async function systemLogSearchAll(params) {
   let time = params.time && formatMomentTime(params.time);
   let begin_time = time[0];
   let end_time = time[1];
-  return request(`${apiAddress}/order/buyOrder`, {
+  return request(`${apiAddress}/system/log/list`, {
     method: 'POST',
     data: {
       ...params,
@@ -767,7 +767,7 @@ export async function systemLogSearchAll(params) {
 
 /*系统管理-发布消息-发布*/
 export async function systemNewsSubmit(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
+  return request(`${apiAddress}/system/message/publish`, {
     method: 'POST',
     data: params,
   });
@@ -778,7 +778,7 @@ export async function systemMessage(params) {
   let time = params.time && formatMomentTime(params.time);
   let begin_time = time[0];
   let end_time = time[1];
-  return request(`${apiAddress}/order/buyOrder`, {
+  return request(`${apiAddress}/system/message/list`, {
     method: 'POST',
     data: {
       ...params,
@@ -793,7 +793,7 @@ export async function systemMessageSearchAll(params) {
   let time = params.time && formatMomentTime(params.time);
   let begin_time = time[0];
   let end_time = time[1];
-  return request(`${apiAddress}/order/buyOrder`, {
+  return request(`${apiAddress}/system/message/list`, {
     method: 'POST',
     data: {
       ...params,
@@ -805,7 +805,7 @@ export async function systemMessageSearchAll(params) {
 
 /*系统管理-消息记录-删除*/
 export async function systemMessageDelete(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
+  return request(`${apiAddress}/system/message/delete`, {
     method: 'POST',
     data: params,
   });
@@ -814,7 +814,7 @@ export async function systemMessageDelete(params) {
 
 /*系统管理-消息记录详情页-请求*/
 export async function systemMessageDetail(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
+  return request(`${apiAddress}/system/message/detail`, {
     method: 'POST',
     data: params,
   });

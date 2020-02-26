@@ -19,7 +19,8 @@ const AuthComponent = ({
   const { routes = [] } = route;
   const isLogin = currentUser && currentUser.id;
 
-  let currentUser_type = currentUser.type;
+  let currentUser_type = g_getLocalStorage().type;
+
   if(location.pathname == '/') {
     if(currentUser_type == 1) {
       dispatch(routerRedux.push('/super'))

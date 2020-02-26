@@ -69,8 +69,8 @@ const CreateForm = Form.create()(props => {
       <Form>
         <div style={{paddingBottom: '28px', textAlign: 'center'}}>承兑商 <span style={{color: '#308AFF'}}>{ params && params['user.real_name'] }</span></div>
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="浮动汇率">
-          {form.getFieldDecorator('old_telephone_number', {
-            initialValue: 1.2,
+          {form.getFieldDecorator('float_rate', {
+            initialValue: params ? params.float_rate * 100 : null,
             rules: [
               { 
                 required: true, 
@@ -185,6 +185,7 @@ class AccpetRate extends Component {
       type: 'acceptRate/modify',
       payload: {
         accept_id,
+        float_rate: arg.float_rate / 100,
       },
     }).then(data => {
       if(data.status != 1) {
@@ -239,23 +240,23 @@ class AccpetRate extends Component {
       },
       {
         title: '出售订单',
-        dataIndex: '',
-        key: '',
+        dataIndex: 'sell_order',
+        key: 'sell_order',
         align: 'center',
       },
       {
         title: '购买订单',
-        dataIndex: '',
-        key: '',
+        dataIndex: 'buy_order',
+        key: 'buy_order',
         align: 'center',
       },
       {
         title: '浮动汇率(%)',
-        dataIndex: 'out_order_id',
-        key: 'out_order_id',
+        dataIndex: 'float_rate',
+        key: 'float_rate',
         align: 'center',
         render: (val, record) => {
-          return <span style={{color: '#EA8A00'}}>{ val }</span>;
+          return <span style={{color: '#EA8A00'}}>{ val * 100 }%</span>;
         },
       },
       {

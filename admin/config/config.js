@@ -343,7 +343,7 @@ export default {
                 },
               ],
             },
-            /*{
+            {
               path: '/system',
               icon: 'setting',
               name: '系统管理',
@@ -372,7 +372,7 @@ export default {
                   expandPath: '/system/message',
                 },
               ],
-            },*/
+            },
             {
               component: '404',
             },

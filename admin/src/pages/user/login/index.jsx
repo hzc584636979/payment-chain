@@ -74,7 +74,7 @@ class Login extends Component {
       },
     }).then(data => {
       if(data.status != 1) {
-        message.error(data.msg);
+        message.error(captchaError(data.msg));
         return false;
       }else {
         message.success('操作成功');
