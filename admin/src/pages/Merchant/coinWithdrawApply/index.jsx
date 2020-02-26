@@ -95,6 +95,7 @@ class MerchantCoinWithdrawApply extends Component {
         pageSize: 10,
         page: 0,
         search_value: null,
+        state: 0,
       },
     })
   }
@@ -148,6 +149,21 @@ class MerchantCoinWithdrawApply extends Component {
           <Col xl={8} lg={12} sm={24}>
             <FormItem>
               {getFieldDecorator('search_value',{ initialValue: history.search_value })(<Input placeholder="姓名/手机号" />)}
+            </FormItem>
+          </Col>
+          <Col xl={8} lg={12} sm={24}>
+            <FormItem label="状态">
+              {getFieldDecorator('state', { initialValue: history.state + '' })(
+                <Select placeholder="请选择">
+                  {Object.keys(statusType).map(value => {
+                    return (
+                      <Option value={value} key={value}>
+                        {statusType[value]}
+                      </Option>
+                    );
+                  })}
+                </Select>,
+              )}
             </FormItem>
           </Col>
           <Col xl={8} lg={12} sm={24}>
@@ -252,9 +268,12 @@ class MerchantCoinWithdrawApply extends Component {
       },
       {
         title: '余额',
-        dataIndex: '',
-        key: '',
+        dataIndex: 'balance',
+        key: 'balance',
         align: 'center',
+        render: (val, record) => {
+          return <span style={{color: '#ea8a00'}}>{ `${val} ${record.token_id == 1 || record.token_id == 2 ? 'USDT' : ''}` }</span>
+        },
       },
       {
         title: '姓名',

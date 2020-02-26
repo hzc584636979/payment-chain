@@ -228,6 +228,7 @@ class BuyOrder extends Component {
       title: '转款信息',
       content: (
         <div>
+          <p>金额：{`${ record.pay_amount_cny } ${ cashType[record.currency_type] }`}</p>
           <p>收款方式：<img src={payIcon[record.pay_type]} style={{maxWidth: 40}} /></p>
           <p>客户姓名：{record.payee_name}</p>
           {
