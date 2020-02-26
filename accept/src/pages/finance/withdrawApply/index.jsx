@@ -165,6 +165,7 @@ class WithdrawApply extends Component {
       submitLoading,
       count,
       token_id,
+      telephone_verify_code,
     } = this.state;
     const allBalance = currentUser.id ? new BigNumber(wei2USDT(currentUser.erc20.balance)).plus(new BigNumber(wei2USDT(currentUser.omni.balance, 'omni'))).toNumber() : 0;
     const allLockBalance = currentUser.id ? new BigNumber(wei2USDT(currentUser.erc20.lock_balance)).plus(new BigNumber(wei2USDT(currentUser.omni.lock_balance, 'omni'))).toNumber() : 0;
@@ -215,7 +216,7 @@ class WithdrawApply extends Component {
                 }
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>手机验证码</span>}>
-                <Input onChange={this.handleCaptcha} style={{width: 385}} placeholder="输入手机验证码" maxLength={6} />
+                <Input value={telephone_verify_code} onChange={this.handleCaptcha} style={{width: 385}} placeholder="输入手机验证码" maxLength={6} />
                 <Button
                   disabled={!!count}
                   onClick={this.onGetCaptcha}

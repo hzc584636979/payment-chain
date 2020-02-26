@@ -504,7 +504,7 @@ export async function acceptSellDissentOrderSearchAll(params) {
 }
 
 /*承兑商管理员-出售异议订单-详情*/
-export async function queryAccpetSellDissentOrderDetail(params) {
+export async function queryAcceptSellDissentOrderDetail(params) {
   return request(`${apiAddress}/accept/objection/detail`, {
     method: 'POST',
     data: params,
@@ -552,7 +552,7 @@ export async function acceptBuyDissentOrderSearchAll(params) {
 }
 
 /*承兑商管理员-购买异议订单-详情*/
-export async function queryAccpetBuyDissentOrderDetail(params) {
+export async function queryAcceptBuyDissentOrderDetail(params) {
   return request(`${apiAddress}/accept/objection/detail`, {
     method: 'POST',
     data: params,

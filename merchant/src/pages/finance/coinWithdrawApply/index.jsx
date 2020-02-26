@@ -152,7 +152,7 @@ class WithdrawApply extends Component {
 
   render() {
     const { currentUser } = this.props;
-    const { to_address, coin_number, submitLoading, count, token_id } = this.state;
+    const { to_address, coin_number, submitLoading, count, token_id, telephone_verify_code } = this.state;
     const allBalance = currentUser.id
       ? new BigNumber(wei2USDT(currentUser.erc20.balance))
           .plus(new BigNumber(wei2USDT(currentUser.omni.balance, 'omni')))
@@ -243,6 +243,7 @@ class WithdrawApply extends Component {
                   style={{ width: 385 }}
                   placeholder="输入手机验证码"
                   maxLength={6}
+                  value={telephone_verify_code}
                 />
                 <Button
                   disabled={!!count}

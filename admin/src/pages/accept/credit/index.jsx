@@ -74,7 +74,7 @@ const CreateForm = Form.create()(props => {
                 validator: validator
               }
             ],
-          })(<Input maxLenth={8} placeholder="设置综合信用额度" />)}
+          })(<Input maxLength={8} placeholder="设置综合信用额度" />)}
         </FormItem>
       </Form>
     </Modal>
@@ -251,8 +251,8 @@ class AccpetCredit extends Component {
       },
       {
         title: '当前信用排名',
-        dataIndex: '',
-        key: '',
+        dataIndex: 'rank',
+        key: 'rank',
         align: 'center',
       },
       {

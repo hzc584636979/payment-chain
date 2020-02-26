@@ -9,7 +9,9 @@ import styles from './style.less';
 const { TextArea } = Input;
 const { Option } = Select;
 const statusType = {
-  '金额不对': '金额不对'
+  '金额问题': '金额问题',
+  '流程问题': '流程问题',
+  '异常问题': '异常问题',
 };
 
 function beforeUpload(file) {
