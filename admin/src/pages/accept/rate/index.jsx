@@ -35,7 +35,7 @@ const CreateForm = Form.create()(props => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       form.resetFields();
-      submit(fieldsValue);
+      submit(fieldsValue, params.user_id);
     });
   };
 
@@ -67,7 +67,7 @@ const CreateForm = Form.create()(props => {
       okText='确认'
     >
       <Form>
-        <div style={{paddingBottom: '28px', textAlign: 'center'}}>承兑商 <span style={{color: '#308AFF'}}>asdasdsad</span></div>
+        <div style={{paddingBottom: '28px', textAlign: 'center'}}>承兑商 <span style={{color: '#308AFF'}}>{ params && params['user.real_name'] }</span></div>
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="浮动汇率">
           {form.getFieldDecorator('old_telephone_number', {
             initialValue: 1.2,
@@ -137,7 +137,7 @@ class AccpetRate extends Component {
 
       const values = {
         ...fieldsValue,
-        order_id: fieldsValue.order_id || null,
+        search_value: fieldsValue.search_value || null,
         page: pagination.page || 0,
         pageSize: pagination.pageSize || 10,
       };
@@ -172,10 +172,10 @@ class AccpetRate extends Component {
     );
   }
 
-  modify = arg => {
+  modify = (arg, accept_id) => {
     const { dispatch } = this.props;
     const { pagination } = this.props.acceptRate.data;
-console.log(arg)
+
     const params = {
       page: pagination.current -1,
       pageSize: pagination.pageSize,
@@ -183,7 +183,9 @@ console.log(arg)
 
     dispatch({
       type: 'acceptRate/modify',
-      payload: arg,
+      payload: {
+        accept_id,
+      },
     }).then(data => {
       if(data.status != 1) {
         message.error(data.msg);
