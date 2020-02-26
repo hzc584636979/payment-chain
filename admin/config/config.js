@@ -198,9 +198,10 @@ export default {
                       hideInMenu: true,
                       expandPath: '/super/coldwallet/coldwalletGas',
                     },
+
                   ]
-                },*/
-                /*{
+                },
+                {
                   name: '中心化钱包',
                   path: '/super/centerWallet',
                   authority: ['super'],
@@ -243,7 +244,7 @@ export default {
                 },
               ],
             },
-            /*{
+            {
               path: '/accept',
               icon: 'user',
               name: '承兑商管理',
@@ -270,7 +271,7 @@ export default {
                   component: './accept/tradingSlot',
                 },
                 {
-                  name: '提币管理',
+                  name: '区块链提币管理',
                   path: '/accept/coinWithdrawApply',
                   component: './accept/coinWithdrawApply',
                 },
@@ -299,7 +300,7 @@ export default {
                   expandPath: '/accept/buyDissentOrder',
                 },
               ],
-            },*/
+            },
             {
               path: '/Merchant',
               icon: 'user',
@@ -312,7 +313,7 @@ export default {
                   component: './Merchant/brokerage',
                 },
                 {
-                  name: '提币管理',
+                  name: '区块链提币管理',
                   path: '/Merchant/coinWithdrawApply',
                   component: './Merchant/coinWithdrawApply',
                 },
