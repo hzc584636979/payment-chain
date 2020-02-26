@@ -104,7 +104,7 @@ class AccpetRate extends Component {
       payload:{
         pageSize:10,
         page:0,
-        order_id: null,
+        search_value: null,
       },
     })
   }
@@ -157,7 +157,7 @@ class AccpetRate extends Component {
         <Row gutter={24}>
           <Col xl={8} lg={12} sm={24}>
             <FormItem>
-              {getFieldDecorator('order_id',{ initialValue: history.order_id })(<Input placeholder="姓名/手机号" />)}
+              {getFieldDecorator('search_value',{ initialValue: history.search_value })(<Input placeholder="姓名/手机号" />)}
             </FormItem>
           </Col>
           <Col xl={8} lg={12} sm={24}>
@@ -225,14 +225,14 @@ console.log(arg)
     const columns = [
       {
         title: '姓名',
-        dataIndex: 'aging',
-        key: 'aging',
+        dataIndex: 'user.real_name',
+        key: 'real_name',
         align: 'center',
       },
       {
         title: '手机号',
-        dataIndex: 'order_id',
-        key: 'order_id',
+        dataIndex: 'user.telephone_number',
+        key: 'telephone_number',
         align: 'center',
       },
       {
@@ -279,9 +279,10 @@ console.log(arg)
         <div className={styles.wrap}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           <StandardTable
+            rowKey='user_id'
             noRowSelection={true}
             loading={loading}
-            data={{ list: [{id:1},{id:2},{id:3},{id:4},{id:5},{id:6}], pagination }}
+            data={{ list, pagination }}
             columns={columns}
             onChange={this.handleStandardTableChange}
           />

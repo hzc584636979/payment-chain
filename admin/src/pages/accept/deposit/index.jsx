@@ -96,6 +96,7 @@ class AccpetDeposit extends Component {
         pageSize: 10,
         page: 0,
         search_value: null,
+        state: 0,
       },
     })
   }
@@ -149,6 +150,21 @@ class AccpetDeposit extends Component {
           <Col xl={8} lg={12} sm={24}>
             <FormItem>
               {getFieldDecorator('search_value',{ initialValue: history.search_value })(<Input placeholder="姓名/手机号" />)}
+            </FormItem>
+          </Col>
+          <Col xl={8} lg={12} sm={24}>
+            <FormItem label="状态">
+              {getFieldDecorator('state', { initialValue: history.state + '' })(
+                <Select placeholder="请选择">
+                  {Object.keys(statusType).map(value => {
+                    return (
+                      <Option value={value} key={value}>
+                        {statusType[value]}
+                      </Option>
+                    );
+                  })}
+                </Select>,
+              )}
             </FormItem>
           </Col>
           <Col xl={8} lg={12} sm={24}>
@@ -242,15 +258,6 @@ class AccpetDeposit extends Component {
 
     const columns = [
       {
-        title: '申请押金(USDT)',
-        dataIndex: 'refund_amount',
-        key: 'refund_amount',
-        align: 'center',
-        render: (val, record) => {
-          return <span style={{color: '#ea8a00'}}>{ val }</span>;
-        },
-      },
-      {
         title: '姓名',
         dataIndex: 'user.real_name',
         key: 'real_name',
@@ -263,6 +270,15 @@ class AccpetDeposit extends Component {
         align: 'center',
       },
       {
+        title: '押金(USDT)',
+        dataIndex: 'pledge_amount',
+        key: 'pledge_amount',
+        align: 'center',
+        render: (val, record) => {
+          return <span style={{color: '#ea8a00'}}>{ val }</span>;
+        },
+      },
+      {
         title: '状态',
         dataIndex: 'state',
         key: 'state',
@@ -271,6 +287,15 @@ class AccpetDeposit extends Component {
           return statusType[val];
         }
       },
+      /*{
+        title: '申请押金(USDT)',
+        dataIndex: 'refund_amount',
+        key: 'refund_amount',
+        align: 'center',
+        render: (val, record) => {
+          return <span style={{color: '#ea8a00'}}>{ val }</span>;
+        },
+      },*/
       {
         title: '申请时间',
         dataIndex: 'createdAt',

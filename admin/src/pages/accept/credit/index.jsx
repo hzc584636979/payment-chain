@@ -35,7 +35,7 @@ const CreateForm = Form.create()(props => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       form.resetFields();
-      submit(fieldsValue);
+      submit(fieldsValue, params.user_id);
     });
   };
 
@@ -61,10 +61,10 @@ const CreateForm = Form.create()(props => {
       okText='确认'
     >
       <Form>
-        <div style={{paddingBottom: '28px', textAlign: 'center'}}>承兑商 <span style={{color: '#308AFF'}}>asdasdsad</span> 押金 <span style={{color: '#EB9211'}}>123231312323213 USDT</span></div>
+        <div style={{paddingBottom: '28px', textAlign: 'center'}}>承兑商 <span style={{color: '#308AFF'}}>{ params && params['user.real_name'] }</span> 押金 <span style={{color: '#EB9211'}}>{ params && params.pledge_amount } USDT</span></div>
         <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="综合信用额度">
-          {form.getFieldDecorator('total_credit', {
-            initialValue: 89,
+          {form.getFieldDecorator('credit', {
+            initialValue: params ? params.credit : null,
             rules: [
               { 
                 required: true, 
@@ -74,7 +74,7 @@ const CreateForm = Form.create()(props => {
                 validator: validator
               }
             ],
-          })(<Input placeholder="设置综合信用额度" />)}
+          })(<Input maxLenth={8} placeholder="设置综合信用额度" />)}
         </FormItem>
       </Form>
     </Modal>
@@ -179,7 +179,7 @@ class AccpetCredit extends Component {
       type: 'acceptCredit/modify',
       payload: {
         accept_id,
-        total_credit: arg.total_credit
+        credit: arg.credit
       },
     }).then(data => {
       if(data.status != 1) {
@@ -222,20 +222,20 @@ class AccpetCredit extends Component {
     const columns = [
       {
         title: '姓名',
-        dataIndex: 'aging',
-        key: 'aging',
+        dataIndex: 'user.real_name',
+        key: 'real_name',
         align: 'center',
       },
       {
         title: '手机号',
-        dataIndex: 'order_id',
-        key: 'order_id',
+        dataIndex: 'user.telephone_number',
+        key: 'telephone_number',
         align: 'center',
       },
       {
         title: '综合信用额度',
-        dataIndex: 'out_order_id',
-        key: 'out_order_id',
+        dataIndex: 'credit',
+        key: 'credit',
         align: 'center',
         render: (val, record) => {
           return(
@@ -244,9 +244,9 @@ class AccpetCredit extends Component {
         },
       },
       {
-        title: '押金',
-        dataIndex: '',
-        key: '',
+        title: '押金(USDT)',
+        dataIndex: 'pledge_amount',
+        key: 'pledge_amount',
         align: 'center',
       },
       {
@@ -274,9 +274,10 @@ class AccpetCredit extends Component {
         <div className={styles.wrap}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           <StandardTable
+            rowKey='user_id'
             noRowSelection={true}
             loading={loading}
-            data={{ list: [{id:1},{id:2},{id:3},{id:4},{id:5},{id:6}], pagination }}
+            data={{ list, pagination }}
             columns={columns}
             onChange={this.handleStandardTableChange}
           />

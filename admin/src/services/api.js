@@ -457,7 +457,7 @@ export async function acceptTradingSlotModify(params) {
 
 /*承兑商管理员-提币申请-请求*/
 export async function acceptCoinWithdrawApply(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
+  return request(`${apiAddress}/accept/withdrawal/list`, {
     method: 'POST',
     data: params,
   });
@@ -465,7 +465,7 @@ export async function acceptCoinWithdrawApply(params) {
 
 /*承兑商管理员-提币申请-搜索*/
 export async function acceptCoinWithdrawApplySearchAll(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
+  return request(`${apiAddress}/accept/withdrawal/list`, {
     method: 'POST',
     data: params,
   });
@@ -473,7 +473,7 @@ export async function acceptCoinWithdrawApplySearchAll(params) {
 
 /*承兑商管理员-提币申请-同意*/
 export async function acceptCoinWithdrawApplyAgree(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
+  return request(`${apiAddress}/accept/withdrawal/agree`, {
     method: 'POST',
     data: params,
   });
@@ -481,7 +481,7 @@ export async function acceptCoinWithdrawApplyAgree(params) {
 
 /*承兑商管理员-提币申请-拒绝*/
 export async function acceptCoinWithdrawApplyRefuse(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
+  return request(`${apiAddress}/accept/withdrawal/refuse`, {
     method: 'POST',
     data: params,
   });

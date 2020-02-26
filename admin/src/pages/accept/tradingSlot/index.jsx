@@ -35,7 +35,7 @@ const CreateForm = Form.create()(props => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       form.resetFields();
-      submit(fieldsValue);
+      submit(fieldsValue, params.user_id);
     });
   };
 
@@ -48,8 +48,8 @@ const CreateForm = Form.create()(props => {
   	if(value) {
   		if(!Number(value) || value.indexOf('.') > -1) {
 	    	callback('请输入整数的可交易数');
-	    }else if(value > 100) {
-	    	callback('可交易数不能大于100');
+	    }else if(value > 20) {
+	    	callback('同时可交易数不能大于20');
 	    }
   	}
     callback();
@@ -65,11 +65,11 @@ const CreateForm = Form.create()(props => {
       okText='确认'
     >
       <Form>
-        <div style={{paddingBottom: '28px', textAlign: 'center'}}>承兑商 <span style={{color: '#308AFF'}}>asdasdsad</span> {/*<span style={{color: '#308AFF'}}>313123123213123</span> 押金 <span style={{color: '#EB9211'}}>123231312323213 USDT</span>*/}</div>
+        <div style={{paddingBottom: '28px', textAlign: 'center'}}>承兑商 <span style={{color: '#308AFF'}}>{ params && params['user.real_name'] }</span> 押金 <span style={{color: '#EB9211'}}>{ params && params.pledge_amount } USDT</span></div>
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="出售交易槽">
           同时可交易  
           {form.getFieldDecorator('sell_accept_slot_max', {
-            initialValue: 3,
+            initialValue: params ? params.sell_accept_slot_max : null,
             rules: [
               { 
                 required: true, 
@@ -85,7 +85,7 @@ const CreateForm = Form.create()(props => {
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="购买交易槽">
           同时可交易  
           {form.getFieldDecorator('buy_accept_slot_max', {
-            initialValue: 3,
+            initialValue: params ? params.buy_accept_slot_max : null,
             rules: [
               { 
                 required: true, 
@@ -245,20 +245,20 @@ class AccpetTradingSlot extends Component {
     const columns = [
       {
         title: '姓名',
-        dataIndex: 'aging',
-        key: 'aging',
+        dataIndex: 'user.real_name',
+        key: 'real_name',
         align: 'center',
       },
       {
         title: '手机号',
-        dataIndex: 'order_id',
-        key: 'order_id',
+        dataIndex: 'user.telephone_number',
+        key: 'telephone_number',
         align: 'center',
       },
       {
         title: '历史成交总量(单)',
-        dataIndex: '',
-        key: '',
+        dataIndex: 'total_success_order',
+        key: 'total_success_order',
         align: 'center',
       },
       {
@@ -302,9 +302,10 @@ class AccpetTradingSlot extends Component {
         <div className={styles.wrap}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           <StandardTable
+            rowKey='user_id'
             noRowSelection={true}
             loading={loading}
-            data={{ list: [{id:1},{id:2},{id:3},{id:4},{id:5},{id:6}], pagination }}
+            data={{ list, pagination }}
             columns={columns}
             onChange={this.handleStandardTableChange}
           />
