@@ -104,12 +104,16 @@ class SellOrderDetail extends Component {
             <Descriptions.Item label="订单状态">{ sellStatusType[sellOrderDetail.state] }</Descriptions.Item>
             <Descriptions.Item label="订单金额">{ `${sellOrderDetail.pay_amount_cny} ${cashType[sellOrderDetail.currency_type]}` }</Descriptions.Item>
             <Descriptions.Item label="代币数量">{ `${sellOrderDetail.pay_amount} ${coinType[sellOrderDetail.token_id]}` }</Descriptions.Item>
+            <Descriptions.Item label="交易汇率(USDT:CNY)">{ `1:${sellOrderDetail.deal_rate}` }</Descriptions.Item>
+            <Descriptions.Item label="交易利润(CNY)">{ `${sellOrderDetail.profit}` }</Descriptions.Item>
             
             {
               sellOrderDetail.state == 2 &&
               <Descriptions.Item label="时效"><span style={{color: '#EA0000'}}>{lessTime >= hoursTime ? `${lessTime.hours()} : ${lessTime.minutes()} : ${lessTime.seconds()}` : `${lessTime.minutes()} : ${lessTime.seconds()}`}</span></Descriptions.Item>
             }
             <Descriptions.Item label="付款用户">{ sellOrderDetail.payee_name }</Descriptions.Item>
+            <Descriptions.Item label="付款人身份证">{ sellOrderDetail.user_id_number }</Descriptions.Item>
+            <Descriptions.Item label="付款款人手机号">{ sellOrderDetail.user_telephone_number  }</Descriptions.Item>
             <Descriptions.Item label="付款账户">{ sellOrderDetail.user_pay_account }</Descriptions.Item>
             {
               (sellOrderDetail.pay_type == 1 || sellOrderDetail.pay_type == 4) &&

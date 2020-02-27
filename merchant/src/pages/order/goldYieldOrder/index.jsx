@@ -214,7 +214,6 @@ class GoldYieldOrder extends Component {
             "平台订单号": i.order_id,
             "商户订单号": i.out_order_id,
             "承兑商姓名": i.a_user_name,
-            "单价(CNY)": i.cny_price,
             "手续费": `${gas} ${coinType[i.token_id]}`,
             '订单状态': buyStatusType[i.state],
             "创建时间": moment(i.created_at)
@@ -548,24 +547,6 @@ class GoldYieldOrder extends Component {
         },
       },
       {
-        title: '单价(CNY)',
-        dataIndex: 'cny_price',
-        key: 'cny_price',
-        align: 'center',
-        render: (val, record) => {
-          if (yieldId == record.order_id) {
-            return {
-              children: val,
-              props: {
-                colSpan: 0,
-              },
-            };
-          } else {
-            return val;
-          }
-        },
-      },
-      {
         title: '手续费',
         dataIndex: 'gas',
         key: 'gas',
@@ -579,7 +560,7 @@ class GoldYieldOrder extends Component {
               },
             };
           } else {
-            return `${val} ${cashType[record.currency_type]}`;
+            return `${val} ${coinType[record.token_id]}`;
           }
         },
       },

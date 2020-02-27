@@ -20,6 +20,9 @@ import { socketSubscribe, destroyWebSocket } from '@/utils/socketSubscribe-mqtt'
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
+import notificationVoiceMP3 from '@/assets/voice_1.mp3';
+import notificationVoiceWAV from '@/assets/voice_1.wav';
+import notificationVoiceOGG from '@/assets/voice_1.ogg';
 
 const noMatch = (
   <Result
@@ -109,14 +112,14 @@ class BasicLayout extends PureComponent {
     this.props.dispatch({
       type: 'user/getUserInfo',
     });
-
+    //this.testNotification();
     socketSubscribe({
       subscribeList: `${window.g_getLocalStorage().id}order`,
       backList: (d) => {
         console.log(d)
         let msBody = JSON.parse(d.body);
         if(msBody.event == 'order') {
-          this.openNotification('提醒', msBody.data)
+          this.openNotification('提醒', msBody.data);
         }
       }
     });
@@ -163,10 +166,18 @@ class BasicLayout extends PureComponent {
       duration: 0,
     };
     notification.open(args);
+    this.msgTipAudio && this.msgTipAudio.play();
     if(window.newWebSocketRadius && this.props.location.pathname.indexOf('/order/') < 0) {
       window.newWebSocketRadius.style.display = 'block';
     }
   };
+
+  testNotification = () => {
+    setTimeout(() => this.openNotification(11,{order_type: 1, order_state: 1}),500);
+    setTimeout(() => this.openNotification(11,{order_type: 1, order_state: 1}),1000);
+    setTimeout(() => this.openNotification(11,{order_type: 1, order_state: 1}),1500);
+    setTimeout(() => this.openNotification(11,{order_type: 1, order_state: 1}),2000);
+  }
 
   render() {
     const {
@@ -188,6 +199,11 @@ class BasicLayout extends PureComponent {
 
     return (
       <ConfigProvider locale={zh_CN}>
+        <audio style={{display: 'none'}} ref={msgTipAudio => this.msgTipAudio = msgTipAudio} controls="controls">
+          <source src={notificationVoiceMP3} />
+          <source src={notificationVoiceWAV} />
+          <source src={notificationVoiceOGG} />
+        </audio>
         <div className={styles.topTitle}>
           <Link to="/account">{ currentUser && currentUser.user_name || '设置名称' }</Link>
           <Divider type="vertical" />

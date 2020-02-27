@@ -44,24 +44,23 @@ class GoldEntryOrderDetail extends Component {
       <ContLayout>
         <div className={styles.wrap}>
           <Descriptions column={1}>
+            <Descriptions.Item label="平台订单号">
+              {goldEntryOrderDetail.order_id}
+            </Descriptions.Item>
             <Descriptions.Item label="订单状态">
               {sellStatusType[goldEntryOrderDetail.state]}
             </Descriptions.Item>
             <Descriptions.Item label="订单金额">{ `${goldEntryOrderDetail.pay_amount_cny} ${cashType[goldEntryOrderDetail.currency_type]}` }</Descriptions.Item>
             <Descriptions.Item label="代币数量">{ `${goldEntryOrderDetail.pay_amount} ${coinType[goldEntryOrderDetail.token_id]}` }</Descriptions.Item>
-            <Descriptions.Item label="单价(CNY)">
-              {goldEntryOrderDetail.cny_price}
+            <Descriptions.Item label="交易汇率(USDT:CNY)">
+              { `1:${goldEntryOrderDetail.deal_rate}` }
             </Descriptions.Item>
-            <Descriptions.Item label="平台订单号">
-              {goldEntryOrderDetail.order_id}
-            </Descriptions.Item>
-            <Descriptions.Item label="商户订单号">
-              {goldEntryOrderDetail.out_order_id}
-            </Descriptions.Item>
+            <Descriptions.Item label="入金账户">{ goldEntryOrderDetail.user_pay_account }</Descriptions.Item>
+            <Descriptions.Item label="入金方式"><img src={payIcon[goldEntryOrderDetail.pay_type]} style={{maxWidth: 40}} /></Descriptions.Item>
+            <Descriptions.Item label="手续费">{ `${goldEntryOrderDetail.gas} ${coinType[goldEntryOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="承兑商姓名">
               {goldEntryOrderDetail.a_user_name}
             </Descriptions.Item>
-            <Descriptions.Item label="手续费">{ `${goldEntryOrderDetail.gas} ${cashType[goldEntryOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="创建时间">
               {moment(goldEntryOrderDetail.created_at)
                 .local()

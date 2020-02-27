@@ -165,6 +165,8 @@ class buyOrderDetail extends Component {
             <Descriptions.Item label="订单状态">{ buyStatusType[buyOrderDetail.state] }</Descriptions.Item>
             <Descriptions.Item label="订单金额">{ `${buyOrderDetail.pay_amount_cny} ${cashType[buyOrderDetail.currency_type]}` }</Descriptions.Item>
             <Descriptions.Item label="代币数量">{ `${buyOrderDetail.pay_amount} ${coinType[buyOrderDetail.token_id]}` }</Descriptions.Item>
+            <Descriptions.Item label="交易汇率(USDT:CNY)">{ `1:${buyOrderDetail.deal_rate}` }</Descriptions.Item>
+            <Descriptions.Item label="交易利润(CNY)">{ `${buyOrderDetail.profit}` }</Descriptions.Item>
             
             {
               (buyOrderDetail.state == 4 || buyOrderDetail.state == 3) &&

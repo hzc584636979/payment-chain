@@ -47,6 +47,8 @@ const CreateForm = Form.create()(props => {
   const validator = (rule, value, callback) => {
     if(value && !Number(value) || value.indexOf('.') > -1) {
      callback('请输入整数的综合信用额度');
+    }else if(value > 10000000) {
+      callback('综合信用额度不能大于10000000');
     }
     callback();
   }

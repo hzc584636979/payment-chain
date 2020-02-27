@@ -314,20 +314,13 @@ class GoldEntryOrder extends Component {
         key: 'a_user_name',
         align: 'center',
       },
-
-      {
-        title: '单价(CNY)',
-        dataIndex: 'cny_price',
-        key: 'cny_price',
-        align: 'center',
-      },
       {
         title: '手续费',
         dataIndex: 'gas',
         key: 'gas',
         align: 'center',
         render: (val, record) => {
-          return `${val} ${cashType[record.currency_type]}`;
+          return `${val} ${coinType[record.token_id]}`;
         },
       },
       {

@@ -46,12 +46,12 @@ const CreateForm = Form.create()(props => {
 
   const validator = (rule, value, callback) => {
     if(value) {
-  		if(!Number(value)) {
+  		if(!Number(value) && value != 0) {
 	    	callback('请输入数字的手续费');
-	    }else if(value > 100) {
-	    	callback('手续费不能大于100');
-	    }else if(value.toString().indexOf('.') > -1 && value.toString().split('.')[1].length > 2) {
-	        callback('手续费的小数不能多于2位');
+	    }else if(value > 99.9) {
+	    	callback('手续费不能大于99.9%');
+	    }else if(value.toString().indexOf('.') > -1 && value.toString().split('.')[1].length > 1) {
+	        callback('手续费的小数不能多于1位');
 	    }
   	}
     callback();
@@ -79,7 +79,7 @@ const CreateForm = Form.create()(props => {
                 validator: validator
               }
             ],
-          })(<Input style={{width: 100}} placeholder="请输入手续费" />)}%
+          })(<Input maxLength={4} style={{width: 100}} placeholder="请输入手续费" />)}%
         </FormItem>
         <FormItem labelCol={{ span: 9 }} wrapperCol={{ span: 15 }} label="入金手续费设置">
           {form.getFieldDecorator('in_gas', {
@@ -93,7 +93,7 @@ const CreateForm = Form.create()(props => {
                 validator: validator
               }
             ],
-          })(<Input style={{width: 100}} placeholder="请输入手续费" />)}%
+          })(<Input maxLength={4} style={{width: 100}} placeholder="请输入手续费" />)}%
         </FormItem>
       </Form>
     </Modal>
@@ -264,7 +264,7 @@ class MerchantBrokerage extends Component {
         key: 'chu_gas_percent',
         align: 'center',
         render: (val, record) => {
-          return val && <span style={{color: '#EA8A00'}}>{ val * 100 }%</span>;
+          return (val || val == 0) && <span style={{color: '#EA8A00'}}>{ val * 100 }%</span>;
         },
       },
       {
@@ -273,7 +273,7 @@ class MerchantBrokerage extends Component {
         key: 'ru_gas_percent',
         align: 'center',
         render: (val, record) => {
-          return val && <span style={{color: '#EA8A00'}}>{ val * 100 }%</span>;
+          return (val || val == 0) && <span style={{color: '#EA8A00'}}>{ val * 100 }%</span>;
         },
       },
       {

@@ -100,24 +100,23 @@ class GoldYieldOrderDetail extends Component {
       <ContLayout>
         <div className={styles.wrap}>
           <Descriptions column={1}>
+            <Descriptions.Item label="平台订单号">
+              {goldYieldOrderDetail.order_id}
+            </Descriptions.Item>
             <Descriptions.Item label="订单状态">
               {buyStatusType[goldYieldOrderDetail.state]}
             </Descriptions.Item>
             <Descriptions.Item label="订单金额">{ `${goldYieldOrderDetail.pay_amount_cny} ${cashType[goldYieldOrderDetail.currency_type]}` }</Descriptions.Item>
             <Descriptions.Item label="代币数量">{ `${goldYieldOrderDetail.pay_amount} ${coinType[goldYieldOrderDetail.token_id]}` }</Descriptions.Item>
-            <Descriptions.Item label="平台订单号">
-              {goldYieldOrderDetail.order_id}
+            <Descriptions.Item label="交易汇率(USDT:CNY)">
+              { `1:${goldYieldOrderDetail.deal_rate}` }
             </Descriptions.Item>
-            <Descriptions.Item label="商户订单号">
-              {goldYieldOrderDetail.out_order_id}
-            </Descriptions.Item>
+            <Descriptions.Item label="出金账户">{ goldYieldOrderDetail.payee_name }</Descriptions.Item>
+            <Descriptions.Item label="出金方式"><img src={payIcon[goldYieldOrderDetail.pay_type]} style={{maxWidth: 40}} /></Descriptions.Item>
+            <Descriptions.Item label="手续费">{ `${goldYieldOrderDetail.gas} ${coinType[goldYieldOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="承兑商姓名">
               {goldYieldOrderDetail.a_user_name}
             </Descriptions.Item>
-            <Descriptions.Item label="单价(CNY)">
-              {goldYieldOrderDetail.cny_price}
-            </Descriptions.Item>
-            <Descriptions.Item label="手续费">{ `${goldYieldOrderDetail.gas} ${cashType[goldYieldOrderDetail.token_id]}` }</Descriptions.Item>
             {
               goldYieldOrderDetail.state == 5 &&
               <Descriptions.Item label="支付截图">

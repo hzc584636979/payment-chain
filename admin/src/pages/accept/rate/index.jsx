@@ -46,12 +46,12 @@ const CreateForm = Form.create()(props => {
 
   const validator = (rule, value, callback) => {
     if(value) {
-      if(!Number(value)) {
-        callback('请输入数字的浮动汇率');
-      }else if(value > 100) {
-        callback('浮动汇率不能大于100');
-      }else if(value.toString().indexOf('.') > -1 && value.toString().split('.')[1].length > 1) {
-        callback('浮动汇率的小数不能多于1位');
+      if(!Number(value) || value.toString().indexOf('.') > -1) {
+        callback('请输入整数的浮动汇率');
+      }else if(value < 1) {
+        callback('浮动汇率不能小于1%');
+      }else if(value > 10) {
+        callback('浮动汇率不能大于10%');
       }
     }
     callback();
@@ -80,7 +80,7 @@ const CreateForm = Form.create()(props => {
                 validator: validator
               }
             ],
-          })(<Input style={{width: 100}} placeholder="请输入浮动汇率" />)}%
+          })(<Input maxLength={2} style={{width: 100}} placeholder="请输入浮动汇率" />)}%
         </FormItem>
       </Form>
     </Modal>
@@ -239,15 +239,15 @@ class AccpetRate extends Component {
         align: 'center',
       },
       {
-        title: '出售订单',
-        dataIndex: 'sell_order',
-        key: 'sell_order',
+        title: '购买订单/汇率',
+        dataIndex: 'buy_order',
+        key: 'buy_order',
         align: 'center',
       },
       {
-        title: '购买订单',
-        dataIndex: 'buy_order',
-        key: 'buy_order',
+        title: '出售订单/汇率',
+        dataIndex: 'sell_order',
+        key: 'sell_order',
         align: 'center',
       },
       {

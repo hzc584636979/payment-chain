@@ -47,11 +47,19 @@ class EntryErc20 extends Component {
       visa_real_name,
       paypal_number,
       payment_pwd,
+      telephone_number,
+      id_number,
     } = this.state.params;
     let values = {};
 
     if (!Number(payment_amount) || payment_amount == 0) {
       message.error('请填写入金金额后提交');
+      return;
+    }else if(!id_number || !(/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(id_number))) {
+      message.error('请填写正确的身份证号后提交');
+      return;
+    }else if(!telephone_number || !regPhone(telephone_number)) {
+      message.error('请填写正确的绑定手机后提交');
       return;
     }
 
@@ -151,6 +159,8 @@ class EntryErc20 extends Component {
         pay_amount: payment_amount,
         payment_pwd,
         currency_type: cashType,
+        id_number,
+        telephone_number,
       },
     }).then(data => {
       this.setState({
@@ -222,6 +232,8 @@ class EntryErc20 extends Component {
       visa_real_name,
       paypal_number,
       payment_pwd,
+      telephone_number,
+      id_number,
     } = this.state.params;
     const cashToCoin = 
       cashType == 1 ?
@@ -292,7 +304,31 @@ class EntryErc20 extends Component {
                           .toNumber()} ${cashType == 1 ? 'CNY' : 'USD'}`
               } ≈ {gas || 0} USDT
             </Descriptions.Item>
-            
+            <Descriptions.Item
+              label={<span className={styles.itemLabel}>付款人身份证</span>}
+              className={styles.textTop}
+            >
+              <Input
+                value={id_number}
+                placeholder="请输入付款人身份证"
+                onChange={e => this.handleUpKey(e, 'id_number')}
+                style={{ width: 385, maxWidth: '100%' }}
+                maxLength={18}
+              />
+            </Descriptions.Item>
+            <Descriptions.Item
+              label={<span className={styles.itemLabel}>付款款人手机号</span>}
+              className={styles.textTop}
+            >
+              <Input
+                value={telephone_number}
+                placeholder="请输入付款款人手机号"
+                onChange={e => this.handleUpKey(e, 'telephone_number')}
+                style={{ width: 385, maxWidth: '100%' }}
+                maxLength={11}
+              />
+            </Descriptions.Item>
+
             {cashType == 1 ? (
               <Descriptions.Item label={<span className={styles.itemLabel}>支付方式</span>}>
                 <Button
