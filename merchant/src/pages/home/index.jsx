@@ -223,7 +223,7 @@ class Home extends Component {
         message.error(data.msg);
         return;
       } else {
-        message.success('操作成功');
+        message.success('提现申请已提交，请耐心等待管理员审核');
       }
       dispatch({
         type: 'user/getUserInfo',

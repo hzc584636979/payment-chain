@@ -302,44 +302,12 @@ export default {
               path: '/finance',
               name: '财务管理',
               routes: [
-                /*{
-                  name: '账户流水',
-                  icon: 'pay-circle',
-                  path: '/finance/accountFlow',
-                  component: './finance/accountFlow',
-                },*/
-                /*{
-                  name: '申请提现',
-                  icon: 'transaction',
-                  path: '/finance/cashWithdrawApply',
-                  component: './finance/cashWithdrawApply',
-                },*/
                 {
                   name: '申请提币',
                   icon: 'red-envelope',
                   path: '/finance/coinWithdrawApply',
                   component: './finance/coinWithdrawApply',
                 },
-                /*{
-                  name: '提现记录',
-                  icon: 'property-safety',
-                  path: '/finance/withdrawList',
-                  component: './finance/withdrawList',
-                },
-                {
-                  name: '查看',
-                  path: '/finance/accountFlow_detail/:id',
-                  component: './finance/accountFlow_detail',
-                  hideInMenu: true,
-                  expandPath: '/finance/accountFlow',
-                },
-                {
-                  name: '查看',
-                  path: '/finance/withdrawList_detail/:id',
-                  component: './finance/withdrawList_detail',
-                  hideInMenu: true,
-                  expandPath: '/finance/withdrawList',
-                },*/
               ],
             },
             {
@@ -397,34 +365,6 @@ export default {
                   path: '/account/settings',
                   component: './account/settings',
                 },
-                /*{
-                  name: '收款设置',
-                  icon: 'credit-card',
-                  path: '/account/receiptSettings',
-                  component: './account/receiptSettings',
-                },
-                {
-                  name: '银行卡设置',
-                  path: '/account/settingsBank',
-                  component: './account/settingsBank',
-                  hideInMenu: true,
-                  expandPath: '/account/receiptSettings',
-                },
-                {
-                  name: '支付宝设置',
-                  path: '/account/settingsAlipay',
-                  component: './account/settingsAlipay',
-                  hideInMenu: true,
-                  expandPath: '/account/receiptSettings',
-                },
-                {
-                  name: '微信设置',
-                  path: '/account/settingsWX',
-                  component: './account/settingsWX',
-                  hideInMenu: true,
-                  expandPath: '/account/receiptSettings',
-                },
-                */
               ],
             },
             {
