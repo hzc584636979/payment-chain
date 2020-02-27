@@ -167,12 +167,6 @@ export default {
                   path: '/yield/yieldErc20',
                   component: './home/yieldErc20',
                 },
-                /*{
-                  name: 'omni出金',
-                  icon: 'shopping-cart',
-                  path: '/yield/yieldOmni',
-                  component: './home/yieldOmni',
-                },*/
               ],
             },
             {
@@ -185,12 +179,6 @@ export default {
                   path: '/entry/entryErc20',
                   component: './home/entryErc20',
                 },
-                /*{
-                  name: 'omni入金',
-                  icon: 'shopping-cart',
-                  path: '/entry/entryOmni',
-                  component: './home/entryOmni',
-                },*/
                 {
                   name: '付款',
                   path: '/entry/entryUSDT/:id',
@@ -198,13 +186,6 @@ export default {
                   hideInMenu: true,
                   expandPath: '/entry/entryErc20',
                 },
-                /*{
-                  name: '详情页',
-                  path: '/entry/entryOmni/:id',
-                  component: './home/entryOmni_detail',
-                  hideInMenu: true,
-                  expandPath: '/entry/entryOmni',
-                },*/
               ],
             },
             {
