@@ -74,9 +74,9 @@ class SystemLog extends Component {
         pageSize: 10,
         page: 0,
         search_value: null,
-        manage_type: 0,
+        manager_type: 0,
         action_value: 0,
-        time: [moment().startOf('day'), moment().endOf('day')],
+        time: [moment().startOf('month'), moment().endOf('month')],
       },
     })
   }
@@ -139,8 +139,8 @@ class SystemLog extends Component {
           </Col>
           <Col xl={9} lg={12} sm={24}>
             <FormItem label="角色">
-              {getFieldDecorator('manage_type',{ 
-                initialValue: history.manage_type,
+              {getFieldDecorator('manager_type',{ 
+                initialValue: history.manager_type,
               })(
                 <Select onChange={this.handleSelectChange} placeholder="请选择">
                   {
@@ -157,7 +157,7 @@ class SystemLog extends Component {
               {getFieldDecorator('action_value',{ initialValue: history.action_value })(
                 <Select placeholder="请选择">
                   {
-                    statusData[getFieldValue('role') || 0].map(value => {
+                    statusData[getFieldValue('manager_type') || 0].map(value => {
                       return <Option value={value} key={value}>{statusType[value]}</Option>
                     })
                   }

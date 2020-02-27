@@ -72,7 +72,7 @@ class SystemNews extends Component {
     this.setState({
       submitLoading: true,
     })
-    
+    console.log(outputHTML.length)
     const { dispatch } = this.props;
     dispatch({
       type: 'systemNews/submit',
@@ -106,6 +106,22 @@ class SystemNews extends Component {
     return false;
   }
 
+  getLen = () => {
+    const { 
+      outputHTML,
+    } = this.state;
+    const text = outputHTML || '';
+    let len = 0;  
+    for (var i = 0; i < text.length; i++) {  
+      if (text.charCodeAt(i) > 127 || text.charCodeAt(i) == 94) {  
+        len += 2;  
+      } else {  
+        len ++;  
+      }  
+    }  
+    return len;  
+  }
+
   render() {
     const { systemNews, fetchLoading } = this.props;
     const { submitLoading, loading, title, outputHTML, editorState } = this.state;
@@ -126,7 +142,7 @@ class SystemNews extends Component {
       'superscript', 
       'subscript', 
       'remove-styles', 
-      'emoji',
+      /*'emoji',*/
       'separator',
       'text-indent',
       'text-align', 
@@ -163,7 +179,7 @@ class SystemNews extends Component {
           <div className={styles.inner}>
             <Descriptions column={1}>
               <Descriptions.Item label={<span className={styles.itemLabel}>消息标题</span>}>
-                <Input onChange={this.handleTitle} style={{ width: 700, maxWidth: '100%' }} placeholder="输入消息标题" />
+                <Input maxLength={50} onChange={this.handleTitle} style={{ width: 700, maxWidth: '100%' }} placeholder="输入消息标题" />
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>消息内容</span>} className={styles.textTop}>
                 <div className="editor-wrapper" style={{border: '1px solid #ccc', borderRadius: 5}}>
@@ -174,6 +190,7 @@ class SystemNews extends Component {
                     onChange={this.handleDesc}
                   />
                 </div>
+                {/* `正文长度: ${this.getLen()}` */}
               </Descriptions.Item>
               <Descriptions.Item className={styles.noneBeforeIcon}>
                 <Button type="primary" loading={submitLoading} onClick={this.submit}>确定发布</Button>

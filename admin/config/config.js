@@ -136,7 +136,7 @@ export default {
                   path: '/super/merchant',
                   component: './super/merchant',
                 },
-                /*{
+                {
                   name: '冷钱包',
                   path: '/super/coldwallet',
                   authority: ['super'],
@@ -198,7 +198,13 @@ export default {
                       hideInMenu: true,
                       expandPath: '/super/coldwallet/coldwalletGas',
                     },
-
+                    /*{
+                      name: '查看',
+                      path: '/super/coldwallet/coldwalletGas_detail/:id',
+                      component: './super/coldwalletGas_detail',
+                      hideInMenu: true,
+                      expandPath: '/super/coldwallet/coldwalletGas',
+                    },*/
                   ]
                 },
                 {
@@ -227,7 +233,7 @@ export default {
                       component: './super/withdrawList',
                     },
                   ]
-                },*/
+                },
                 {
                   name: '承兑商成员',
                   path: '/super/accept_add/:id',
