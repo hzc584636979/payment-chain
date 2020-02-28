@@ -6,6 +6,7 @@ import ContLayout from '@/components/ContLayout';
 import Layer from '@/components/Layer';
 import { getBase64 } from '@/utils/utils';
 import moment from 'moment';
+import copy from 'copy-to-clipboard';
 import styles from './style.less';
 
 function beforeUpload(file) {
@@ -146,6 +147,14 @@ class buyOrderDetail extends Component {
     })
   }
 
+  handleClipBoard = val => {
+    if(copy(val)){
+      message.success('复制成功') 
+    }else{
+      message.error('复制失败，请重试') 
+    }
+  }
+
   render() {
     const { buyOrderDetail, loading } = this.props;
     const { handleUploadImgLoading, receiptImg, visible } = this.state;
@@ -177,7 +186,7 @@ class buyOrderDetail extends Component {
             {
               buyOrderDetail.pay_type == 1 && 
               <Fragment>
-                <Descriptions.Item label="客户银行卡号">{buyOrderDetail.payee_account}</Descriptions.Item>
+                <Descriptions.Item label="客户银行卡号"><a onClick={() => this.handleClipBoard(buyOrderDetail.payee_account)}>{buyOrderDetail.payee_account}</a></Descriptions.Item>
                 <Descriptions.Item label="客户开户行">{buyOrderDetail.account_bank_name}</Descriptions.Item>
               </Fragment>
             }
@@ -201,7 +210,7 @@ class buyOrderDetail extends Component {
             {
               buyOrderDetail.pay_type == 4 && 
               <Fragment>
-                <Descriptions.Item label="客户银行卡号">{buyOrderDetail.payee_account}</Descriptions.Item>
+                <Descriptions.Item label="客户银行卡号"><a onClick={() => this.handleClipBoard(buyOrderDetail.payee_account)}>{buyOrderDetail.payee_account}</a></Descriptions.Item>
                 <Descriptions.Item label="客户开户行">{buyOrderDetail.account_bank_name}</Descriptions.Item>
               </Fragment>
             }

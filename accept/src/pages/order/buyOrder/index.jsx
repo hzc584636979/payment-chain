@@ -23,6 +23,7 @@ import StandardTable from '@/components/StandardTable';
 import exportXLSX from '@/utils/exportXLSX';
 import { getBase64 } from '@/utils/utils';
 import moment from 'moment';
+import copy from 'copy-to-clipboard';
 import styles from './style.less';
 
 function beforeUpload(file) {
@@ -234,7 +235,7 @@ class BuyOrder extends Component {
           {
             (record.pay_type == 1 || record.pay_type == 4) &&
             <Fragment>
-              <p>收款账户：{record.payee_account}</p>
+              <p>收款账户：<a onClick={() => this.handleClipBoard(record.payee_account)}>{record.payee_account}</a></p>
               <p>开户行：{record.account_bank_name}</p>
             </Fragment>
           }
@@ -385,6 +386,14 @@ class BuyOrder extends Component {
     this.setState({
       receiptId,
     })
+  }
+
+  handleClipBoard = val => {
+    if(copy(val)){
+      message.success('复制成功') 
+    }else{
+      message.error('复制失败，请重试') 
+    }
   }
 
   render() {
