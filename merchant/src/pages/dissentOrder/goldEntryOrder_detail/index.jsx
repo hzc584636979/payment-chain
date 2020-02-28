@@ -149,7 +149,7 @@ class GoldEntryDissentOrderDetail extends Component {
               {sellStatusType[goldEntryDissentOrderDetail.state]}
             </Descriptions.Item>
             <Descriptions.Item label="订单金额">{ `${goldEntryDissentOrderDetail.pay_amount_cny} ${cashType[goldEntryDissentOrderDetail.currency_type]}` }</Descriptions.Item>
-            <Descriptions.Item label="代币数量">{ `${goldEntryDissentOrderDetail.pay_amount} ${coinType[goldEntryDissentOrderDetail.token_id]}` }</Descriptions.Item>
+            <Descriptions.Item label="代币数量">{ `${goldEntryDissentOrderDetail.m_pay_amount} ${coinType[goldEntryDissentOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="承兑商姓名">
               {goldEntryDissentOrderDetail.a_user_name}
             </Descriptions.Item>

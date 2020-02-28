@@ -205,16 +205,13 @@ class GoldYieldOrder extends Component {
         }
         let dataWCN = [];
         data.data.rows.map(i => {
-          const gas = new BigNumber(i.gas)
-            .multipliedBy(new BigNumber(i.pay_amount))
-            .toNumber();
           let dataWObj = {
             "订单金额": `${i.pay_amount_cny} ${cashType[i.currency_type]}`,
-            "代币数量": `${i.pay_amount} ${coinType[i.token_id]}`,
+            "代币数量": `${i.m_pay_amount} ${coinType[i.token_id]}`,
             "平台订单号": i.order_id,
             "商户订单号": i.out_order_id,
             "承兑商姓名": i.a_user_name,
-            "手续费": `${gas} ${coinType[i.token_id]}`,
+            "手续费": `${i.gas} ${coinType[i.token_id]}`,
             '订单状态': buyStatusType[i.state],
             "创建时间": moment(i.created_at)
               .local()
@@ -359,7 +356,7 @@ class GoldYieldOrder extends Component {
               <span style={{ display: 'inline-block', width: 15 }}></span>
               <Button onClick={this.cancelButton}>取消</Button>
               <span style={{ display: 'inline-block', width: 15 }}></span>
-              <Input disabled={true} value={`${record.pay_amount} USDT`} style={{ width: '20%' }} />
+              <Input disabled={true} value={`${record.m_pay_amount} USDT`} style={{ width: '20%' }} />
               <span style={{ color: '#999999', padding: '0 5px' }}>
                 <Icon type="swap" />
               </span>
@@ -375,7 +372,7 @@ class GoldYieldOrder extends Component {
                 <Col span={12}>单价 {record.cny_price} CNY</Col>
               </Row>
               <Row>
-                <Col span={12}>数量 {record.pay_amount} USDT</Col>
+                <Col span={12}>数量 {record.m_pay_amount} USDT</Col>
                 <Col span={12}>
                   {record.min_amount} CNY - {record.max_amount} CNY
                 </Col>
@@ -471,8 +468,8 @@ class GoldYieldOrder extends Component {
       },
       {
         title: '代币数量',
-        dataIndex: 'pay_amount',
-        key: 'pay_amount',
+        dataIndex: 'm_pay_amount',
+        key: 'm_pay_amount',
         align: 'center',
         render: (val, record) => {
           if (yieldId == record.order_id) {

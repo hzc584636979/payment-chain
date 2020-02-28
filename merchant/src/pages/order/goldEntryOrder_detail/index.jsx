@@ -40,6 +40,13 @@ class GoldEntryOrderDetail extends Component {
   render() {
     const { goldEntryOrderDetail, loading } = this.props;
 
+    const entryAmount = new BigNumber(goldEntryOrderDetail.m_pay_amount)
+          .plus(new BigNumber(goldEntryOrderDetail.gas))
+          .toNumber();
+    const cnyGas = new BigNumber(goldEntryOrderDetail.gas)
+          .multipliedBy(new BigNumber(goldEntryOrderDetail.cny_price))
+          .toNumber();
+
     return (
       <ContLayout>
         <div className={styles.wrap}>
@@ -51,13 +58,13 @@ class GoldEntryOrderDetail extends Component {
               {sellStatusType[goldEntryOrderDetail.state]}
             </Descriptions.Item>
             <Descriptions.Item label="订单金额">{ `${goldEntryOrderDetail.pay_amount_cny} ${cashType[goldEntryOrderDetail.currency_type]}` }</Descriptions.Item>
-            <Descriptions.Item label="代币数量">{ `${goldEntryOrderDetail.pay_amount} ${coinType[goldEntryOrderDetail.token_id]}` }</Descriptions.Item>
-            <Descriptions.Item label="交易汇率(USDT:CNY)">
-              { `1:${goldEntryOrderDetail.deal_rate}` }
+            <Descriptions.Item label="入金数量(入金代币数量 - 手续费)">{ `${entryAmount} - ${goldEntryOrderDetail.gas} = ${goldEntryOrderDetail.m_pay_amount} ${coinType[goldEntryOrderDetail.token_id]}` }</Descriptions.Item>
+            <Descriptions.Item label="入金手续费">{ `${goldEntryOrderDetail.gas} ${coinType[goldEntryOrderDetail.token_id]}(${cnyGas}CNY)` }</Descriptions.Item>
+            <Descriptions.Item label="火币出售汇率(USDT:CNY)">
+              { `1:${goldEntryOrderDetail.cny_price}` }
             </Descriptions.Item>
             <Descriptions.Item label="入金账户">{ goldEntryOrderDetail.user_pay_account }</Descriptions.Item>
             <Descriptions.Item label="入金方式"><img src={payIcon[goldEntryOrderDetail.pay_type]} style={{maxWidth: 40}} /></Descriptions.Item>
-            <Descriptions.Item label="手续费">{ `${goldEntryOrderDetail.gas} ${coinType[goldEntryOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="承兑商姓名">
               {goldEntryOrderDetail.a_user_name}
             </Descriptions.Item>

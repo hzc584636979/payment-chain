@@ -6,6 +6,7 @@ import ContLayout from '@/components/ContLayout';
 import Layer from '@/components/Layer';
 import { getBase64 } from '@/utils/utils';
 import moment from 'moment';
+import BigNumber from 'bignumber.js';
 import copy from 'copy-to-clipboard';
 import styles from './style.less';
 
@@ -160,6 +161,12 @@ class buyOrderDetail extends Component {
     const { handleUploadImgLoading, receiptImg, visible } = this.state;
     const lessTime = this.getAging(buyOrderDetail);
     const hoursTime = 60 * 60 * 1000;
+    const profitPercent1 = new BigNumber(buyOrderDetail.deal_rate)
+          .dividedBy(new BigNumber(buyOrderDetail.cny_price))
+    const profitPercent2 = new BigNumber(1)
+          .minus(profitPercent1)
+          .multipliedBy(100)
+          .toNumber();
 
     const uploadButton = (
       <div>
@@ -175,7 +182,9 @@ class buyOrderDetail extends Component {
             <Descriptions.Item label="订单金额">{ `${buyOrderDetail.pay_amount_cny} ${cashType[buyOrderDetail.currency_type]}` }</Descriptions.Item>
             <Descriptions.Item label="代币数量">{ `${buyOrderDetail.pay_amount} ${coinType[buyOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="交易汇率(USDT:CNY)">{ `1:${buyOrderDetail.deal_rate}` }</Descriptions.Item>
-            <Descriptions.Item label="交易利润(CNY)">{ `${buyOrderDetail.profit}` }</Descriptions.Item>
+            <Descriptions.Item label="火币汇率(USDT:CNY)">{ `1:${buyOrderDetail.cny_price}` }</Descriptions.Item>
+            <Descriptions.Item label="套利空间">{ `${profitPercent2}%` }</Descriptions.Item>
+            <Descriptions.Item label="交易利润(CNY)">{ `+ ${buyOrderDetail.profit}` }</Descriptions.Item>
             
             {
               (buyOrderDetail.state == 4 || buyOrderDetail.state == 3) &&

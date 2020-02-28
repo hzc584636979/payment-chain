@@ -200,16 +200,13 @@ class GoldEntryOrder extends Component {
         }
         let dataWCN = [];
         data.data.rows.map(i => {
-          const gas = new BigNumber(i.gas)
-            .multipliedBy(new BigNumber(i.pay_amount))
-            .toNumber();
           let dataWObj = {
             "订单金额": `${i.pay_amount_cny} ${cashType[i.currency_type]}`,
-            "代币数量": `${i.pay_amount} ${coinType[i.token_id]}`,
+            "代币数量": `${i.m_pay_amount} ${coinType[i.token_id]}`,
             "平台订单号": i.order_id,
             "商户订单号": i.out_order_id,
             "承兑商姓名": i.a_user_name,
-            "手续费": `${gas} ${coinType[i.token_id]}`,
+            "手续费": `${i.gas} ${coinType[i.token_id]}`,
             "订单状态": sellStatusType[i.state],
             "创建时间": moment(i.created_at)
               .local()
@@ -289,8 +286,8 @@ class GoldEntryOrder extends Component {
       },
       {
         title: '代币数量',
-        dataIndex: 'pay_amount',
-        key: 'pay_amount',
+        dataIndex: 'm_pay_amount',
+        key: 'm_pay_amount',
         align: 'center',
         render: (val,record) => {
           return `${val} ${coinType[record.token_id]}`;

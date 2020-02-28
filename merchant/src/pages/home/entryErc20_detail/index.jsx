@@ -130,10 +130,10 @@ class EntryUSDT_detail extends Component {
               总价<p>{ `${entryUSDT_detail.pay_amount_cny} ${cashType[entryUSDT_detail.currency_type]}` }</p>
             </Col>
             <Col className={styles.itemClass1} span={6}>
-              数量<p>{`${entryUSDT_detail.pay_amount} ${coinType[entryUSDT_detail.token_id]}`}</p>
+              数量<p>{`${entryUSDT_detail.m_pay_amount} ${coinType[entryUSDT_detail.token_id]}`}</p>
             </Col>
             <Col className={styles.itemClass1} span={6}>
-              单价<p>{entryUSDT_detail.deal_rate} CNY</p>
+              单价<p>{entryUSDT_detail.cny_price} CNY</p>
             </Col>
             <Col className={styles.itemClass1} span={6}>
               手续费<p>{ `${entryUSDT_detail.gas} ${coinType[entryUSDT_detail.token_id]}` }</p>

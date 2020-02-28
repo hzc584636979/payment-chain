@@ -96,6 +96,13 @@ class GoldYieldOrderDetail extends Component {
     const { goldYieldOrderDetail, loading } = this.props;
     const { MM } = this.state;
 
+    const yieldAmount = new BigNumber(goldYieldOrderDetail.m_pay_amount)
+          .plus(new BigNumber(goldYieldOrderDetail.gas))
+          .toNumber();
+    const cnyGas = new BigNumber(goldYieldOrderDetail.gas)
+          .multipliedBy(new BigNumber(goldYieldOrderDetail.cny_price))
+          .toNumber();
+
     return (
       <ContLayout>
         <div className={styles.wrap}>
@@ -107,13 +114,13 @@ class GoldYieldOrderDetail extends Component {
               {buyStatusType[goldYieldOrderDetail.state]}
             </Descriptions.Item>
             <Descriptions.Item label="订单金额">{ `${goldYieldOrderDetail.pay_amount_cny} ${cashType[goldYieldOrderDetail.currency_type]}` }</Descriptions.Item>
-            <Descriptions.Item label="代币数量">{ `${goldYieldOrderDetail.pay_amount} ${coinType[goldYieldOrderDetail.token_id]}` }</Descriptions.Item>
-            <Descriptions.Item label="交易汇率(USDT:CNY)">
-              { `1:${goldYieldOrderDetail.deal_rate}` }
+            <Descriptions.Item label="出金数量(出金代币数量 + 手续费)">{ `${goldYieldOrderDetail.m_pay_amount} + ${goldYieldOrderDetail.gas} = ${yieldAmount} ${coinType[goldYieldOrderDetail.token_id]}` }</Descriptions.Item>
+            <Descriptions.Item label="出金手续费">{ `${goldYieldOrderDetail.gas} ${coinType[goldYieldOrderDetail.token_id]}(${cnyGas}CNY)` }</Descriptions.Item>
+            <Descriptions.Item label="火币购买汇率(USDT:CNY)">
+              { `1:${goldYieldOrderDetail.cny_price}` }
             </Descriptions.Item>
-            <Descriptions.Item label="出金账户">{ goldYieldOrderDetail.payee_name }</Descriptions.Item>
+            <Descriptions.Item label="出金账户">{ goldYieldOrderDetail.payee_account }</Descriptions.Item>
             <Descriptions.Item label="出金方式"><img src={payIcon[goldYieldOrderDetail.pay_type]} style={{maxWidth: 40}} /></Descriptions.Item>
-            <Descriptions.Item label="手续费">{ `${goldYieldOrderDetail.gas} ${coinType[goldYieldOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="承兑商姓名">
               {goldYieldOrderDetail.a_user_name}
             </Descriptions.Item>

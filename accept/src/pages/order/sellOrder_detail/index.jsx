@@ -4,6 +4,7 @@ import { connect } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
 import Layer from '@/components/Layer';
+import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import styles from './style.less';
 
@@ -96,6 +97,11 @@ class SellOrderDetail extends Component {
 
     const lessTime = this.getAging(sellOrderDetail);
     const hoursTime = 60 * 60 * 1000;
+    const profitPercent = new BigNumber(sellOrderDetail.deal_rate)
+          .dividedBy(new BigNumber(sellOrderDetail.cny_price))
+          .minus(1)
+          .multipliedBy(100)
+          .toNumber();
                                                
     return (
       <ContLayout>
@@ -105,7 +111,9 @@ class SellOrderDetail extends Component {
             <Descriptions.Item label="订单金额">{ `${sellOrderDetail.pay_amount_cny} ${cashType[sellOrderDetail.currency_type]}` }</Descriptions.Item>
             <Descriptions.Item label="代币数量">{ `${sellOrderDetail.pay_amount} ${coinType[sellOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="交易汇率(USDT:CNY)">{ `1:${sellOrderDetail.deal_rate}` }</Descriptions.Item>
-            <Descriptions.Item label="交易利润(CNY)">{ `${sellOrderDetail.profit}` }</Descriptions.Item>
+            <Descriptions.Item label="火币汇率(USDT:CNY)">{ `1:${sellOrderDetail.cny_price}` }</Descriptions.Item>
+            <Descriptions.Item label="套利空间">{ `${profitPercent}%` }</Descriptions.Item>
+            <Descriptions.Item label="交易利润(CNY)">{ `+ ${sellOrderDetail.profit}` }</Descriptions.Item>
             
             {
               sellOrderDetail.state == 2 &&

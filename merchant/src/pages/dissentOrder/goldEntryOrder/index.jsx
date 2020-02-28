@@ -180,7 +180,7 @@ class GoldEntryDissentOrder extends Component {
             "商户订单号": i.out_order_id,
             "承兑商姓名": i.a_user_name,
             "订单金额": `${i.pay_amount_cny} ${cashType[i.currency_type]}`,
-            "代币数量": `${i.pay_amount} ${coinType[i.token_id]}`,
+            "代币数量": `${i.m_pay_amount} ${coinType[i.token_id]}`,
             "订单状态": sellStatusType[i.state],
             "订单创建时间": moment(i.created_at)
               .local()
@@ -270,8 +270,8 @@ class GoldEntryDissentOrder extends Component {
       },
       {
         title: '代币数量',
-        dataIndex: 'pay_amount',
-        key: 'pay_amount',
+        dataIndex: 'm_pay_amount',
+        key: 'm_pay_amount',
         align: 'center',
         render: (val,record) => {
           return `${val} ${coinType[record.token_id]}`;
