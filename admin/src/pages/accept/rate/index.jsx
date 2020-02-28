@@ -243,12 +243,32 @@ class AccpetRate extends Component {
         dataIndex: 'buy_order',
         key: 'buy_order',
         align: 'center',
+        render: (val, record) => {
+          return (
+            <span>
+              { val } / 
+              <span style={{color: '#ff3241'}}>
+                {getDecimal(record.buy_price, 2)}
+              </span>
+            </span>
+          )
+        },
       },
       {
         title: '出售订单/汇率',
         dataIndex: 'sell_order',
         key: 'sell_order',
         align: 'center',
+        render: (val, record) => {
+          return (
+            <span>
+              { val } / 
+              <span style={{color: '#ff3241'}}>
+                {getDecimal(record.sell_price, 2)}
+              </span>
+            </span>
+          )
+        },
       },
       {
         title: '浮动汇率(%)',
