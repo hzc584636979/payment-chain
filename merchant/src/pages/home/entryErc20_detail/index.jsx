@@ -20,6 +20,7 @@ import ContLayout from '@/components/ContLayout';
 import StandardTable from '@/components/StandardTable';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
+import copy from 'copy-to-clipboard';
 import styles from './style.less';
 
 const FormItem = Form.Item;
@@ -95,6 +96,14 @@ class EntryUSDT_detail extends Component {
         </div>)
   }
 
+  handleClipBoard = val => {
+    if(copy(val)){
+      message.success('复制成功') 
+    }else{
+      message.error('复制失败，请重试') 
+    }
+  }
+
   render() {
     const { entryUSDT_detail, loading } = this.props;
     const gas = new BigNumber(entryUSDT_detail.gas)
@@ -144,7 +153,12 @@ class EntryUSDT_detail extends Component {
           <Row className={styles.itemClass2} type="flex" align='middle'>
             <Col span={4}><img src={payIcon[entryUSDT_detail.pay_type]} /></Col>
             <Col span={5}>{entryUSDT_detail.pay_real_name}</Col>
-            <Col span={5}>{entryUSDT_detail.pay_account}</Col>
+            {
+              (entryUSDT_detail.pay_type == 1 || entryUSDT_detail.pay_type == 4) ?
+              <a onClick={() => this.handleClipBoard(entryUSDT_detail.pay_account)}>{entryUSDT_detail.pay_account}</a>
+              :
+              entryUSDT_detail.pay_account
+            }
             <Col span={5}>
               {
                 (entryUSDT_detail.pay_type == 1 || entryUSDT_detail.pay_type == 4) &&
