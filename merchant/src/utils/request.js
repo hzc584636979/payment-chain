@@ -3,7 +3,7 @@
  * 更详细的 api 文档: https://github.com/umijs/umi-request
  */
 import { extend } from 'umi-request';
-import { notification, message } from 'antd';
+import { notification } from 'antd';
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
   201: '新建或修改数据成功。',
@@ -73,6 +73,7 @@ request.interceptors.request.use((url, options) => {
       headers: {
         ...options.headers,
         ip: returnCitySN["cip"],
+        token: g_getLocalStorage() ? (g_getLocalStorage().token || '') : '',
       },
       data: {
         ...(options.data || {}),
@@ -87,6 +88,20 @@ request.interceptors.response.use(async (response) => {
   if(response.status == 200) {
     const data = await response.clone().json();
     if(data.status == 2) {//白名单拦截
+      notification.error({
+        message: data.msg,
+      });
+      if(!loginOutStatus) {
+        loginOutStatus = true;
+        window.g_app._store.dispatch({
+          type: 'login/logout',
+        }).then(data => {
+          setTimeout(() => {
+            loginOutStatus = false;
+          }, 1000) 
+        })
+      }
+    }else if(data.status == 50012 || data.status == 50008) {//登陆过期拦截
       notification.error({
         message: data.msg,
       });

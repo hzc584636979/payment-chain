@@ -324,61 +324,6 @@ class YieldErc20 extends Component {
                 USD
               </Button>
             </Descriptions.Item>
-            <Descriptions.Item
-              label={<span className={styles.itemLabel}>出金金额</span>}
-              className={styles.textTop}
-            >
-              <Input
-                placeholder="请输入出金金额"
-                onChange={e => this.handlePaymentAmount(e, new BigNumber(useBalance)
-                          .minus(new BigNumber(gas))
-                          .toNumber())}
-                style={{ width: 385, maxWidth: '100%' }}
-                value={payment_amount}
-              />
-              <span style={{position: 'relative', right: 43, top: 0, color: '#999'}}>{
-                cashType == 1 ? 'CNY' : 'USD'
-              }</span>
-              <p style={{ fontSize: 14, color: '#333' }}>
-                <span style={{color: '#ff4141'}}>(可出金金额为账户余额 减去 手续费)</span>
-                <br />
-                <span>
-                  账户余额：
-                  {
-                    cashType == 1 ?
-                    `${(new BigNumber(useBalance)
-                          .multipliedBy(new BigNumber(currentUser.token_price))
-                          .multipliedBy(new BigNumber(currentUser.rate))
-                          .toNumber()).toFixed(4)} CNY`
-                    :
-                    `${(new BigNumber(useBalance)
-                          .multipliedBy(new BigNumber(currentUser.token_price))
-                          .toNumber()).toFixed(4)} USD`
-                  } ≈ { useBalance } USDT 
-                </span>
-                <br />
-                <span>
-                  当前出金代币：{cashToCoin} USDT <span style={{color: '#ff4141'}}>(汇率实时变动，具体金额以订单为准)</span>
-                </span>
-                <br/>
-                <span>
-                  当前汇率：1USDT ≈ {
-                    cashType == 1 ?
-                    `￥${(1 * currentUser.token_price * currentUser.rate).toFixed(2)}`
-                    :
-                    `＄${(1 * currentUser.token_price).toFixed(2)}`
-                  }
-                </span>
-              </p>
-            </Descriptions.Item>
-            <Descriptions.Item label={<span className={styles.itemLabel}>手续费</span>}>
-              {
-                `${new BigNumber(payment_amount || 0)
-                          .multipliedBy(new BigNumber(currentUser.chu_gas_percent))
-                          .toNumber()} ${cashType == 1 ? 'CNY' : 'USD'}`
-              } ≈ {gas || 0} USDT
-            </Descriptions.Item>
-            
             {cashType == 1 ? (
               <Descriptions.Item label={<span className={styles.itemLabel}>支付方式</span>}>
                 <Button
@@ -417,6 +362,59 @@ class YieldErc20 extends Component {
                 </Button>
               </Descriptions.Item>
             )}
+            <Descriptions.Item
+              label={<span className={styles.itemLabel}>当前汇率(USDT:CNY)</span>}
+              className={styles.textTop}
+            >
+              <span style={{verticalAlign: 'middle'}}>{`1:${(1 * currentUser.token_price * currentUser.rate).toFixed(2)}`}</span>
+            </Descriptions.Item>
+            <Descriptions.Item
+              label={<span className={styles.itemLabel}>出金金额</span>}
+              className={styles.textTop}
+            >
+              <Input
+                placeholder="请输入出金金额"
+                onChange={e => this.handlePaymentAmount(e, new BigNumber(useBalance)
+                          .minus(new BigNumber(gas))
+                          .toNumber())}
+                style={{ width: 385, maxWidth: '100%' }}
+                value={payment_amount}
+              />
+              <span style={{position: 'relative', right: 43, top: 0, color: '#999'}}>{
+                cashType == 1 ? 'CNY' : 'USD'
+              }</span>
+              <p style={{ fontSize: 14, color: '#333' }}>
+                <span style={{color: '#ff4141'}}>(可出金金额为账户余额 减去 手续费)</span>
+                <br />
+                <span>
+                  账户余额：
+                  {
+                    cashType == 1 ?
+                    `${(new BigNumber(useBalance)
+                          .multipliedBy(new BigNumber(currentUser.token_price))
+                          .multipliedBy(new BigNumber(currentUser.rate))
+                          .toNumber()).toFixed(4)} CNY`
+                    :
+                    `${(new BigNumber(useBalance)
+                          .multipliedBy(new BigNumber(currentUser.token_price))
+                          .toNumber()).toFixed(4)} USD`
+                  } ≈ { useBalance } USDT 
+                </span>
+                <br />
+                <span>
+                  当前出金代币：{cashToCoin} USDT <span style={{color: '#ff4141'}}>(汇率实时变动，具体金额以订单为准)</span>
+                </span>
+                <br/>
+                <span>
+                  手续费：
+                  {
+                    `${new BigNumber(payment_amount || 0)
+                              .multipliedBy(new BigNumber(currentUser.chu_gas_percent))
+                              .toNumber()} ${cashType == 1 ? 'CNY' : 'USD'}`
+                  } ≈ {gas || 0} USDT
+                </span>
+              </p>
+            </Descriptions.Item>
 
             {payType == 1 && (
               <Fragment>

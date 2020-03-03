@@ -269,66 +269,6 @@ class EntryErc20 extends Component {
                 USD
               </Button>
             </Descriptions.Item>
-            <Descriptions.Item
-              label={<span className={styles.itemLabel}>入金金额</span>}
-              className={styles.textTop}
-            >
-              <Input
-                placeholder="请输入入金金额"
-                onChange={this.handlePaymentAmount}
-                style={{ width: 385, maxWidth: '100%' }}
-                value={payment_amount}
-              />
-              <span style={{position: 'relative', right: 43, top: 0, color: '#999'}}>{
-                cashType == 1 ? 'CNY' : 'USD'
-              }</span>
-              <p style={{ fontSize: 14, color: '#333' }}>
-                <span>
-                  当前入金代币：{cashToCoin} USDT <span style={{color: '#ff4141'}}>(汇率实时变动，具体金额以订单为准)</span>
-                </span>
-                <br/>
-                <span>
-                  当前汇率：1USDT≈{
-                    cashType == 1 ?
-                    `￥${(1 * currentUser.token_price * currentUser.rate).toFixed(2)}`
-                    :
-                    `＄${(1 * currentUser.token_price).toFixed(2)}`
-                  }
-                </span>
-              </p>
-            </Descriptions.Item>
-            <Descriptions.Item label={<span className={styles.itemLabel}>手续费</span>}>
-              {
-                `${new BigNumber(payment_amount || 0)
-                          .multipliedBy(new BigNumber(currentUser.ru_gas_percent))
-                          .toNumber()} ${cashType == 1 ? 'CNY' : 'USD'}`
-              } ≈ {gas || 0} USDT
-            </Descriptions.Item>
-            <Descriptions.Item
-              label={<span className={styles.itemLabel}>付款人身份证</span>}
-              className={styles.textTop}
-            >
-              <Input
-                value={id_number}
-                placeholder="请输入付款人身份证"
-                onChange={e => this.handleUpKey(e, 'id_number')}
-                style={{ width: 385, maxWidth: '100%' }}
-                maxLength={18}
-              />
-            </Descriptions.Item>
-            <Descriptions.Item
-              label={<span className={styles.itemLabel}>付款款人手机号</span>}
-              className={styles.textTop}
-            >
-              <Input
-                value={telephone_number}
-                placeholder="请输入付款款人手机号"
-                onChange={e => this.handleUpKey(e, 'telephone_number')}
-                style={{ width: 385, maxWidth: '100%' }}
-                maxLength={11}
-              />
-            </Descriptions.Item>
-
             {cashType == 1 ? (
               <Descriptions.Item label={<span className={styles.itemLabel}>支付方式</span>}>
                 <Button
@@ -367,6 +307,40 @@ class EntryErc20 extends Component {
                 </Button>
               </Descriptions.Item>
             )}
+            <Descriptions.Item
+              label={<span className={styles.itemLabel}>当前汇率(USDT:CNY)</span>}
+              className={styles.textTop}
+            >
+              <span style={{verticalAlign: 'middle'}}>{`1:${(1 * currentUser.token_price * currentUser.rate).toFixed(2)}`}</span>
+            </Descriptions.Item>
+            <Descriptions.Item
+              label={<span className={styles.itemLabel}>入金金额</span>}
+              className={styles.textTop}
+            >
+              <Input
+                placeholder="请输入入金金额"
+                onChange={this.handlePaymentAmount}
+                style={{ width: 385, maxWidth: '100%' }}
+                value={payment_amount}
+              />
+              <span style={{position: 'relative', right: 43, top: 0, color: '#999'}}>{
+                cashType == 1 ? 'CNY' : 'USD'
+              }</span>
+              <p style={{ fontSize: 14, color: '#333' }}>
+                <span>
+                  当前入金代币：{cashToCoin} USDT <span style={{color: '#ff4141'}}>(汇率实时变动，具体金额以订单为准)</span>
+                </span>
+                <br/>
+                <span>
+                  手续费：
+                  {
+                    `${new BigNumber(payment_amount || 0)
+                              .multipliedBy(new BigNumber(currentUser.ru_gas_percent))
+                              .toNumber()} ${cashType == 1 ? 'CNY' : 'USD'}`
+                  } ≈ {gas || 0} USDT
+                </span>
+              </p>
+            </Descriptions.Item>
 
             {payType == 1 && (
               <Fragment>
@@ -506,7 +480,30 @@ class EntryErc20 extends Component {
                 type="password"
               />
             </Descriptions.Item>
-
+            <Descriptions.Item
+              label={<span className={styles.itemLabel}>付款款人手机号</span>}
+              className={styles.textTop}
+            >
+              <Input
+                value={telephone_number}
+                placeholder="请输入付款款人手机号"
+                onChange={e => this.handleUpKey(e, 'telephone_number')}
+                style={{ width: 385, maxWidth: '100%' }}
+                maxLength={11}
+              />
+            </Descriptions.Item>
+            <Descriptions.Item
+              label={<span className={styles.itemLabel}>付款人身份证</span>}
+              className={styles.textTop}
+            >
+              <Input
+                value={id_number}
+                placeholder="请输入付款人身份证"
+                onChange={e => this.handleUpKey(e, 'id_number')}
+                style={{ width: 385, maxWidth: '100%' }}
+                maxLength={18}
+              />
+            </Descriptions.Item>
             <Descriptions.Item className={styles.noneBeforeIcon}>
               <Button type="primary" loading={submitLock} onClick={this.submit}>
                 确定提交
