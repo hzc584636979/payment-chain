@@ -49,7 +49,7 @@ class CallbackDetail extends Component {
             <Descriptions.Item label="平台编号">{ callbackDetail.id }</Descriptions.Item>
             <Descriptions.Item label="订单类型">{ orderStatustype[callbackDetail.order_type] }</Descriptions.Item>
             <Descriptions.Item label="平台订单号">{ callbackDetail.order_id }</Descriptions.Item>
-            <Descriptions.Item label="商户订单号">{ callbackDetail.out_order_id }</Descriptions.Item>
+            <Descriptions.Item label="唯一标示号">{ callbackDetail.out_order_id }</Descriptions.Item>
             <Descriptions.Item label="回调状态">{ statusType[callbackDetail.state] }</Descriptions.Item>
             <Descriptions.Item label="回调地址">{ callbackDetail.url }</Descriptions.Item>
             <Descriptions.Item label="响应内容">{ callbackDetail.res }</Descriptions.Item>

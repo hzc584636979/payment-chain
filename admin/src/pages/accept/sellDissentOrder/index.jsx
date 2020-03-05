@@ -149,7 +149,7 @@ class AccpetSellDissentOrder extends Component {
         align: 'center',
       },
       {
-        title: '商户订单号',
+        title: '唯一标示号',
         dataIndex: 'out_order_id',
         key: 'out_order_id',
         align: 'center',

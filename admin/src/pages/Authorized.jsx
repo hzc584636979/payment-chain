@@ -19,7 +19,7 @@ const AuthComponent = ({
   const { routes = [] } = route;
   const isLogin = currentUser && currentUser.id;
 
-  let currentUser_type = g_getLocalStorage().type;
+  let currentUser_type = g_getLocalStorage() ? g_getLocalStorage().type : null;
 
   if(location.pathname == '/') {
     if(currentUser_type == 1) {

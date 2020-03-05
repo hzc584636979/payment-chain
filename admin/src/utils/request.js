@@ -71,11 +71,14 @@ request.interceptors.request.use((url, options) => {
                   }
                   :
                   {}
-
   return {
     url,
     options: { 
       ...options,
+      headers: {
+        ...options.headers,
+        token: g_getLocalStorage() ? (g_getLocalStorage().token || '') : '',
+      },
       data: {
         ...(options.data || {}),
         ...newOpt,
@@ -83,5 +86,29 @@ request.interceptors.request.use((url, options) => {
     },
   };
 });
+
+request.interceptors.response.use(async (response) => {
+
+  if(response.status == 200) {
+    const data = await response.clone().json();
+    if(data.status == 50012 || data.status == 50008) {//登陆过期拦截
+      notification.error({
+        message: data.msg,
+      });
+      if(!loginOutStatus) {
+        loginOutStatus = true;
+        window.g_app._store.dispatch({
+          type: 'login/logout',
+        }).then(data => {
+          setTimeout(() => {
+            loginOutStatus = false;
+          }, 1000) 
+        })
+      }
+    }
+  }
+
+  return response;
+})
 
 export default request;

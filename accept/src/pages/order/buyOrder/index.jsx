@@ -326,7 +326,7 @@ class BuyOrder extends Component {
               "客户姓名": i.payee_name,
               "收款方式": payName[i.pay_type],
               "平台订单号": i.order_id,
-              "商户订单号": i.out_order_id,
+              "唯一标示号": i.out_order_id,
               "商户昵称": i.m_user_name,
               "订单状态": buyStatusType[i.state],
               "创建时间": moment(i.created_at).local().format('YYYY-MM-DD HH:mm:ss'),
@@ -544,7 +544,7 @@ class BuyOrder extends Component {
         align: 'center',
       },
       {
-        title: '商户订单号',
+        title: '唯一标示号',
         dataIndex: 'out_order_id',
         key: 'out_order_id',
         align: 'center',

@@ -204,7 +204,7 @@ class GoldEntryOrder extends Component {
             "订单金额": `${i.pay_amount_cny} ${cashType[i.currency_type]}`,
             "代币数量": `${i.m_pay_amount} ${coinType[i.token_id]}`,
             "平台订单号": i.order_id,
-            "商户订单号": i.out_order_id,
+            "唯一标示号": i.out_order_id,
             "承兑商姓名": i.a_user_name,
             "手续费": `${i.gas} ${coinType[i.token_id]}`,
             "订单状态": sellStatusType[i.state],
@@ -276,39 +276,33 @@ class GoldEntryOrder extends Component {
         },
       },
       {
-        title: '订单金额',
+        title: '订单状态',
+        dataIndex: 'state',
+        key: 'state',
+        align: 'center',
+        render: (val, record) => {
+          return sellStatusType[val];
+        },
+      },
+      {
+        title: '订单金额/代币数量',
         dataIndex: 'pay_amount_cny',
         key: 'pay_amount_cny',
         align: 'center',
         render: (val,record) => {
-          return `${val} ${cashType[record.currency_type]}`;
+          return `${val} ${cashType[record.currency_type]}/${record.m_pay_amount} ${coinType[record.token_id]}`;
         }
-      },
-      {
-        title: '代币数量',
-        dataIndex: 'm_pay_amount',
-        key: 'm_pay_amount',
-        align: 'center',
-        render: (val,record) => {
-          return `${val} ${coinType[record.token_id]}`;
-        }
-      },
-      {
-        title: '平台订单号',
-        dataIndex: 'order_id',
-        key: 'order_id',
-        align: 'center',
-      },
-      {
-        title: '商户订单号',
-        dataIndex: 'out_order_id',
-        key: 'out_order_id',
-        align: 'center',
       },
       {
         title: '承兑商姓名',
         dataIndex: 'a_user_name',
         key: 'a_user_name',
+        align: 'center',
+      },
+      {
+        title: '唯一标示号',
+        dataIndex: 'out_order_id',
+        key: 'out_order_id',
         align: 'center',
       },
       {
@@ -321,13 +315,10 @@ class GoldEntryOrder extends Component {
         },
       },
       {
-        title: '订单状态',
-        dataIndex: 'state',
-        key: 'state',
+        title: '平台订单号',
+        dataIndex: 'order_id',
+        key: 'order_id',
         align: 'center',
-        render: (val, record) => {
-          return sellStatusType[val];
-        },
       },
       {
         title: '创建时间',

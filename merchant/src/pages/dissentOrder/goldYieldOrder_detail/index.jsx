@@ -143,7 +143,7 @@ class GoldYieldDissentOrderDetail extends Component {
             <Descriptions.Item label="平台订单号">
               {goldYieldDissentOrderDetail.order_id}
             </Descriptions.Item>
-            <Descriptions.Item label="商户订单号">
+            <Descriptions.Item label="唯一标示号">
               {goldYieldDissentOrderDetail.out_order_id}
             </Descriptions.Item>
             <Descriptions.Item label="订单状态">

@@ -116,6 +116,9 @@ class GoldYieldOrderDetail extends Component {
             <Descriptions.Item label="订单金额">{ `${goldYieldOrderDetail.pay_amount_cny} ${cashType[goldYieldOrderDetail.currency_type]}` }</Descriptions.Item>
             <Descriptions.Item label="出金数量(出金代币数量 + 手续费)">{ `${goldYieldOrderDetail.m_pay_amount} + ${goldYieldOrderDetail.gas} = ${yieldAmount} ${coinType[goldYieldOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="出金手续费">{ `${goldYieldOrderDetail.gas} ${coinType[goldYieldOrderDetail.token_id]}(${cnyGas}CNY)` }</Descriptions.Item>
+            <Descriptions.Item label="唯一标示号">
+              {goldYieldOrderDetail.out_order_id}
+            </Descriptions.Item>
             <Descriptions.Item label="火币购买汇率(USDT:CNY)">
               { `1:${goldYieldOrderDetail.cny_price}` }
             </Descriptions.Item>

@@ -177,7 +177,7 @@ class GoldEntryDissentOrder extends Component {
               .format('YYYY-MM-DD HH:mm:ss'),
             "问题类型": i.issue_type,
             "平台订单号": i.order_id,
-            "商户订单号": i.out_order_id,
+            "唯一标示号": i.out_order_id,
             "承兑商姓名": i.a_user_name,
             "订单金额": `${i.pay_amount_cny} ${cashType[i.currency_type]}`,
             "代币数量": `${i.m_pay_amount} ${coinType[i.token_id]}`,
@@ -248,7 +248,7 @@ class GoldEntryDissentOrder extends Component {
         align: 'center',
       },
       {
-        title: '商户订单号',
+        title: '唯一标示号',
         dataIndex: 'out_order_id',
         key: 'out_order_id',
         align: 'center',

@@ -232,7 +232,7 @@ class buyOrderDetail extends Component {
             }
             
             <Descriptions.Item label="平台订单号">{ buyOrderDetail.order_id }</Descriptions.Item>
-            <Descriptions.Item label="商户订单号">{ buyOrderDetail.out_order_id }</Descriptions.Item>
+            <Descriptions.Item label="唯一标示号">{ buyOrderDetail.out_order_id }</Descriptions.Item>
             <Descriptions.Item label="商户昵称">{ buyOrderDetail.m_user_name }</Descriptions.Item>
             <Descriptions.Item label="创建时间">{ moment(buyOrderDetail.created_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
             <Descriptions.Item label="订单更新时间">{ moment(buyOrderDetail.updated_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>

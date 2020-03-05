@@ -2,12 +2,14 @@ import request from '@/utils/request';
 import { formatMomentTime } from '@/utils/utils';
 
 let apiAddress = '';
-if(process.env.NODE_ENV == 'development') {
+if(process.env.NODE_ENV == 'development') { //本地测试
   apiAddress = '/server/api';
-}else {
+}else if(process.env.BUILD_ENV == 'test') { //测试服务器
+  apiAddress = 'http://www.boq.hk/management/api';
+}else { //正式服务器
   apiAddress = 'http://www.boq.hk/management/api';
 }
-console.log(process.env.NODE_ENV)
+console.log(process.env.NODE_ENV, process.env.BUILD_ENV)
 
 /*获取用户信息*/
 export async function getUserInfo(params) {
@@ -189,6 +191,22 @@ export async function superMerchantMemberDelete(params) {
   });
 }
 
+/*超级管理员-请求钱包信息*/
+export async function getWalletList(params) {
+  return request(`${apiAddress}/wallet/config/get`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*超级管理员-修改冷钱包信息*/
+export async function superWalletModify(params) {
+  return request(`${apiAddress}/wallet/config/cold/update`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
 /*超级管理员-承兑商冷钱包-主页面*/
 export async function coldwalletAcceptList(params) {
   return request(`${apiAddress}/order/buyOrder`, {
@@ -305,17 +323,17 @@ export async function coldwalletGasDetailFrozen(params) {
   });
 }
 
-/*超级管理员-更换私钥*/
+/*超级管理员-中心化钱包-更换中心化钱包地址*/
 export async function privateKeySubmit(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
+  return request(`${apiAddress}/wallet/config/update`, {
     method: 'POST',
     data: params,
   });
 }
 
-/*超级管理员-提币*/
-export async function withdrawApplySubmit(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
+/*超级管理员-中心化钱包-提币*/
+export async function centerWithdrawApplySubmit(params) {
+  return request(`${apiAddress}/wallet/center/withdraw`, {
     method: 'POST',
     data: params,
   });

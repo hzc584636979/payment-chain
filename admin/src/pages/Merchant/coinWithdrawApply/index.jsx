@@ -154,7 +154,7 @@ class MerchantCoinWithdrawApply extends Component {
           <Col xl={8} lg={12} sm={24}>
             <FormItem label="状态">
               {getFieldDecorator('state', { initialValue: history.state + '' })(
-                <Select placeholder="请选择">
+                <Select style={{width: 150}} placeholder="请选择">
                   {Object.keys(statusType).map(value => {
                     return (
                       <Option value={value} key={value}>

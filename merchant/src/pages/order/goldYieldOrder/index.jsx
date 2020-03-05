@@ -209,7 +209,7 @@ class GoldYieldOrder extends Component {
             "订单金额": `${i.pay_amount_cny} ${cashType[i.currency_type]}`,
             "代币数量": `${i.m_pay_amount} ${coinType[i.token_id]}`,
             "平台订单号": i.order_id,
-            "商户订单号": i.out_order_id,
+            "唯一标示号": i.out_order_id,
             "承兑商姓名": i.a_user_name,
             "手续费": `${i.gas} ${coinType[i.token_id]}`,
             '订单状态': buyStatusType[i.state],
@@ -449,7 +449,25 @@ class GoldYieldOrder extends Component {
         },
       },
       {
-        title: '订单金额',
+        title: '订单状态',
+        dataIndex: 'state',
+        key: 'state',
+        align: 'center',
+        render: (val, record) => {
+          if (yieldId == record.order_id) {
+            return {
+              children: val,
+              props: {
+                colSpan: 0,
+              },
+            };
+          } else {
+            return buyStatusType[val];
+          }
+        },
+      },
+      {
+        title: '订单金额/代币数量',
         dataIndex: 'pay_amount_cny',
         key: 'pay_amount_cny',
         align: 'center',
@@ -462,55 +480,14 @@ class GoldYieldOrder extends Component {
               },
             };
           } else {
-            return `${val} ${cashType[record.currency_type]}`;
+            return `${val} ${cashType[record.currency_type]}/${record.m_pay_amount} ${coinType[record.token_id]}`;
           }
         },
       },
       {
-        title: '代币数量',
-        dataIndex: 'm_pay_amount',
-        key: 'm_pay_amount',
-        align: 'center',
-        render: (val, record) => {
-          if (yieldId == record.order_id) {
-            return {
-              children: val,
-              props: {
-                colSpan: 0,
-              },
-            };
-          } else {
-            return `${val} ${coinType[record.token_id]}`;
-          }
-        },
-      },
-      /*{
-        title: '支付截图',
-        dataIndex: 'payment_screenshot',
-        key: 'payment_screenshot',
-        align: 'center',
-        render: (val, record) => {
-          return (
-            val ?
-            <Popover content={<a target="_blank" href={val}><img src={val} style={{maxWidth: 100}} /></a>}>
-              <Icon type="file-image" />
-            </Popover>
-            :
-            null
-          );
-        },
-      },*/
-      {
-        title: '平台订单号',
-        dataIndex: 'order_id',
-        key: 'order_id',
-        align: 'center',
-        render: (val, record) => this.renderItem(record),
-      },
-      {
-        title: '商户订单号',
-        dataIndex: 'out_order_id',
-        key: 'out_order_id',
+        title: '承兑商姓名',
+        dataIndex: 'a_user_name',
+        key: 'a_user_name',
         align: 'center',
         render: (val, record) => {
           if (yieldId == record.order_id) {
@@ -526,9 +503,9 @@ class GoldYieldOrder extends Component {
         },
       },
       {
-        title: '承兑商姓名',
-        dataIndex: 'a_user_name',
-        key: 'a_user_name',
+        title: '唯一标示号',
+        dataIndex: 'out_order_id',
+        key: 'out_order_id',
         align: 'center',
         render: (val, record) => {
           if (yieldId == record.order_id) {
@@ -562,23 +539,28 @@ class GoldYieldOrder extends Component {
         },
       },
       {
-        title: '订单状态',
-        dataIndex: 'state',
-        key: 'state',
+        title: '平台订单号',
+        dataIndex: 'order_id',
+        key: 'order_id',
+        align: 'center',
+        render: (val, record) => this.renderItem(record),
+      },
+      /*{
+        title: '支付截图',
+        dataIndex: 'payment_screenshot',
+        key: 'payment_screenshot',
         align: 'center',
         render: (val, record) => {
-          if (yieldId == record.order_id) {
-            return {
-              children: val,
-              props: {
-                colSpan: 0,
-              },
-            };
-          } else {
-            return buyStatusType[val];
-          }
+          return (
+            val ?
+            <Popover content={<a target="_blank" href={val}><img src={val} style={{maxWidth: 100}} /></a>}>
+              <Icon type="file-image" />
+            </Popover>
+            :
+            null
+          );
         },
-      },
+      },*/
       {
         title: '创建时间',
         dataIndex: 'created_at',

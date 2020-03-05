@@ -142,7 +142,7 @@ class GoldEntryDissentOrderDetail extends Component {
             <Descriptions.Item label="平台订单号">
               {goldEntryDissentOrderDetail.order_id}
             </Descriptions.Item>
-            <Descriptions.Item label="商户订单号">
+            <Descriptions.Item label="唯一标示号">
               {goldEntryDissentOrderDetail.out_order_id}
             </Descriptions.Item>
             <Descriptions.Item label="订单状态">

@@ -117,7 +117,7 @@ class MerchantBuyDissentOrderDetail extends Component {
               { fileList.map((v, i) => <a key={i} target="_blank" href={v}><img src={v} style={{maxWidth: 150}} /></a>) }
             </Descriptions.Item>
             <Descriptions.Item label="平台订单号">{ merchantBuyDissentOrderDetail.order_id }</Descriptions.Item>
-            <Descriptions.Item label="商户订单号">{ merchantBuyDissentOrderDetail.out_order_id }</Descriptions.Item>
+            <Descriptions.Item label="唯一标示号">{ merchantBuyDissentOrderDetail.out_order_id }</Descriptions.Item>
             <Descriptions.Item label="订单状态">{ sellStatusType[merchantBuyDissentOrderDetail.state] }</Descriptions.Item>
             <Descriptions.Item label="订单金额">{ `${merchantBuyDissentOrderDetail.pay_amount_cny} ${cashType[merchantBuyDissentOrderDetail.currency_type]}` }</Descriptions.Item>
             <Descriptions.Item label="代币数量">{ `${merchantBuyDissentOrderDetail.pay_amount} ${coinType[merchantBuyDissentOrderDetail.token_id]}` }</Descriptions.Item>

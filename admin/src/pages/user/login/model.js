@@ -38,11 +38,6 @@ const Model = {
         });
 
         yield put(routerRedux.replace('/'));
-      }else {
-        /*notification.error({
-          message: `登录失败，请重试`,
-          description: response.msg,
-        });*/
       }
 
       return response;

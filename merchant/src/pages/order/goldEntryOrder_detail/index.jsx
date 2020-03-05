@@ -60,6 +60,9 @@ class GoldEntryOrderDetail extends Component {
             <Descriptions.Item label="订单金额">{ `${goldEntryOrderDetail.pay_amount_cny} ${cashType[goldEntryOrderDetail.currency_type]}` }</Descriptions.Item>
             <Descriptions.Item label="入金数量(入金代币数量 - 手续费)">{ `${entryAmount} - ${goldEntryOrderDetail.gas} = ${goldEntryOrderDetail.m_pay_amount} ${coinType[goldEntryOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="入金手续费">{ `${goldEntryOrderDetail.gas} ${coinType[goldEntryOrderDetail.token_id]}(${cnyGas}CNY)` }</Descriptions.Item>
+            <Descriptions.Item label="唯一标示号">
+              {goldEntryOrderDetail.out_order_id}
+            </Descriptions.Item>
             <Descriptions.Item label="火币出售汇率(USDT:CNY)">
               { `1:${goldEntryOrderDetail.cny_price}` }
             </Descriptions.Item>
@@ -68,6 +71,7 @@ class GoldEntryOrderDetail extends Component {
             <Descriptions.Item label="承兑商姓名">
               {goldEntryOrderDetail.a_user_name}
             </Descriptions.Item>
+
             <Descriptions.Item label="创建时间">
               {moment(goldEntryOrderDetail.created_at)
                 .local()

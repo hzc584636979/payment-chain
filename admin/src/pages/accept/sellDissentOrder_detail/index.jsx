@@ -117,7 +117,7 @@ class AcceptSellDissentOrderDetail extends Component {
               { fileList.map((v, i) => <a key={i} target="_blank" href={v}><img src={v} style={{maxWidth: 150}} /></a>) }
             </Descriptions.Item>
             <Descriptions.Item label="平台订单号">{ acceptSellDissentOrderDetail.order_id }</Descriptions.Item>
-            <Descriptions.Item label="商户订单号">{ acceptSellDissentOrderDetail.out_order_id }</Descriptions.Item>
+            <Descriptions.Item label="唯一标示号">{ acceptSellDissentOrderDetail.out_order_id }</Descriptions.Item>
             <Descriptions.Item label="订单状态">{ sellStatusType[acceptSellDissentOrderDetail.state] }</Descriptions.Item>
             <Descriptions.Item label="订单金额">{ `${acceptSellDissentOrderDetail.pay_amount_cny} ${cashType[acceptSellDissentOrderDetail.currency_type]}` }</Descriptions.Item>
             <Descriptions.Item label="代币数量">{ `${acceptSellDissentOrderDetail.pay_amount} ${coinType[acceptSellDissentOrderDetail.token_id]}` }</Descriptions.Item>

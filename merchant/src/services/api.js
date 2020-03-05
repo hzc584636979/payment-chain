@@ -2,12 +2,14 @@ import request from '@/utils/request';
 import { formatMomentTime } from '@/utils/utils';
 
 let apiAddress = '';
-if (process.env.NODE_ENV == 'development') {
+if(process.env.NODE_ENV == 'development') { //本地测试
   apiAddress = '/server/api';
-} else {
+}else if(process.env.BUILD_ENV == 'test') { //测试服务器
+  apiAddress = 'http://www.boq.hk/merchant/api';
+}else { //正式服务器
   apiAddress = 'http://www.boq.hk/merchant/api';
 }
-console.log(process.env.NODE_ENV);
+console.log(process.env.NODE_ENV, process.env.BUILD_ENV)
 
 /*手机登陆*/
 export async function phoneAccountLogin(params) {

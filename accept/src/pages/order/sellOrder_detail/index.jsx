@@ -129,12 +129,20 @@ class SellOrderDetail extends Component {
             }
             <Descriptions.Item label="付款方式"><img src={payIcon[sellOrderDetail.pay_type]} style={{maxWidth: 40}} /></Descriptions.Item>
             <Descriptions.Item label="平台订单号">{ sellOrderDetail.order_id }</Descriptions.Item>
-            <Descriptions.Item label="商户订单号">{ sellOrderDetail.out_order_id }</Descriptions.Item>
+            <Descriptions.Item label="唯一标示号">{ sellOrderDetail.out_order_id }</Descriptions.Item>
             <Descriptions.Item label="收币商户">{ sellOrderDetail.m_user_name }</Descriptions.Item>
             <Descriptions.Item label="创建时间">{ moment(sellOrderDetail.created_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
             <Descriptions.Item label="订单更新时间">{ moment(sellOrderDetail.updated_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
             <Descriptions.Item label="付款时间">{ sellOrderDetail.transfer_time ? moment(sellOrderDetail.transfer_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
             <Descriptions.Item label="承兑商确认时间">{ sellOrderDetail.confirm_time ? moment(sellOrderDetail.confirm_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
+            {
+              sellOrderDetail.state == 1 &&
+              <Descriptions.Item label="操作">
+                <Popconfirm title="是否要确认收款？" onConfirm={this.receipt}>
+                  <Button>确认收款</Button>
+                </Popconfirm>
+              </Descriptions.Item>
+            }
             {
               lessTime > 0 && sellOrderDetail.state == 2 &&
               <Descriptions.Item label="操作">

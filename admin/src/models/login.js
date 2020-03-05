@@ -18,14 +18,9 @@ const Model = {
         payload: {},
       });
 
-      const { redirect } = getPageQuery(); // Note: There may be security issues, please note
-
-      if (window.location.pathname !== '/user/login' && !redirect) {
+      if (window.location.pathname !== '/user/login') {
         router.replace({
           pathname: '/user/login',
-          /*search: stringify({
-            redirect: window.location.href,
-          }),*/
         });
       }
     },
