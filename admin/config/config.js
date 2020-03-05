@@ -137,6 +137,104 @@ export default {
                   path: '/super/merchant',
                   component: './super/merchant',
                 },
+                /*{
+                  name: '冷钱包',
+                  path: '/super/coldwallet',
+                  authority: ['super'],
+                  routes: [
+                    {
+                      name: '承兑商余额冷钱包',
+                      path: '/super/coldwallet/coldwalletAccept',
+                      component: './super/coldwalletAcceptList',
+                    },
+                    {
+                      name: '商户余额冷钱包',
+                      path: '/super/coldwallet/coldwalletMerchant',
+                      component: './super/coldwalletMerchantList',
+                    },
+                    {
+                      name: '手续费冷钱包',
+                      path: '/super/coldwallet/coldwalletGas',
+                      component: './super/coldwalletGasList',
+                    },
+                    {
+                      name: 'erc20查账',
+                      path: '/super/coldwallet/coldwalletAccept/erc20',
+                      component: './super/coldwalletAccept',
+                      hideInMenu: true,
+                      expandPath: '/super/coldwallet/coldwalletAccept',
+                    },
+                    {
+                      name: 'omni查账',
+                      path: '/super/coldwallet/coldwalletAccept/omni',
+                      component: './super/coldwalletAccept',
+                      hideInMenu: true,
+                      expandPath: '/super/coldwallet/coldwalletAccept',
+                    },
+                    {
+                      name: 'erc20查账',
+                      path: '/super/coldwallet/coldwalletMerchant/erc20',
+                      component: './super/coldwalletMerchant',
+                      hideInMenu: true,
+                      expandPath: '/super/coldwallet/coldwalletMerchant',
+                    },
+                    {
+                      name: 'omni查账',
+                      path: '/super/coldwallet/coldwalletMerchant/omni',
+                      component: './super/coldwalletMerchant',
+                      hideInMenu: true,
+                      expandPath: '/super/coldwallet/coldwalletMerchant',
+                    },
+                    {
+                      name: 'erc20查账',
+                      path: '/super/coldwallet/coldwalletGas/erc20',
+                      component: './super/coldwalletGas',
+                      hideInMenu: true,
+                      expandPath: '/super/coldwallet/coldwalletGas',
+                    },
+                    {
+                      name: 'omni查账',
+                      path: '/super/coldwallet/coldwalletGas/omni',
+                      component: './super/coldwalletGas',
+                      hideInMenu: true,
+                      expandPath: '/super/coldwallet/coldwalletGas',
+                    },
+                    //{
+                      //name: '查看',
+                      //path: '/super/coldwallet/coldwalletGas_detail/:id',
+                      //component: './super/coldwalletGas_detail',
+                      //hideInMenu: true,
+                      //expandPath: '/super/coldwallet/coldwalletGas',
+                    //},
+                  ]
+                },
+                {
+                  name: '中心化钱包',
+                  path: '/super/centerWallet',
+                  authority: ['super'],
+                  routes: [
+                    {
+                      name: '更换中心化钱包',
+                      path: '/super/centerWallet/privateKey',
+                      component: './super/privateKey',
+                    },
+                    {
+                      name: '充币',
+                      path: '/super/centerWallet/pay',
+                      component: './super/pay',
+                    },
+                    {
+                      name: '提币',
+                      path: '/super/centerWallet/withdrawApply',
+                      component: './super/withdrawApply',
+                    },
+                    //{
+                      //name: '转出转入记录',
+                      //path: '/super/centerWallet/withdrawList',
+                      //component: './super/withdrawList',
+                    //},
+                  ]
+                },*/
                 {
                   name: '承兑商成员',
                   path: '/super/accept_add/:id',
@@ -249,6 +347,36 @@ export default {
                   component: './Merchant/buyDissentOrder_detail',
                   hideInMenu: true,
                   expandPath: '/Merchant/buyDissentOrder',
+                },
+              ],
+            },
+            {
+              path: '/system',
+              icon: 'setting',
+              name: '系统管理',
+              authority: ['super'],
+              routes: [
+                {
+                  name: '日志记录',
+                  path: '/system/log',
+                  component: './system/log',
+                },
+                {
+                  name: '发布消息',
+                  path: '/system/news',
+                  component: './system/news',
+                },
+                {
+                  name: '消息记录',
+                  path: '/system/message',
+                  component: './system/message',
+                },
+                {
+                  name: '查看',
+                  path: '/system/message_detail/:id',
+                  component: './system/message/detail',
+                  hideInMenu: true,
+                  expandPath: '/system/message',
                 },
               ],
             },
