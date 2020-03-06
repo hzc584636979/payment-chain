@@ -71,7 +71,7 @@ const CreateForm = Form.create()(props => {
                 message: '请输入拒绝理由' 
               },
             ],
-          })(<TextArea placeholder="请输入拒绝理由" style={{width: '100%', height: 120}} />)}
+          })(<TextArea maxLength={100} placeholder="请输入拒绝理由" style={{width: '100%', height: 120}} />)}
         </FormItem>
       </Form>
     </Modal>

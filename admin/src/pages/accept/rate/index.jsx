@@ -68,9 +68,23 @@ const CreateForm = Form.create()(props => {
     >
       <Form>
         <div style={{paddingBottom: '28px', textAlign: 'center'}}>承兑商 <span style={{color: '#308AFF'}}>{ params && params['user.real_name'] }</span></div>
-        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="浮动汇率">
-          {form.getFieldDecorator('float_rate', {
-            initialValue: params ? params.float_rate * 100 : null,
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="购买浮动汇率">
+          {form.getFieldDecorator('buy_float_rate', {
+            initialValue: params ? params.buy_float_rate * 100 : null,
+            rules: [
+              { 
+                required: true, 
+                message: '请输入浮动汇率' 
+              },
+              {
+                validator: validator
+              }
+            ],
+          })(<Input maxLength={2} style={{width: 100}} placeholder="请输入浮动汇率" />)}%
+        </FormItem>
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="出售浮动汇率">
+          {form.getFieldDecorator('sell_float_rate', {
+            initialValue: params ? params.sell_float_rate * 100 : null,
             rules: [
               { 
                 required: true, 
@@ -185,7 +199,8 @@ class AccpetRate extends Component {
       type: 'acceptRate/modify',
       payload: {
         accept_id,
-        float_rate: arg.float_rate / 100,
+        buy_float_rate: arg.buy_float_rate / 100,
+        sell_float_rate: arg.sell_float_rate / 100,
       },
     }).then(data => {
       if(data.status != 1) {
@@ -271,9 +286,18 @@ class AccpetRate extends Component {
         },
       },
       {
-        title: '浮动汇率(%)',
-        dataIndex: 'float_rate',
-        key: 'float_rate',
+        title: '购买浮动汇率(%)',
+        dataIndex: 'buy_float_rate',
+        key: 'buy_float_rate',
+        align: 'center',
+        render: (val, record) => {
+          return <span style={{color: '#EA8A00'}}>{ val * 100 }%</span>;
+        },
+      },
+      {
+        title: '出售浮动汇率(%)',
+        dataIndex: 'sell_float_rate',
+        key: 'sell_float_rate',
         align: 'center',
         render: (val, record) => {
           return <span style={{color: '#EA8A00'}}>{ val * 100 }%</span>;
