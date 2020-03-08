@@ -73,6 +73,15 @@ class YieldErc20 extends Component {
     if (payment_amount < 10) {
       message.error('最小出金金额为10元');
       return;
+    }else if((payType == 2 || payType == 3) && payment_amount > 50000) {
+      message.error('支付宝或微信最大交易金额为5万元');
+      return;
+    }else if(payment_amount > 1000000) {
+      message.error('银行卡最大交易金额为100万元');
+      return;
+    }else if(payment_amount.toString().indexOf('.') > -1 && payment_amount.toString().split('.')[1].length > 2) {
+      message.error('出金金额的小数不能多于2位');
+      return;
     }
 
     if (coin > maxBalance) {

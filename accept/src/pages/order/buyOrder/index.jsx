@@ -476,21 +476,49 @@ class BuyOrder extends Component {
         },
       },
       {
-        title: '订单金额',
+        title: '时效',
+        dataIndex: 'aging',
+        key: 'aging',
+        align: 'center',
+        render: (val, record) => {
+          if(record.state == 4 || record.state == 3) {
+            return this.getAging(record) || <span style={{color: '#EA0000'}}>0 : 0</span>;
+          }else {
+            return EXHIBITION2;
+          }
+        },
+      },
+      {
+        title: '订单状态',
+        dataIndex: 'state',
+        key: 'state',
+        align: 'center',
+        render: (val, record) => {
+          return buyStatusType[val];
+        },
+      },
+      {
+        title: '订单金额/代币数量',
         dataIndex: 'pay_amount_cny',
         key: 'pay_amount_cny',
         align: 'center',
         render: (val,record) => {
-          return `${val} ${cashType[record.currency_type]}`;
+          return `${val} ${cashType[record.currency_type]}/${record.pay_amount} ${coinType[record.token_id]}`;
         }
       },
       {
-        title: '代币数量',
-        dataIndex: 'pay_amount',
-        key: 'pay_amount',
+        title: '利润(CNY)',
+        dataIndex: 'profit',
+        key: 'profit',
+        align: 'center',
+      },
+      {
+        title: '交易汇率(USDT:CNY)',
+        dataIndex: 'deal_rate',
+        key: 'deal_rate',
         align: 'center',
         render: (val,record) => {
-          return `${val} ${coinType[record.token_id]}`;
+          return `1:${val}`;
         }
       },
       {
@@ -525,19 +553,6 @@ class BuyOrder extends Component {
         },
       },
       {
-        title: '时效',
-        dataIndex: 'aging',
-        key: 'aging',
-        align: 'center',
-        render: (val, record) => {
-          if(record.state == 4 || record.state == 3) {
-            return this.getAging(record) || <span style={{color: '#EA0000'}}>0 : 0</span>;
-          }else {
-            return EXHIBITION2;
-          }
-        },
-      },
-      {
         title: '平台订单号',
         dataIndex: 'order_id',
         key: 'order_id',
@@ -554,15 +569,6 @@ class BuyOrder extends Component {
         dataIndex: 'm_user_name',
         key: 'm_user_name',
         align: 'center',
-      },
-      {
-        title: '订单状态',
-        dataIndex: 'state',
-        key: 'state',
-        align: 'center',
-        render: (val, record) => {
-          return buyStatusType[val];
-        },
       },
       {
         title: '创建时间',
