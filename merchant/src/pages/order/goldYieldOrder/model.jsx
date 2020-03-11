@@ -4,6 +4,7 @@ import {
   goldYieldOrderYield,
   goldYieldOrderWithdrawOrder,
   goldYieldOrderAuditOrder,
+  goldYieldOrderNoTransfer,
 } from '@/services/api';
 
 const Model = {
@@ -72,6 +73,10 @@ const Model = {
     },
     *auditOrder({ payload }, { call, put }) {
       const response = yield call(goldYieldOrderAuditOrder, payload);
+      return response;
+    },
+    *noTransfer({ payload }, { call, put }) {
+      const response = yield call(goldYieldOrderNoTransfer, payload);
       return response;
     },
   },

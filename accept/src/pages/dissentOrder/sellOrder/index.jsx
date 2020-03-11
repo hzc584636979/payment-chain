@@ -11,7 +11,7 @@ import {
   Popconfirm,
   message,
 } from 'antd';
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
@@ -72,16 +72,16 @@ class SellDissentOrder extends Component {
     });
   };
 
-  handleSearch = e => {
-    e.preventDefault();
+  handleSearch = (e, pagination={}) => {
+    e && e.preventDefault();
     const { dispatch, form } = this.props;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
 
       const values = {
         ...fieldsValue,
-        page:0,
-        pageSize:10,
+        page: pagination.page || 0,
+        pageSize: pagination.pageSize || 10,
       };
       dispatch({
         type: 'sellDissentOrder/search',
@@ -192,6 +192,31 @@ class SellDissentOrder extends Component {
     });
   }
 
+  receipt = order_id => {
+    const { dispatch } = this.props;
+    const { pagination } = this.props.sellDissentOrder.data;
+
+    const params = {
+      page: pagination.current -1,
+      pageSize: pagination.pageSize,
+    };
+
+    dispatch({
+      type: 'sellDissentOrder/receipt',
+      payload: {
+        order_id
+      },
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      this.handleSearch(null, params);
+    })
+  }
+
   render() {
     const { loading } = this.props;
     const { history, list, pagination } = this.props.sellDissentOrder.data;
@@ -201,10 +226,19 @@ class SellDissentOrder extends Component {
         key: 'action',
         fixed: 'left',
         align: 'center',
-        width: 100,
+        width: 200,
         render: (val, record) => {
           return(
             <span>
+              {
+                (record.state == 1 || record.state == 2 || record.state == 8) &&
+                <Fragment>
+                  <Popconfirm title="是否要确认收款？" onConfirm={() => this.receipt(record.order_id)}>
+                    <Button>确认收款</Button>
+                  </Popconfirm>
+                  <span style={{display: 'inline-block', width: '10px'}}></span>
+                </Fragment> 
+              }
               <Button>
                 <Link to={`/dissentOrder/sellOrder_detail/${record.order_id}`}>查看</Link>
               </Button>

@@ -1,0 +1,52 @@
+.wrap {
+  .noneBeforeIcon:before {
+    content: ''!important;
+  }
+
+  .getCaptcha {
+    display: block;
+    width: 100%;
+  }
+
+  .itemLabel:before {
+    display: inline-block;
+    content: '*';
+    position: relative;
+    left: -5px;
+    top: 2px;
+    color: red;
+  }
+  
+  :global {
+
+    .w-e-toolbar {
+      flex-wrap: wrap;
+    }
+
+    .ant-upload-list-picture-card .ant-upload-list-item-info::before {
+      background-color: transparent!important;
+    }
+
+    .ant-upload-list-item-actions {
+      display: none!important;
+    }
+    
+    .ant-descriptions-item-label {
+      width: 150px;
+      font-size: 16px;
+      color: #999999;
+      padding-left: 10px;
+      text-align: right;
+    }
+
+    .ant-descriptions-item-content {
+      width: calc(100% - 150px);
+      font-size: 16px;
+      color: #333333;
+    }
+
+    .editor-wrapper .bf-content {
+      height: 300px;
+    }
+  }
+}

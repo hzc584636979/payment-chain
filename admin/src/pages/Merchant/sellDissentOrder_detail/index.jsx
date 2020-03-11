@@ -1,4 +1,12 @@
-import { Button, Descriptions, Popconfirm, Input, message } from 'antd';
+import { 
+  Button, 
+  Descriptions, 
+  Popconfirm, 
+  Input, 
+  message,
+  Form,
+  Modal, 
+} from 'antd';
 import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
@@ -8,6 +16,63 @@ import moment from 'moment';
 import styles from './style.less';
 
 const { TextArea } = Input;
+const FormItem = Form.Item;
+
+const CreatePunishForm = Form.create()(props => {
+  const { modalVisible, form, submit, cancel, params } = props;
+  const okHandle = () => {
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+      form.resetFields();
+      submit(fieldsValue);
+    });
+  };
+
+  const cancelHandle = () => {
+    form.resetFields();
+    cancel();
+  }
+
+  const validator = (rule, value, callback) => {
+    if(value) {
+      if(!Number(value)) {
+        callback('请输入整数的惩罚金额');
+      }else if(value > params.lock_forfiet) {
+        callback(`惩罚金额不能大于${params.lock_forfiet}USDT`);
+      }/*else if(value.toString().indexOf('.') > -1 && value.toString().split('.')[1].length > 8) {
+          callback('惩罚金额的小数不能多于8位');
+      }*/
+    }
+    callback();
+  }
+
+  return (
+    <Modal
+      title={params ? params.type == 1 ? "惩罚承兑商" : "惩罚商户" : null}
+      visible={modalVisible}
+      onOk={okHandle}
+      onCancel={cancelHandle}
+      centered
+      okText='确认'
+    >
+      <Form>
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="惩罚金额">
+          {form.getFieldDecorator('forfiet', {
+            rules: [
+              { 
+                required: true, 
+                message: '请输入惩罚金额' 
+              },
+              {
+                validator: validator
+              }
+            ],
+          })(<Input style={{width: 200}} placeholder="请输入惩罚金额" />)}USDT
+        </FormItem>
+      </Form>
+    </Modal>
+  );
+});
 
 @connect(({ merchantSellDissentOrderDetail, loading }) => ({
   merchantSellDissentOrderDetail,
@@ -101,10 +166,95 @@ class MerchantSellDissentOrderDetail extends Component {
     })
   }
 
+  compromise = () => {
+    const { dispatch } = this.props;
+
+    this.setState({
+      compromiseLock: true,
+      operLock: true,
+    })
+
+    dispatch({
+      type: 'merchantSellDissentOrderDetail/compromise',
+    }).then(data => {
+      this.setState({
+        compromiseLock: false,
+        operLock: false,
+      })
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+    })
+  }
+
+  punishCancel = () => {
+    this.setState({
+      punishVisible: false,
+    });
+  }
+
+  handlePunishModalVisible = type => {
+    const { merchantSellDissentOrderDetail } = this.props;
+
+    this.setState({
+      params: {
+        type,
+        lock_forfiet: merchantSellDissentOrderDetail.lock_forfiet,
+      },
+      punishVisible: true,
+    });
+  }
+
+  punish = arg => {
+    const { dispatch } = this.props;
+    const { params } = this.state;
+
+    this.setState({
+      operLock: true,
+    })
+
+    dispatch({
+      type: params.type == 1 ? 'merchantSellDissentOrderDetail/punishAccept' : 'merchantSellDissentOrderDetail/punishMerchant',
+      payload: {
+        forfiet: Number(arg.forfiet),
+      },
+    }).then(data => {
+      this.setState({
+        operLock: false,
+      })
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      this.setState({
+        punishVisible: false,
+      });
+    })
+  }
+
   render() {
     const { merchantSellDissentOrderDetail, loading } = this.props;
-    const { toAcceptLock, toMerchantLock, closeLock, operLock } = this.state;
+    const { 
+      toAcceptLock, 
+      toMerchantLock, 
+      closeLock, 
+      operLock,
+      compromiseLock, 
+      params,
+      punishVisible,
+    } = this.state;
     const fileList = merchantSellDissentOrderDetail.issue_file ? merchantSellDissentOrderDetail.issue_file.split(',') : [];
+
+    const punishMethods = {
+      submit: this.punish,
+      cancel: this.punishCancel,
+      params,
+    };
                      
     return (
       <ContLayout>
@@ -188,8 +338,18 @@ class MerchantSellDissentOrderDetail extends Component {
                 <Button loading={closeLock} disabled={operLock} type="danger">取消订单</Button>
               </Popconfirm>
             </Descriptions.Item>
+            <Descriptions.Item>
+              <Button onClick={() => this.handlePunishModalVisible(1)} disabled={operLock} type="primary">惩罚承兑商</Button>
+              <span style={{display: 'inline-block', width: '10px'}}></span>
+              <Button onClick={() => this.handlePunishModalVisible(2)} disabled={operLock} type="primary">惩罚商户</Button>
+              <span style={{display: 'inline-block', width: '10px'}}></span>
+              <Popconfirm title="是否要确认和解？" onConfirm={this.compromise}>
+                <Button loading={compromiseLock} disabled={operLock} type="danger">和解</Button>
+              </Popconfirm>
+            </Descriptions.Item>
           </Descriptions>
         </div>
+        <CreatePunishForm {...punishMethods} modalVisible={ punishVisible } />
       </ContLayout>
     );
   }

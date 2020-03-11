@@ -29,6 +29,63 @@ const getValue = obj =>
     .map(key => obj[key])
     .join(',');
 
+const CreateModifyForm = Form.create()(props => {
+  const { modalVisible, form, submit, cancel, params } = props;
+  const okHandle = () => {
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+      form.resetFields();
+      submit(fieldsValue, params.order_id);
+    });
+  };
+
+  const cancelHandle = () => {
+    form.resetFields();
+    cancel();
+  }
+
+  const validator = (rule, value, callback) => {
+    if(value && !Number(value)) {
+     callback('请输入数字的实际金额');
+    }
+    callback();
+  }
+
+  return (
+    <Modal
+      title="调价确认"
+      visible={modalVisible}
+      onOk={okHandle}
+      onCancel={cancelHandle}
+      centered
+      okText='确认'
+    >
+      {
+        params &&
+        <Form>
+          <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="订单金额">
+            {`${params.pay_amount_cny} ${cashType[params.currency_type]}`}
+          </FormItem>
+          <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="实际金额">
+            {form.getFieldDecorator('real_pay_amount', {
+              rules: [
+                { 
+                  required: true, 
+                  message: '请输入实际金额' 
+                },
+                {
+                  validator: validator
+                }
+              ],
+            })(<Input style={{width: 150}} placeholder="请输入实际金额" />)}
+            {cashType[params.currency_type]}
+          </FormItem>
+        </Form>
+      }
+    </Modal>
+  );
+});
+
 @connect(({ sellOrder, loading }) => ({
   sellOrder,
   loading: loading.effects['sellOrder/fetch'],
@@ -179,7 +236,7 @@ class SellOrder extends Component {
     );
   }
 
-  receipt = id => {
+  receipt = order_id => {
     const { dispatch } = this.props;
     const { pagination } = this.props.sellOrder.data;
 
@@ -191,7 +248,7 @@ class SellOrder extends Component {
     dispatch({
       type: 'sellOrder/receipt',
       payload: {
-        order_id: id
+        order_id
       },
     }).then(data => {
       if(data.status != 1) {
@@ -215,6 +272,31 @@ class SellOrder extends Component {
     
     dispatch({
       type: 'sellOrder/noReceipt',
+      payload: {
+        order_id: id
+      },
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      this.handleSearch(null, params);
+    })
+  }
+
+  orderCancel = id => {
+    const { dispatch } = this.props;
+    const { pagination } = this.props.sellOrder.data;
+
+    const params = {
+      page: pagination.current -1,
+      pageSize: pagination.pageSize,
+    };
+    
+    dispatch({
+      type: 'sellOrder/orderCancel',
       payload: {
         order_id: id
       },
@@ -303,10 +385,84 @@ class SellOrder extends Component {
     }
   }
 
+  modify = (arg, order_id) => {
+    const { dispatch } = this.props;
+    const { pagination } = this.props.sellOrder.data;
+
+    const params = {
+      page: pagination.current -1,
+      pageSize: pagination.pageSize,
+    };
+
+    dispatch({
+      type: 'sellOrder/modifyPrice',
+      payload: {
+        order_id,
+        real_pay_amount: arg.real_pay_amount,
+      },
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      this.setState({
+        'modifyVisible': false,
+      });
+      this.handleSearch(null, params);
+    })
+  }
+
+  modifyCancel = () => {
+    this.setState({
+      modifyVisible: false,
+    });
+  }
+
+  handleModifyModalVisible = params => {
+    this.setState({
+      params,
+      modifyVisible: true,
+    });
+  }
+
+  orderWithdraw = id => {
+    const { dispatch } = this.props;
+    const { pagination } = this.props.sellOrder.data;
+
+    const params = {
+      page: pagination.current -1,
+      pageSize: pagination.pageSize,
+    };
+    
+    dispatch({
+      type: 'sellOrder/orderWithdraw',
+      payload: {
+        order_id: id
+      },
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      this.handleSearch(null, params);
+    })
+  }
+
   render() {
     const { loading } = this.props;
     const { history, list, pagination } = this.props.sellOrder.data;
-    const { exportVisible } = this.state;
+    const { exportVisible, modifyVisible, params } = this.state;
+
+    const modifyMethods = {
+      submit: this.modify,
+      cancel: this.modifyCancel,
+      params,
+    };
+
     const columns = [
       {
         title: '操作',
@@ -319,31 +475,69 @@ class SellOrder extends Component {
           return(
             <span>
               {
-                record.state == 1 &&
+                /*record.state == 1 &&
                 <Fragment>
                   <Popconfirm title="是否要确认收款？" onConfirm={() => this.receipt(record.order_id)}>
                     <Button>确认收款</Button>
                   </Popconfirm>
-                </Fragment>
+                  <span style={{display: 'inline-block', width: '10px'}}></span>
+                  <Popconfirm title="是否要确认未收款？" onConfirm={() => this.noReceipt(record.order_id)}>
+                    <Button>未收到收款</Button>
+                  </Popconfirm>
+                </Fragment>*/
               }
               {
-                this.getAging(record) && record.state == 2 &&
+                /*this.getAging(record) && record.state == 2 &&
                 <Fragment>
                   <Popconfirm title="是否要确认收款？" onConfirm={() => this.receipt(record.order_id)}>
                     <Button>确认收款</Button>
                   </Popconfirm>
-                  {
-                    time &&
-                    <Fragment>
-                      <span style={{display: 'inline-block', width: '10px'}}></span>
-                      <Popconfirm title="是否要确认未收款？" onConfirm={() => this.noReceipt(record.order_id)}>
-                        <Button>未收到收款</Button>
-                      </Popconfirm>
-                    </Fragment>
-                  }
-                </Fragment>
+                  <span style={{display: 'inline-block', width: '10px'}}></span>
+                  <Popconfirm title="是否要确认未收款？" onConfirm={() => this.noReceipt(record.order_id)}>
+                    <Button>未收到收款</Button>
+                  </Popconfirm>
+                </Fragment>*/
               }
-              <span style={{display: 'inline-block', width: '10px'}}></span>
+              {
+                (record.state == 1 || record.state == 2) &&
+                <Fragment>
+                  <Popconfirm title="是否要确认收款？" onConfirm={() => this.receipt(record.order_id)}>
+                    <Button>确认收款</Button>
+                  </Popconfirm>
+                  <span style={{display: 'inline-block', width: '10px'}}></span>
+                  {
+                    record.state == 1 ?
+                    <Popconfirm title="是否要确认取消订单？" onConfirm={() => this.orderCancel(record.order_id)}>
+                      <Button>取消订单</Button>
+                    </Popconfirm>
+                    :
+                    <Popconfirm title="是否要确认未收款？" onConfirm={() => this.noReceipt(record.order_id)}>
+                      <Button>未收到收款</Button>
+                    </Popconfirm>
+                  }
+                  <span style={{display: 'inline-block', width: '10px'}}></span>
+                  <Button onClick={() => this.handleModifyModalVisible(record)}>调价确认</Button>
+                  <span style={{display: 'inline-block', width: '10px'}}></span>
+                </Fragment> 
+              }
+              {
+                record.state == 3 &&
+                <Fragment>
+                  <Popconfirm title="是否要确认撤回？" onConfirm={() => this.orderWithdraw(record.order_id)}>
+                    <Button>12小时撤回权</Button>
+                  </Popconfirm>
+                  <span style={{display: 'inline-block', width: '10px'}}></span>
+                </Fragment> 
+              }
+              {
+                record.state == 8 &&
+                <Fragment>
+                  <Popconfirm title="是否要确认收款？" onConfirm={() => this.receipt(record.order_id)}>
+                    <Button>确认收款</Button>
+                  </Popconfirm>
+                  <span style={{display: 'inline-block', width: '10px'}}></span>
+                </Fragment> 
+              }
               <Button>
                 <Link to={`/order/sellOrder_appeal/${record.order_id}`}>申诉</Link>
               </Button>
@@ -423,6 +617,16 @@ class SellOrder extends Component {
         align: 'center',
       },
       {
+        title: '订单号后6位',
+        dataIndex: '',
+        key: '',
+        align: 'center',
+        render:(val,record)=>{
+          const orderIdLength = record.order_id.toString().length;
+          return record.order_id.toString().substr(orderIdLength-6, orderIdLength);
+        },
+      },
+      {
         title: '平台订单号',
         dataIndex: 'order_id',
         key: 'order_id',
@@ -474,6 +678,7 @@ class SellOrder extends Component {
           />
         </div>
         <a style={{display: 'none'}} href="" download id="hf">导出</a>
+        <CreateModifyForm {...modifyMethods} modalVisible={ modifyVisible } />
       </ContLayout>
     );
   }

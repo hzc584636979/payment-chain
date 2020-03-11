@@ -388,6 +388,31 @@ class GoldYieldOrder extends Component {
     return renderStr;
   };
 
+  noTransfer = order_id => {
+    const { dispatch } = this.props;
+    const { pagination } = this.props.goldYieldOrder.data;
+
+    const params = {
+      page: pagination.current -1,
+      pageSize: pagination.pageSize,
+    };
+
+    dispatch({
+      type: 'goldYieldOrder/noTransfer',
+      payload: {
+        order_id
+      },
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      this.handleSearch(null, params);
+    })
+  }
+
   render() {
     const { loading } = this.props;
     const { history, list, pagination } = this.props.goldYieldOrder.data;
@@ -434,6 +459,10 @@ class GoldYieldOrder extends Component {
                       出金
                     </Button>
                     <span style={{ display: 'inline-block', width: '10px' }}></span>
+                    <Popconfirm title="是否要确认未收到转账？" onConfirm={() => this.noTransfer(record.order_id)}>
+                      <Button>未收到转账</Button>
+                    </Popconfirm>
+                    <span style={{display: 'inline-block', width: '10px'}}></span>
                   </Fragment>
                 ) : null}
                 <Button>
@@ -545,7 +574,7 @@ class GoldYieldOrder extends Component {
         align: 'center',
         render: (val, record) => this.renderItem(record),
       },
-      /*{
+      {
         title: '支付截图',
         dataIndex: 'payment_screenshot',
         key: 'payment_screenshot',
@@ -560,7 +589,7 @@ class GoldYieldOrder extends Component {
             null
           );
         },
-      },*/
+      },
       {
         title: '创建时间',
         dataIndex: 'created_at',

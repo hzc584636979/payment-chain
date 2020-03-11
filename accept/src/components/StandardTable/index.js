@@ -76,11 +76,11 @@ class StandardTable extends PureComponent {
       scroll,
     } = this.props;
 
-    const paginationProps = {
+    const paginationProps = pagination ? {
       showQuickJumper: true,
       showTotal: () => (`共${pagination.total}条记录`),
       ...pagination,
-    };
+    } : false;
 
     const rowSelection = this.props.noRowSelection ? null : {
       selectedRowKeys,

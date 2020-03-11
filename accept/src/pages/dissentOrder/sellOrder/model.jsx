@@ -1,4 +1,4 @@
-import { sellDissentOrder, sellDissentOrderSearchAll } from '@/services/api';
+import { sellDissentOrder, sellDissentOrderSearchAll, sellOrderReceipt } from '@/services/api';
 
 const Model = {
   namespace: 'sellDissentOrder',
@@ -42,6 +42,10 @@ const Model = {
     *export({ payload }, { call, put }) {
       console.log(payload)
       const response = yield call(sellDissentOrderSearchAll, payload);
+      return response;
+    },
+    *receipt({ payload }, { call, put }) {
+      const response = yield call(sellOrderReceipt, payload);
       return response;
     },
   },

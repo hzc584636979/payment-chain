@@ -5,9 +5,9 @@ let apiAddress = '';
 if(process.env.NODE_ENV == 'development') { //本地测试
   apiAddress = '/server/api';
 }else if(process.env.BUILD_ENV == 'test') { //测试服务器
-  apiAddress = 'http://www.boq.hk/merchant/api';
+  apiAddress = 'http://usdt.usdtpay.net.cn/merchant/api';
 }else { //正式服务器
-  apiAddress = 'http://www.boq.hk/merchant/api';
+  apiAddress = 'http://usdt.usdtpay.net.cn/merchant/api';
 }
 console.log(process.env.NODE_ENV, process.env.BUILD_ENV)
 
@@ -171,18 +171,26 @@ export async function homeWithdrawApplyErc20(params) {
 
 /*首页-erc20出金-出金*/
 export async function homeYieldErc20(params) {
-  return request(`${apiAddress}/order/applyGoldYield`, {
+  return request(`${apiAddress}/order/testGoldYield`, {
     method: 'POST',
     data: params,
   });
+  /*return request(`${apiAddress}/order/applyGoldYield`, {
+    method: 'POST',
+    data: params,
+  });*/
 }
 
 /*首页-erc20入金-入金*/
 export async function homeEntryErc20(params) {
-  return request(`${apiAddress}/order/applyDeposit`, {
+  return request(`${apiAddress}/order/testDeposit`, {
     method: 'POST',
     data: params,
   });
+  /*return request(`${apiAddress}/order/applyDeposit`, {
+    method: 'POST',
+    data: params,
+  });*/
 }
 
 /*首页-入金付款详情页-请求*/
@@ -232,38 +240,6 @@ export async function yieldOmniList(params) {
 /*首页-omni出金-搜索*/
 export async function yieldOmniListSearchAll(params) {
   return request(`${apiAddress}/order/sellOrder`, {
-    method: 'POST',
-    data: {
-      ...params,
-      begin_time: null,
-      end_time: null,
-    },
-  });
-}
-
-/*首页-omni出金-出金*/
-export async function yieldOmni(params) {
-  return request(`${apiAddress}/order/goldYield`, {
-    method: 'POST',
-    data: params,
-  });
-}
-
-/*首页-omni入金-请求*/
-export async function entryOmniList(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
-    method: 'POST',
-    data: {
-      ...params,
-      begin_time: null,
-      end_time: null,
-    },
-  });
-}
-
-/*首页-omni入金-搜索*/
-export async function entryOmniListSearchAll(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
     method: 'POST',
     data: {
       ...params,
@@ -406,6 +382,14 @@ export async function goldYieldOrderAuditOrder(params) {
 /*订单管理-出金订单-出金*/
 export async function goldYieldOrderYield(params) {
   return request(`${apiAddress}/order/goldYield`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*订单管理-出金订单-未收到转账*/
+export async function goldYieldOrderNoTransfer(params) {
+  return request(`${apiAddress}/order/notReceiveTransfer`, {
     method: 'POST',
     data: params,
   });

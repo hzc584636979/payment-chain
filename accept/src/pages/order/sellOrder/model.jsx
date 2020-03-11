@@ -1,4 +1,4 @@
-import { sellOrder, sellOrderSearchAll, sellOrderReceipt, sellOrderNoReceipt } from '@/services/api';
+import { sellOrder, sellOrderSearchAll, sellOrderReceipt, sellOrderNoReceipt, sellOrderModifyPrice, sellOrderWithdraw, sellOrderCancel } from '@/services/api';
 
 const Model = {
   namespace: 'sellOrder',
@@ -45,6 +45,18 @@ const Model = {
     },
     *noReceipt({ payload }, { call, put }) {
       const response = yield call(sellOrderNoReceipt, payload);
+      return response;
+    },
+    *modifyPrice({ payload }, { call, put }) {
+      const response = yield call(sellOrderModifyPrice, payload);
+      return response;
+    },
+    *orderWithdraw({ payload }, { call, put }) {
+      const response = yield call(sellOrderWithdraw, payload);
+      return response;
+    },
+    *orderCancel({ payload }, { call, put }) {
+      const response = yield call(sellOrderCancel, payload);
       return response;
     },
     *export({ payload }, { call, put }) {

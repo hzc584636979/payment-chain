@@ -224,6 +224,31 @@ class BuyOrder extends Component {
     })
   }
 
+  changeTransfer = order_id => {
+    const { dispatch } = this.props;
+    const { pagination } = this.props.buyOrder.data;
+
+    const params = {
+      page: pagination.current -1,
+      pageSize: pagination.pageSize,
+    };
+
+    dispatch({
+      type: 'buyOrder/changeTransfer',
+      payload: {
+        order_id
+      },
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      this.handleSearch(null, params);
+    })
+  }
+
   receiptInfo = record => {
     Modal.info({
       title: '转款信息',
@@ -231,6 +256,8 @@ class BuyOrder extends Component {
         <div>
           <p>金额：{`${ record.pay_amount_cny } ${ cashType[record.currency_type] }`}</p>
           <p>收款方式：<img src={payIcon[record.pay_type]} style={{maxWidth: 40}} /></p>
+          <p>利润(CNY)：{`${ record.profit }`}</p>
+          <p>交易汇率(USDT:CNY)：{`1:${ record.deal_rate }`}</p>
           <p>客户姓名：{record.payee_name}</p>
           {
             (record.pay_type == 1 || record.pay_type == 4) &&
@@ -243,7 +270,7 @@ class BuyOrder extends Component {
             (record.pay_type == 2 || record.pay_type == 3) &&
             <Fragment>
               <p>收款账户：{record.payee_account}</p>
-              <p>二维码：<img src={record.pay_code_url} style={{maxWidth: 100}} /></p>
+              <p>二维码：<img src={record.pay_code_url} style={{maxWidth: 150}} /></p>
             </Fragment>
           }
           {
@@ -281,6 +308,31 @@ class BuyOrder extends Component {
         message.success('操作成功');
       }
       this.handleReceiptChange();
+      this.handleSearch(null, params);
+    })
+  }
+
+  receiptFromMerchant = id => {
+    const { dispatch } = this.props;
+    const { pagination } = this.props.buyOrder.data;
+
+    const params = {
+      page: pagination.current -1,
+      pageSize: pagination.pageSize,
+    };
+    dispatch({
+      type: 'buyOrder/receiptFromMerchant',
+      payload: {
+        order_id: id,
+        payment_screenshot: null
+      },
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
       this.handleSearch(null, params);
     })
   }
@@ -445,8 +497,12 @@ class BuyOrder extends Component {
                       trigger="click"
                       visible={receiptId == record.order_id ? true : false}
                     >
-                      <Button onClick={() => this.handleShowReceiptImg(record.order_id)}>确认转款</Button>
+                      <Button onClick={() => this.handleShowReceiptImg(record.order_id)}>信用确认</Button>
                     </Popover>
+                    <span style={{display: 'inline-block', width: '10px'}}></span>
+                    <Popconfirm title="是否要确认等待商户确认？" onConfirm={() => this.receiptFromMerchant(record.order_id)}>
+                      <Button>等待商户确认</Button>
+                    </Popconfirm>
                     <span style={{display: 'inline-block', width: '10px'}}></span>
                     <Button>
                       <Link to={`/order/buyOrder_appeal/${record.order_id}`}>申诉</Link>
@@ -454,19 +510,21 @@ class BuyOrder extends Component {
                   </Fragment>
                   :
                   record.state == 3 ?
-                  <Popconfirm title="是否要确认接单？" onConfirm={() => this.transfer(record)}>
-                    <Button>确认接单</Button>
-                  </Popconfirm>
+                  <Fragment>
+                    <Popconfirm title="是否要确认接单？" onConfirm={() => this.transfer(record)}>
+                      <Button>确认接单</Button>
+                    </Popconfirm>
+                    <span style={{display: 'inline-block', width: '10px'}}></span>
+                    <Popconfirm title="是否要确认让别人接单？" onConfirm={() => this.changeTransfer(record.order_id)}>
+                      <Button>让别人接单</Button>
+                    </Popconfirm>
+                  </Fragment>
                   :
                   null
                 )
                 :
                 null
               }
-              {/*<span style={{display: 'inline-block', width: '10px'}}></span>
-              <Button>
-                <Link to={`/order/buyOrder_appeal/${record.order_id}`}>申诉</Link>
-              </Button>*/}
               <span style={{display: 'inline-block', width: '10px'}}></span>
               <Button>
                 <Link to={`/order/buyOrder_detail/${record.order_id}`}>查看</Link>
@@ -494,7 +552,7 @@ class BuyOrder extends Component {
         key: 'state',
         align: 'center',
         render: (val, record) => {
-          return buyStatusType[val];
+          return `${buyStatusType[val]}${(val == 5 && record.payment_screenshot) ? '(信用确认)' : ''}`;
         },
       },
       {
@@ -506,6 +564,15 @@ class BuyOrder extends Component {
           return `${val} ${cashType[record.currency_type]}/${record.pay_amount} ${coinType[record.token_id]}`;
         }
       },
+      /*{
+        title: '违约罚金(USDT)',
+        dataIndex: 'forfiet',
+        key: 'forfiet',
+        align: 'center',
+        render: (val,record) => {
+          return <span style={{color: '#EA0000'}}>{`${val}`}</span>;
+        }
+      },*/
       {
         title: '利润(CNY)',
         dataIndex: 'profit',

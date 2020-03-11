@@ -5,9 +5,9 @@ let apiAddress = '';
 if(process.env.NODE_ENV == 'development') { //本地测试
   apiAddress = '/server/api';
 }else if(process.env.BUILD_ENV == 'test') { //测试服务器
-  apiAddress = 'http://www.boq.hk/acceptance/api';
+  apiAddress = 'http://usdt.usdtpay.net.cn/acceptance/api';
 }else { //正式服务器
-  apiAddress = 'http://www.boq.hk/acceptance/api';
+  apiAddress = 'http://usdt.usdtpay.net.cn/acceptance/api';
 }
 console.log(process.env.NODE_ENV, process.env.BUILD_ENV)
 
@@ -223,6 +223,30 @@ export async function sellOrderNoReceipt(params) {
   });
 }
 
+/*订单管理-出售订单管理-调价确认*/
+export async function sellOrderModifyPrice(params) {
+  return request(`${apiAddress}/order/adjustPriceConfirm`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*订单管理-出售订单管理-12小时撤回权*/
+export async function sellOrderWithdraw(params) {
+  return request(`${apiAddress}/order/recallRight`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*订单管理-出售订单管理-取消订单*/
+export async function sellOrderCancel(params) {
+  return request(`${apiAddress}/order/confirmCancelOrder`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
 /*订单管理-出售订单管理详情*/
 export async function querySellOrderDetail(params) {
   return request(`${apiAddress}/order/orderDetail`, {
@@ -272,6 +296,14 @@ export async function buyOrderSearchAll(params) {
 /*订单管理-购买订单管理-确认接单*/
 export async function buyOrderTakeOrder(params) {
   return request(`${apiAddress}/order/takeOrder`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*订单管理-购买订单管理-让别人接单*/
+export async function buyOrderChangeOrder(params) {
+  return request(`${apiAddress}/order/byOtherTakeOrder`, {
     method: 'POST',
     data: params,
   });

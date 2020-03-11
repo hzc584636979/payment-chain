@@ -20,23 +20,35 @@ export function socketSubscribe(options) {
 	      password: 'client'
 	}
 
-	const client = mqtt.connect('mqtt://47.75.161.29', mqttOptions);
+	const client = mqtt.connect('mqtt://34.237.138.218', mqttOptions);
 	console.log(client, options)
 
+	let sendHeartTimeout = null;
+
+	let heartCheck = () => {
+		sendHeartTimeout = setInterval(() => {
+			console.log(`heart: ${new Date()}`)
+			client.publish(`/heart`, `${window.g_getLocalStorage().id}`, {qos: 1});
+		}, 10000)
+	}
+
 	client.on('reconnect', (error) => {
+		clearInterval(sendHeartTimeout);
 	    console.log('正在重连:', error)
 	})
 
 	client.on('error', (error) => {
-		console.log('错误:',error)
+		console.log('错误:',error);
+		clearInterval(sendHeartTimeout);
 	    destroyWebSocket();
-	    socketSubscribe(options)
+	    socketSubscribe(options);
 	})
 
 	client.on('connect', (e) => {
     	client.subscribe(options.subscribeList, { qos:0 }, function (error) {
         	console.log(error || '订阅成功')
     	})
+    	heartCheck();
 	    step = 1;
 	})
 
@@ -53,6 +65,7 @@ export function socketSubscribe(options) {
 	})
 
 	client.on('close',() => {
+		clearInterval(sendHeartTimeout);
 		console.log('断开MQTT')
 	});
 

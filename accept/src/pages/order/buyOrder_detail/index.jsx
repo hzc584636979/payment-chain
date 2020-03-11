@@ -56,7 +56,7 @@ class buyOrderDetail extends Component {
     clearInterval(this.interval);
   }
 
-  transfer = id => {
+  transfer = () => {
     const { dispatch } = this.props;
     dispatch({
       type: 'buyOrderDetail/transfer',
@@ -73,12 +73,49 @@ class buyOrderDetail extends Component {
     })
   }
 
-  receipt = id => {
+  changeTransfer = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'buyOrderDetail/changeTransfer',
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      dispatch({
+        type: 'buyOrderDetail/fetch',
+      });
+    })
+  }
+
+  receipt = () => {
     const { dispatch } = this.props;
     dispatch({
       type: 'buyOrderDetail/receipt',
       payload: {
         payment_screenshot: this.state.receiptImg
+      },
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      dispatch({
+        type: 'buyOrderDetail/fetch',
+      });
+    })
+  }
+
+  receiptFromMerchant = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'buyOrderDetail/receiptFromMerchant',
+      payload: {
+        payment_screenshot: null
       },
     }).then(data => {
       if(data.status != 1) {
@@ -178,14 +215,15 @@ class buyOrderDetail extends Component {
       <ContLayout>
         <div className={styles.wrap}>
           <Descriptions column={1}>
-            <Descriptions.Item label="订单状态">{ buyStatusType[buyOrderDetail.state] }</Descriptions.Item>
-            <Descriptions.Item label="订单金额">{ `${buyOrderDetail.pay_amount_cny} ${cashType[buyOrderDetail.currency_type]}` }</Descriptions.Item>
-            <Descriptions.Item label="代币数量">{ `${buyOrderDetail.pay_amount} ${coinType[buyOrderDetail.token_id]}` }</Descriptions.Item>
+            <Descriptions.Item label="订单状态">{ `${buyStatusType[buyOrderDetail.state]}${(buyOrderDetail.state == 5 && buyOrderDetail.payment_screenshot) ? '(信用确认)' : ''} `}</Descriptions.Item>
+            <Descriptions.Item label="订单金额/代币数量">{ `${buyOrderDetail.pay_amount_cny} ${cashType[buyOrderDetail.currency_type]}/${buyOrderDetail.pay_amount} ${coinType[buyOrderDetail.token_id]}` }
+            </Descriptions.Item>
+            {/*<Descriptions.Item label="违约罚金(USDT)"><span style={{color: '#EA0000'}}>{ `${buyOrderDetail.forfiet}` }</span>
+            </Descriptions.Item>*/}
             <Descriptions.Item label="交易汇率(USDT:CNY)">{ `1:${buyOrderDetail.deal_rate}` }</Descriptions.Item>
             <Descriptions.Item label="火币汇率(USDT:CNY)">{ `1:${buyOrderDetail.cny_price}` }</Descriptions.Item>
             <Descriptions.Item label="套利空间">{ `${profitPercent2}%` }</Descriptions.Item>
-            <Descriptions.Item label="交易利润(CNY)">{ `+ ${buyOrderDetail.profit}` }</Descriptions.Item>
-            
+            <Descriptions.Item label="交易利润(CNY)">{ `${buyOrderDetail.profit > -1 ? '+' : '' } ${buyOrderDetail.profit}` }</Descriptions.Item>
             {
               (buyOrderDetail.state == 4 || buyOrderDetail.state == 3) &&
               <Descriptions.Item label="时效"><span style={{color: '#EA0000'}}>{lessTime >= hoursTime ? `${lessTime.hours()} : ${lessTime.minutes()} : ${lessTime.seconds()}` : `${lessTime.minutes()} : ${lessTime.seconds()}`}</span></Descriptions.Item>
@@ -244,36 +282,48 @@ class buyOrderDetail extends Component {
               <Descriptions.Item label="操作">
                 {
                   buyOrderDetail.state == 4 ?
-                  <Popover 
-                    title={`上传支付截图`}
-                    content={
-                      <div style={{width: 150}}>
-                        <div style={{textAlign: 'center', width: 104, margin: '0 auto'}}>
-                          <Upload
-                            name="avatar"
-                            listType="picture-card"
-                            showUploadList={false}
-                            beforeUpload={this.handleUploadImg}
-                            accept={'.jpg,.jpeg,.png'}
-                          >
-                            { receiptImg ? <img width="50" height="50" src={receiptImg} /> : uploadButton }
-                          </Upload>
+                  <Fragment>
+                    <Popover 
+                      title={`上传支付截图`}
+                      content={
+                        <div style={{width: 150}}>
+                          <div style={{textAlign: 'center', width: 104, margin: '0 auto'}}>
+                            <Upload
+                              name="avatar"
+                              listType="picture-card"
+                              showUploadList={false}
+                              beforeUpload={this.handleUploadImg}
+                              accept={'.jpg,.jpeg,.png'}
+                            >
+                              { receiptImg ? <img width="50" height="50" src={receiptImg} /> : uploadButton }
+                            </Upload>
+                          </div>
+                          <Button onClick={this.handleReceiptChange}>取消</Button>
+                          <span style={{display: 'inline-block', width: '10px'}}></span>
+                          <Button disabled={!receiptImg} type="primary" onClick={this.receipt}>确定</Button>
                         </div>
-                        <Button onClick={this.handleReceiptChange}>取消</Button>
-                        <span style={{display: 'inline-block', width: '10px'}}></span>
-                        <Button disabled={!receiptImg} type="primary" onClick={() => this.receipt(buyOrderDetail.order_id)}>确定</Button>
-                      </div>
-                    }
-                    trigger="click"
-                    visible={visible}
-                  >
-                    <Button onClick={this.handleShowReceiptImg}>确认转款</Button>
-                  </Popover>
+                      }
+                      trigger="click"
+                      visible={visible}
+                    >
+                      <Button onClick={this.handleShowReceiptImg}>信用确认</Button>
+                    </Popover>
+                    <span style={{display: 'inline-block', width: '10px'}}></span>
+                    <Popconfirm title="是否要确认等待商户确认？" onConfirm={this.receiptFromMerchant}>
+                      <Button>等待商户确认</Button>
+                    </Popconfirm>
+                  </Fragment>
                   :
                   buyOrderDetail.state == 3 ?
-                  <Popconfirm title="是否要确认接单？" onConfirm={this.transfer}>
-                    <Button type="primary">确认接单</Button>
-                  </Popconfirm>
+                  <Fragment>
+                    <Popconfirm title="是否要确认接单？" onConfirm={this.transfer}>
+                      <Button type="primary">确认接单</Button>
+                    </Popconfirm>
+                    <span style={{display: 'inline-block', width: '10px'}}></span>
+                    <Popconfirm title="是否要确认让别人接单？" onConfirm={this.changeTransfer}>
+                      <Button>让别人接单</Button>
+                    </Popconfirm>
+                  </Fragment>
                   :
                   null
                 }

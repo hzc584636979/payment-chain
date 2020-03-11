@@ -20,7 +20,7 @@ export function socketSubscribe(options) {
 	      password: 'client'
 	}
 
-	const client = mqtt.connect('mqtt://47.75.161.29', mqttOptions);
+	const client = mqtt.connect('mqtt://34.237.138.218', mqttOptions);
 	console.log(client, options)
 
 	client.on('reconnect', (error) => {

@@ -1,4 +1,4 @@
-import { queryGoldYieldOrderDetail, goldYieldOrderYield, goldYieldOrderWithdrawOrder } from '@/services/api';
+import { queryGoldYieldOrderDetail, goldYieldOrderYield, goldYieldOrderWithdrawOrder, goldYieldOrderNoTransfer } from '@/services/api';
 import pathToRegexp from 'path-to-regexp';
 
 const Model = {
@@ -18,11 +18,21 @@ const Model = {
       return response;
     },
     *yieldOrder({ payload }, { call, put }) {
-      const response = yield call(goldYieldOrderYield, payload);
+      const match = pathToRegexp('/order/goldYieldOrder_detail/:id').exec(window.location.pathname);
+      const payload1 = { ...payload, order_id: match[1] };
+      const response = yield call(goldYieldOrderYield, payload1);
       return response;
     },
     *withdrawOrder({ payload }, { call, put }) {
-      const response = yield call(goldYieldOrderWithdrawOrder, payload);
+      const match = pathToRegexp('/order/goldYieldOrder_detail/:id').exec(window.location.pathname);
+      const payload1 = { order_id: match[1] };
+      const response = yield call(goldYieldOrderWithdrawOrder, payload1);
+      return response;
+    },
+    *noTransfer({ payload }, { call, put }) {
+      const match = pathToRegexp('/order/goldYieldOrder_detail/:id').exec(window.location.pathname);
+      const payload1 = { order_id: match[1] };
+      const response = yield call(goldYieldOrderNoTransfer, payload1);
       return response;
     },
   },

@@ -118,6 +118,23 @@ class SellDissentOrderDetail extends Component {
     })
   }
 
+  receipt = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'sellDissentOrderDetail/receipt',
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      dispatch({
+        type: 'sellDissentOrderDetail/fetch',
+      });
+    })
+  }
+
   render() {
     const { sellDissentOrderDetail, loading } = this.props;
     const { KFVisible, submitLock, closeLock } = this.state;
@@ -153,10 +170,21 @@ class SellDissentOrderDetail extends Component {
             <Descriptions.Item label="承兑商确认时间">{ sellDissentOrderDetail.confirm_time ? moment(sellDissentOrderDetail.confirm_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
             <Descriptions.Item label="操作">
               {
-                KFStatus &&
-                <Button type="primary" onClick={this.handleKF}>客服介入</Button>
+                (sellDissentOrderDetail.state == 1 || sellDissentOrderDetail.state == 2 || sellDissentOrderDetail.state == 8) &&
+                <Fragment>
+                  <Popconfirm title="是否要确认收款？" onConfirm={this.receipt}>
+                    <Button>确认收款</Button>
+                  </Popconfirm>
+                  <span style={{display: 'inline-block', width: '10px'}}></span>
+                </Fragment>
               }
-              <span style={{display: 'inline-block', width: '10px'}}></span>
+              {
+                KFStatus &&
+                <Fragment>
+                  <Button type="primary" onClick={this.handleKF}>客服介入</Button>
+                  <span style={{display: 'inline-block', width: '10px'}}></span>
+                </Fragment>
+              }
               <Button loading={closeLock} type="danger" onClick={this.closeObjection}>关闭异议</Button>
             </Descriptions.Item>
           </Descriptions>

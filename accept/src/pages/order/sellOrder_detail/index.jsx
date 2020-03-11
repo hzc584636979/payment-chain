@@ -1,4 +1,4 @@
-import { Button, Descriptions, Popconfirm, Input, message } from 'antd';
+import { Button, Descriptions, Popconfirm, Input, message, Form, Modal } from 'antd';
 import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
@@ -9,6 +9,64 @@ import moment from 'moment';
 import styles from './style.less';
 
 const { TextArea } = Input;
+const FormItem = Form.Item;
+
+const CreateModifyForm = Form.create()(props => {
+  const { modalVisible, form, submit, cancel, params } = props;
+  const okHandle = () => {
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+      form.resetFields();
+      submit(fieldsValue);
+    });
+  };
+
+  const cancelHandle = () => {
+    form.resetFields();
+    cancel();
+  }
+
+  const validator = (rule, value, callback) => {
+    if(value && !Number(value)) {
+     callback('请输入数字的实际金额');
+    }
+    callback();
+  }
+
+  return (
+    <Modal
+      title="调价确认"
+      visible={modalVisible}
+      onOk={okHandle}
+      onCancel={cancelHandle}
+      centered
+      okText='确认'
+    >
+      {
+        params &&
+        <Form>
+          <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="订单金额">
+            {`${params.pay_amount_cny} ${cashType[params.currency_type]}`}
+          </FormItem>
+          <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="实际金额">
+            {form.getFieldDecorator('real_pay_amount', {
+              rules: [
+                { 
+                  required: true, 
+                  message: '请输入实际金额' 
+                },
+                {
+                  validator: validator
+                }
+              ],
+            })(<Input style={{width: 150}} placeholder="请输入实际金额" />)}
+            {cashType[params.currency_type]}
+          </FormItem>
+        </Form>
+      }
+    </Modal>
+  );
+});
 
 @connect(({ sellOrderDetail, loading }) => ({
   sellOrderDetail,
@@ -30,7 +88,7 @@ class SellOrderDetail extends Component {
 
   }
 
-  receipt = id => {
+  receipt = () => {
     const { dispatch } = this.props;
     dispatch({
       type: 'sellOrderDetail/receipt',
@@ -91,6 +149,76 @@ class SellOrderDetail extends Component {
     }
   }
 
+  modify = arg => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'sellOrderDetail/modifyPrice',
+      payload: {
+        real_pay_amount: arg.real_pay_amount,
+      },
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      this.setState({
+        'modifyVisible': false,
+      });
+      dispatch({
+        type: 'sellOrderDetail/fetch',
+      });
+    })
+  }
+
+  modifyCancel = () => {
+    this.setState({
+      modifyVisible: false,
+    });
+  }
+
+  handleModifyModalVisible = () => {
+    this.setState({
+      modifyVisible: true,
+    });
+  }
+
+  orderWithdraw = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'sellOrderDetail/orderWithdraw',
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      dispatch({
+        type: 'sellOrderDetail/fetch',
+      });
+    })
+  }
+
+  orderCancel = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'sellOrderDetail/orderCancel',
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      dispatch({
+        type: 'sellOrderDetail/fetch',
+      });
+    })
+  }
+
   render() {
     const { sellOrderDetail, loading } = this.props;
     const time = (new Date().getTime() - moment(sellOrderDetail.updated_at).local().format('x')) > 5 * 60 * 1000 ? true : false;
@@ -102,18 +230,27 @@ class SellOrderDetail extends Component {
           .minus(1)
           .multipliedBy(100)
           .toNumber();
+
+    const { modifyVisible } = this.state;
+    const orderIdLength = sellOrderDetail.order_id ? sellOrderDetail.order_id.toString().length : null;
+
+    const modifyMethods = {
+      submit: this.modify,
+      cancel: this.modifyCancel,
+      params: sellOrderDetail,
+    };
                                                
     return (
       <ContLayout>
         <div className={styles.wrap}>
           <Descriptions column={1}>
             <Descriptions.Item label="订单状态">{ sellStatusType[sellOrderDetail.state] }</Descriptions.Item>
-            <Descriptions.Item label="订单金额">{ `${sellOrderDetail.pay_amount_cny} ${cashType[sellOrderDetail.currency_type]}` }</Descriptions.Item>
-            <Descriptions.Item label="代币数量">{ `${sellOrderDetail.pay_amount} ${coinType[sellOrderDetail.token_id]}` }</Descriptions.Item>
+            <Descriptions.Item label="订单金额/代币数量">{ `${sellOrderDetail.pay_amount_cny} ${cashType[sellOrderDetail.currency_type]}/${sellOrderDetail.pay_amount} ${coinType[sellOrderDetail.token_id]}` }
+            </Descriptions.Item>
             <Descriptions.Item label="交易汇率(USDT:CNY)">{ `1:${sellOrderDetail.deal_rate}` }</Descriptions.Item>
             <Descriptions.Item label="火币汇率(USDT:CNY)">{ `1:${sellOrderDetail.cny_price}` }</Descriptions.Item>
             <Descriptions.Item label="套利空间">{ `${profitPercent}%` }</Descriptions.Item>
-            <Descriptions.Item label="交易利润(CNY)">{ `+ ${sellOrderDetail.profit}` }</Descriptions.Item>
+            <Descriptions.Item label="交易利润(CNY)">{ `${sellOrderDetail.profit > -1 ? '+' : '' } ${sellOrderDetail.profit}` }</Descriptions.Item>
             
             {
               sellOrderDetail.state == 2 &&
@@ -128,6 +265,10 @@ class SellOrderDetail extends Component {
               <Descriptions.Item label="开户行">{ sellOrderDetail.user_account_bank_name }</Descriptions.Item>
             }
             <Descriptions.Item label="付款方式"><img src={payIcon[sellOrderDetail.pay_type]} style={{maxWidth: 40}} /></Descriptions.Item>
+            {
+              orderIdLength &&
+              <Descriptions.Item label="订单号后6位">{ sellOrderDetail.order_id.toString().substr(orderIdLength-6, orderIdLength) }</Descriptions.Item>
+            }
             <Descriptions.Item label="平台订单号">{ sellOrderDetail.order_id }</Descriptions.Item>
             <Descriptions.Item label="唯一标示号">{ sellOrderDetail.out_order_id }</Descriptions.Item>
             <Descriptions.Item label="收币商户">{ sellOrderDetail.m_user_name }</Descriptions.Item>
@@ -136,15 +277,15 @@ class SellOrderDetail extends Component {
             <Descriptions.Item label="付款时间">{ sellOrderDetail.transfer_time ? moment(sellOrderDetail.transfer_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
             <Descriptions.Item label="承兑商确认时间">{ sellOrderDetail.confirm_time ? moment(sellOrderDetail.confirm_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
             {
-              sellOrderDetail.state == 1 &&
+              /*sellOrderDetail.state == 1 &&
               <Descriptions.Item label="操作">
                 <Popconfirm title="是否要确认收款？" onConfirm={this.receipt}>
                   <Button>确认收款</Button>
                 </Popconfirm>
-              </Descriptions.Item>
+              </Descriptions.Item>*/
             }
             {
-              lessTime > 0 && sellOrderDetail.state == 2 &&
+              /*lessTime > 0 && sellOrderDetail.state == 2 &&
               <Descriptions.Item label="操作">
                 <Popconfirm title="是否要确认收款？" onConfirm={this.receipt}>
                   <Button>确认收款</Button>
@@ -158,10 +299,49 @@ class SellOrderDetail extends Component {
                     </Popconfirm>
                   </Fragment>
                 }
+              </Descriptions.Item>*/
+            }
+            {
+              (sellOrderDetail.state == 1 || sellOrderDetail.state == 2) &&
+              <Descriptions.Item label="操作">
+                <Popconfirm title="是否要确认收款？" onConfirm={this.receipt}>
+                  <Button>确认收款</Button>
+                </Popconfirm>
+                <span style={{display: 'inline-block', width: '10px'}}></span>
+                
+                {
+                  sellOrderDetail.state == 1 ?
+                  <Popconfirm title="是否要确认取消订单？" onConfirm={this.orderCancel}>
+                    <Button>取消订单</Button>
+                  </Popconfirm>
+                  :
+                  <Popconfirm title="是否要确认未收款？" onConfirm={this.noReceipt}>
+                    <Button>未收到收款</Button>
+                  </Popconfirm>
+                }
+                <span style={{display: 'inline-block', width: '10px'}}></span>
+                <Button onClick={this.handleModifyModalVisible}>调价确认</Button>
+              </Descriptions.Item>
+            }
+            {
+              sellOrderDetail.state == 3 &&
+              <Descriptions.Item label="操作">
+                <Popconfirm title="是否要确认撤回？" onConfirm={this.orderWithdraw}>
+                  <Button>12小时撤回权</Button>
+                </Popconfirm>
+              </Descriptions.Item>
+            }
+            {
+              sellOrderDetail.state == 8 &&
+              <Descriptions.Item label="操作">
+                <Popconfirm title="是否要确认收款？" onConfirm={this.receipt}>
+                  <Button>确认收款</Button>
+                </Popconfirm>
               </Descriptions.Item>
             }
           </Descriptions>
         </div>
+        <CreateModifyForm {...modifyMethods} modalVisible={ modifyVisible } />
       </ContLayout>
     );
   }

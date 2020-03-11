@@ -120,6 +120,7 @@ window.sellStatusType = {
   5: '已过期',
   6: '订单异议中',
   7: '用户取消订单',
+  8: '承兑商取消订单',
 };
 window.buyStatusType = {
   0: '全部',
@@ -132,6 +133,7 @@ window.buyStatusType = {
   7: '关闭订单',
   8: '已过期',
   9: '承兑商不接单',
+  10: '未收到承兑商转账',
 };
 window.orderStatus = {
   0: '全部',

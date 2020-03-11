@@ -5,9 +5,9 @@ let apiAddress = '';
 if(process.env.NODE_ENV == 'development') { //本地测试
   apiAddress = '/server/api';
 }else if(process.env.BUILD_ENV == 'test') { //测试服务器
-  apiAddress = 'http://www.boq.hk/management/api';
+  apiAddress = 'http://usdt.usdtpay.net.cn/management/api';
 }else { //正式服务器
-  apiAddress = 'http://www.boq.hk/management/api';
+  apiAddress = 'http://usdt.usdtpay.net.cn/management/api';
 }
 console.log(process.env.NODE_ENV, process.env.BUILD_ENV)
 
@@ -207,14 +207,6 @@ export async function superWalletModify(params) {
   });
 }
 
-/*超级管理员-承兑商冷钱包-主页面*/
-export async function coldwalletAcceptList(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
-    method: 'POST',
-    data: params,
-  });
-}
-
 /*超级管理员-承兑商冷钱包-请求*/
 export async function coldwalletAccept(params) {
   let time = params.time && formatMomentTime(params.time);
@@ -233,8 +225,8 @@ export async function coldwalletAccept(params) {
 /*超级管理员-承兑商冷钱包-搜索*/
 export async function coldwalletAcceptSearchAll(params) {
   let time = params.time && formatMomentTime(params.time);
-  let begin_time = parseInt(time[0] / 1000)+'';
-  let end_time = parseInt(time[1] / 1000)+'';
+  let begin_time = time[0];
+  let end_time = time[1];
   return request(`${apiAddress}/order/buyOrder`, {
     method: 'POST',
     data: {
@@ -242,14 +234,6 @@ export async function coldwalletAcceptSearchAll(params) {
       begin_time,
       end_time
     },
-  });
-}
-
-/*超级管理员-商户余额冷钱包-主页面*/
-export async function coldwalletMerchantList(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
-    method: 'POST',
-    data: params,
   });
 }
 
@@ -283,14 +267,6 @@ export async function coldwalletMerchantSearchAll(params) {
   });
 }
 
-/*超级管理员-手续费冷钱包-主页面*/
-export async function coldwalletGasList(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
-    method: 'POST',
-    data: params,
-  });
-}
-
 /*超级管理员-手续费冷钱包-请求*/
 export async function coldwalletGas(params) {
   return request(`${apiAddress}/order/buyOrder`, {
@@ -299,24 +275,16 @@ export async function coldwalletGas(params) {
   });
 }
 
-/*超级管理员-手续费冷钱包-搜索*/
-export async function coldwalletGasSearchAll(params) {
+/*超级管理员-手续费冷钱包-添加钱包*/
+export async function coldwalletGasAdd(params) {
   return request(`${apiAddress}/order/buyOrder`, {
     method: 'POST',
     data: params,
   });
 }
 
-/*超级管理员-手续费冷钱包-详情页*/
-export async function coldwalletGasDetail(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
-    method: 'POST',
-    data: params,
-  });
-}
-
-/*超级管理员-手续费冷钱包-冻结商户资金*/
-export async function coldwalletGasDetailFrozen(params) {
+/*超级管理员-手续费冷钱包-删除钱包*/
+export async function coldwalletGasDelete(params) {
   return request(`${apiAddress}/order/buyOrder`, {
     method: 'POST',
     data: params,
@@ -339,33 +307,59 @@ export async function centerWithdrawApplySubmit(params) {
   });
 }
 
-/*超级管理员-转出转入记录-请求*/
+/*超级管理员-充提币记录-请求*/
 export async function withdrawList(params) {
-  let time = params.time && formatMomentTime(params.time);
-  let begin_time = parseInt(time[0] / 1000)+'';
-  let end_time = parseInt(time[1] / 1000)+'';
   return request(`${apiAddress}/order/buyOrder`, {
     method: 'POST',
-    data: {
-      ...params,
-      begin_time,
-      end_time
-    },
+    data: params,
   });
 }
 
-/*超级管理员-转出转入记录-搜索*/
+/*超级管理员-充提币记录-搜索*/
 export async function withdrawListSearchAll(params) {
-  let time = params.time && formatMomentTime(params.time);
-  let begin_time = parseInt(time[0] / 1000)+'';
-  let end_time = parseInt(time[1] / 1000)+'';
   return request(`${apiAddress}/order/buyOrder`, {
     method: 'POST',
-    data: {
-      ...params,
-      begin_time,
-      end_time
-    },
+    data: params,
+  });
+}
+
+/*超级管理员-平台收益-请求*/
+export async function profitChart(params) {
+  return request(`${apiAddress}/manager/merchant/list`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*超级管理员-平台利润-请求*/
+export async function profitList(params) {
+  return request(`${apiAddress}/order/buyOrder`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*超级管理员-平台利润-修改*/
+export async function profitListModify(params) {
+  return request(`${apiAddress}/order/buyOrder`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*超级管理员-平台利润-添加*/
+export async function profitListAdd(params) {
+  return request(`${apiAddress}/order/buyOrder`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*超级管理员-平台利润-删除*/
+export async function profitListDelete(params) {
+  return request(`${apiAddress}/order/buyOrder`, {
+    method: 'POST',
+    data: params,
   });
 }
 
@@ -553,6 +547,30 @@ export async function acceptSellDissentOrderClose(params) {
   });
 }
 
+/*承兑商管理员-出售异议订单-惩罚承兑商*/
+export async function acceptSellDissentOrderPunishAccept(params) {
+  return request(`${apiAddress}/accept/objection/punishAccept`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*承兑商管理员-出售异议订单-惩罚商户*/
+export async function acceptSellDissentOrderPunishMerchant(params) {
+  return request(`${apiAddress}/accept/objection/punishMerchants`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*承兑商管理员-出售异议订单-和解*/
+export async function acceptSellDissentOrderCompromise(params) {
+  return request(`${apiAddress}/accept/objection/compromise`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
 /*承兑商管理员-购买异议订单-请求*/
 export async function acceptBuyDissentOrder(params) {
   return request(`${apiAddress}/accept/objection/buy`, {
@@ -596,6 +614,30 @@ export async function acceptBuyDissentOrderToMerchant(params) {
 /*承兑商管理员-购买异议订单-取消订单*/
 export async function acceptBuyDissentOrderClose(params) {
   return request(`${apiAddress}/accept/objection/cancelOrder`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*承兑商管理员-购买异议订单-惩罚承兑商*/
+export async function acceptBuyDissentOrderPunishAccept(params) {
+  return request(`${apiAddress}/accept/objection/punishAccept`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*承兑商管理员-购买异议订单-惩罚商户*/
+export async function acceptBuyDissentOrderPunishMerchant(params) {
+  return request(`${apiAddress}/accept/objection/punishMerchants`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*承兑商管理员-购买异议订单-和解*/
+export async function acceptBuyDissentOrderCompromise(params) {
+  return request(`${apiAddress}/accept/objection/compromise`, {
     method: 'POST',
     data: params,
   });
@@ -673,6 +715,30 @@ export async function merchantSellDissentOrderClose(params) {
   });
 }
 
+/*商户管理员-出金异议订单-惩罚承兑商*/
+export async function merchantSellDissentOrderPunishAccept(params) {
+  return request(`${apiAddress}/merchant/objection/punishAccept`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*商户管理员-出金异议订单-惩罚商户*/
+export async function merchantSellDissentOrderPunishMerchant(params) {
+  return request(`${apiAddress}/merchant/objection/punishMerchants`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*商户管理员-出金异议订单-和解*/
+export async function merchantSellDissentOrderCompromise(params) {
+  return request(`${apiAddress}/merchant/objection/compromise`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
 /*商户管理员-入金异议订单-请求*/
 export async function merchantBuyDissentOrder(params) {
   return request(`${apiAddress}/merchant/objection/buy`, {
@@ -716,6 +782,30 @@ export async function merchantBuyDissentOrderToMerchant(params) {
 /*商户管理员-入金异议订单-取消订单*/
 export async function merchantBuyDissentOrderClose(params) {
   return request(`${apiAddress}/merchant/objection/cancelOrder`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*商户管理员-入金异议订单-惩罚承兑商*/
+export async function merchantBuyDissentOrderPunishAccept(params) {
+  return request(`${apiAddress}/merchant/objection/punishAccept`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*商户管理员-入金异议订单-惩罚商户*/
+export async function merchantBuyDissentOrderPunishMerchant(params) {
+  return request(`${apiAddress}/merchant/objection/punishMerchants`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+/*商户管理员-入金异议订单-和解*/
+export async function merchantBuyDissentOrderCompromise(params) {
+  return request(`${apiAddress}/merchant/objection/compromise`, {
     method: 'POST',
     data: params,
   });

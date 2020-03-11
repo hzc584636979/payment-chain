@@ -1,4 +1,4 @@
-import { buyOrder, buyOrderSearchAll, buyOrderTakeOrder, buyOrderReceipt } from '@/services/api';
+import { buyOrder, buyOrderSearchAll, buyOrderTakeOrder, buyOrderReceipt, buyOrderChangeOrder } from '@/services/api';
 
 const Model = {
   namespace: 'buyOrder',
@@ -43,7 +43,15 @@ const Model = {
       const response = yield call(buyOrderTakeOrder, payload);
       return response;
     },
+    *changeTransfer({ payload }, { call, put }) {
+      const response = yield call(buyOrderChangeOrder, payload);
+      return response;
+    },
     *receipt({ payload }, { call, put }) {
+      const response = yield call(buyOrderReceipt, payload);
+      return response;
+    },
+    *receiptFromMerchant({ payload }, { call, put }) {
       const response = yield call(buyOrderReceipt, payload);
       return response;
     },

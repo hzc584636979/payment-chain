@@ -1,4 +1,4 @@
-import { queryBuyOrderDetail, buyOrderTakeOrder, buyOrderReceipt } from '@/services/api';
+import { queryBuyOrderDetail, buyOrderTakeOrder, buyOrderReceipt, buyOrderChangeOrder } from '@/services/api';
 import pathToRegexp from 'path-to-regexp';
 
 const Model = {
@@ -23,7 +23,19 @@ const Model = {
       const response = yield call(buyOrderTakeOrder, payload1);
       return response;
     },
+    *changeTransfer({ payload }, { call, put }) {
+      const match = pathToRegexp('/order/buyOrder_detail/:id').exec(window.location.pathname);
+      const payload1 = { ...payload, order_id: match[1] };
+      const response = yield call(buyOrderChangeOrder, payload1);
+      return response;
+    },
     *receipt({ payload }, { call, put }) {
+      const match = pathToRegexp('/order/buyOrder_detail/:id').exec(window.location.pathname);
+      const payload1 = { ...payload, order_id: match[1] };
+      const response = yield call(buyOrderReceipt, payload1);
+      return response;
+    },
+    *receiptFromMerchant({ payload }, { call, put }) {
       const match = pathToRegexp('/order/buyOrder_detail/:id').exec(window.location.pathname);
       const payload1 = { ...payload, order_id: match[1] };
       const response = yield call(buyOrderReceipt, payload1);

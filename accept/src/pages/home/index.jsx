@@ -20,6 +20,7 @@ const { Option } = Select;
   home,
   loading: loading.effects['home/fetch'],
   getUserInfoLoading: loading.effects['user/getUserInfo'],
+  mortgageLoading: loading.effects['home/mortgage'],
 }))
 class Home extends Component {
   state = {
@@ -277,7 +278,7 @@ class Home extends Component {
 
   render() {
     const { accountBalance1, tokenBalance1, tokenBalance2, payVisible, mortgageVisible, buyStatus, sellStatus, mortgageValue, walletType } = this.state;
-    const { currentUser, home, loading, getUserInfoLoading } = this.props;
+    const { currentUser, home, loading, getUserInfoLoading, mortgageLoading } = this.props;
     const payLayerAddress = currentUser.id ? (walletType == '1' ? currentUser.erc20.address : currentUser.omni.address) : null;
     const allBalance = currentUser.id ? new BigNumber(wei2USDT(currentUser.erc20.balance)).plus(new BigNumber(wei2USDT(currentUser.omni.balance, 'omni'))).toNumber() : 0;
     const allLockBalance = currentUser.id ? new BigNumber(wei2USDT(currentUser.erc20.lock_balance)).plus(new BigNumber(wei2USDT(currentUser.omni.lock_balance, 'omni'))).toNumber() : 0;
@@ -643,7 +644,7 @@ class Home extends Component {
                   2.地址将无法找回，平台也不承担带来的损失。充值USDT需要6个区块确认，请耐心等待。 此地址 只接受erc20协议的USDT，请勿往地址元值其他协议的USDT发送其他币种到此地址将无法找回，平台也不承担带来的损失。
                 </div>
                 <div style={{textAlign: 'center'}}>
-                  <Button type="primary" style={{width: 120}} onClick={this.handleMortgage}>确定抵押</Button>
+                  <Button loading={mortgageLoading} type="primary" style={{width: 120}} onClick={this.handleMortgage}>确定抵押</Button>
                 </div>
               </div>
             </Layer>

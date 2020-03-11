@@ -2,7 +2,10 @@ import {
   queryAcceptBuyDissentOrderDetail,
   acceptBuyDissentOrderToAccept,
   acceptBuyDissentOrderToMerchant,
-  acceptBuyDissentOrderClose 
+  acceptBuyDissentOrderClose,
+  acceptBuyDissentOrderPunishAccept,
+  acceptBuyDissentOrderPunishMerchant,
+  acceptBuyDissentOrderCompromise,  
 } from '@/services/api';
 import pathToRegexp from 'path-to-regexp';
 
@@ -38,6 +41,24 @@ const Model = {
       const match = pathToRegexp('/accept/buyDissentOrder_detail/:id').exec(window.location.pathname);
       const payload1 = { order_id: match[1], order_type: 1 };
       const response = yield call(acceptBuyDissentOrderClose, payload1);
+      return response;
+    },
+    *punishAccept({ payload }, { call, put }) {
+      const match = pathToRegexp('/accept/buyDissentOrder_detail/:id').exec(window.location.pathname);
+      const payload1 = { ...payload, order_id: match[1], order_type: 1 };
+      const response = yield call(acceptBuyDissentOrderPunishAccept, payload1);
+      return response;
+    },
+    *punishMerchant({ payload }, { call, put }) {
+      const match = pathToRegexp('/accept/buyDissentOrder_detail/:id').exec(window.location.pathname);
+      const payload1 = { ...payload, order_id: match[1], order_type: 1 };
+      const response = yield call(acceptBuyDissentOrderPunishMerchant, payload1);
+      return response;
+    },
+    *compromise({ payload }, { call, put }) {
+      const match = pathToRegexp('/accept/buyDissentOrder_detail/:id').exec(window.location.pathname);
+      const payload1 = { order_id: match[1], order_type: 1 };
+      const response = yield call(acceptBuyDissentOrderCompromise, payload1);
       return response;
     },
   },

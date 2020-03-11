@@ -137,7 +137,7 @@ export default {
                   path: '/super/merchant',
                   component: './super/merchant',
                 },
-                /*{
+                {
                   name: '冷钱包',
                   path: '/super/coldwallet',
                   authority: ['super'],
@@ -152,12 +152,7 @@ export default {
                       path: '/super/coldwallet/coldwalletMerchant',
                       component: './super/coldwalletMerchantList',
                     },
-                    {
-                      name: '手续费冷钱包',
-                      path: '/super/coldwallet/coldwalletGas',
-                      component: './super/coldwalletGasList',
-                    },
-                    {
+                    /*{
                       name: 'erc20查账',
                       path: '/super/coldwallet/coldwalletAccept/erc20',
                       component: './super/coldwalletAccept',
@@ -198,14 +193,7 @@ export default {
                       component: './super/coldwalletGas',
                       hideInMenu: true,
                       expandPath: '/super/coldwallet/coldwalletGas',
-                    },
-                    //{
-                      //name: '查看',
-                      //path: '/super/coldwallet/coldwalletGas_detail/:id',
-                      //component: './super/coldwalletGas_detail',
-                      //hideInMenu: true,
-                      //expandPath: '/super/coldwallet/coldwalletGas',
-                    //},
+                    },*/
                   ]
                 },
                 {
@@ -223,18 +211,40 @@ export default {
                       path: '/super/centerWallet/pay',
                       component: './super/pay',
                     },
-                    {
-                      name: '提币',
-                      path: '/super/centerWallet/withdrawApply',
-                      component: './super/withdrawApply',
-                    },
                     //{
-                      //name: '转出转入记录',
-                      //path: '/super/centerWallet/withdrawList',
-                      //component: './super/withdrawList',
+                      //name: '提币',
+                      //path: '/super/centerWallet/withdrawApply',
+                      //component: './super/withdrawApply',
                     //},
+                    {
+                      name: '充提币记录',
+                      path: '/super/centerWallet/withdrawList',
+                      component: './super/withdrawList',
+                    },
                   ]
-                },*/
+                },
+                {
+                  name: '平台收益钱包',
+                  path: '/super/profit',
+                  authority: ['super'],
+                  routes: [
+                    {
+                      name: '平台收益',
+                      path: '/super/profit/chart',
+                      component: './super/profitChart',
+                    },
+                    {
+                      name: '平台利润',
+                      path: '/super/profit/list',
+                      component: './super/profitList',
+                    },
+                  ]
+                },
+                {
+                  name: '手续费钱包',
+                  path: '/super/coldwalletGas',
+                  component: './super/coldwalletGas',
+                },
                 {
                   name: '承兑商成员',
                   path: '/super/accept_add/:id',

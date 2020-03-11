@@ -28,6 +28,7 @@ const FormItem = Form.Item;
 @connect(({ entryUSDT_detail, loading }) => ({
   entryUSDT_detail,
   loading: loading.effects['entryUSDT_detail/fetch'],
+  transferLoading: loading.effects['entryUSDT_detail/transfer'],
 }))
 @Form.create()
 class EntryUSDT_detail extends Component {
@@ -105,7 +106,7 @@ class EntryUSDT_detail extends Component {
   }
 
   render() {
-    const { entryUSDT_detail, loading } = this.props;
+    const { entryUSDT_detail, loading, transferLoading } = this.props;
     const gas = new BigNumber(entryUSDT_detail.gas)
           .multipliedBy(new BigNumber(entryUSDT_detail.pay_amount))
           .toNumber();
@@ -190,7 +191,7 @@ class EntryUSDT_detail extends Component {
             fontSize: 16
           }}>
             <Col style={{color: '#333', fontWeight: 600, fontSize: 16}}>待转账，请向对方转账 {/*this.getLessTime(entryUSDT_detail.creatTime, entryUSDT_detail.aging)*/}</Col>
-            <Col><Button type="primary" onClick={this.transfer}>我已完成转账， 下一步</Button></Col>
+            <Col><Button loading={transferLoading} type="primary" onClick={this.transfer}>我已完成转账， 下一步</Button></Col>
           </Row>
           <Row type="flex" justify="space-between" align="middle" style={{
             background: 'rgba(33, 148, 255, 0.05)',

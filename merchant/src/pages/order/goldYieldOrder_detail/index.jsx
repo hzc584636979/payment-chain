@@ -38,13 +38,10 @@ class GoldYieldOrderDetail extends Component {
   }
 
   withdraw = () => {
-    const { dispatch, goldYieldOrderDetail } = this.props;
+    const { dispatch } = this.props;
 
     dispatch({
       type: 'goldYieldOrderDetail/withdrawOrder',
-      payload: {
-        order_id: goldYieldOrderDetail.order_id,
-      },
     }).then(data => {
       if (data.status != 1) {
         message.error(data.msg);
@@ -68,7 +65,6 @@ class GoldYieldOrderDetail extends Component {
     dispatch({
       type: 'goldYieldOrderDetail/yieldOrder',
       payload: {
-        order_id: goldYieldOrderDetail.order_id,
         payment_pwd: MM,
         token_id: goldYieldOrderDetail.token_id,
       },
@@ -91,6 +87,22 @@ class GoldYieldOrderDetail extends Component {
       MM: e.target.value,
     });
   };
+
+  noTransfer = () => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'goldYieldOrderDetail/noTransfer',
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      this.getInfo();
+    })
+  }
 
   render() {
     const { goldYieldOrderDetail, loading } = this.props;
@@ -162,6 +174,10 @@ class GoldYieldOrderDetail extends Component {
                     <Button type="primary" onClick={this.yield}>
                       出金
                     </Button>
+                    <span style={{ display: 'inline-block', width: 15 }}></span>
+                    <Popconfirm title="是否要确认未收到转账？" onConfirm={this.noTransfer}>
+                      <Button>未收到转账</Button>
+                    </Popconfirm>
                     <span style={{ display: 'inline-block', width: 15 }}></span>
                   </Fragment>
               }

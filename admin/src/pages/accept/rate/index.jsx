@@ -46,12 +46,12 @@ const CreateForm = Form.create()(props => {
 
   const validator = (rule, value, callback) => {
     if(value) {
-      if(!Number(value) || value.toString().indexOf('.') > -1) {
+      if(!Number(value) && value != 0) {
         callback('请输入整数的浮动汇率');
-      }else if(value < 1) {
-        callback('浮动汇率不能小于1%');
       }else if(value > 10) {
         callback('浮动汇率不能大于10%');
+      }else if(value.toString().indexOf('.') > -1 && value.toString().split('.')[1].length > 1) {
+          callback('浮动汇率的小数不能多于1位');
       }
     }
     callback();
@@ -80,7 +80,7 @@ const CreateForm = Form.create()(props => {
                 validator: validator
               }
             ],
-          })(<Input maxLength={2} style={{width: 100}} placeholder="请输入浮动汇率" />)}%
+          })(<Input maxLength={4} style={{width: 100}} placeholder="请输入浮动汇率" />)}%
         </FormItem>
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="出售浮动汇率">
           {form.getFieldDecorator('sell_float_rate', {
@@ -94,7 +94,7 @@ const CreateForm = Form.create()(props => {
                 validator: validator
               }
             ],
-          })(<Input maxLength={2} style={{width: 100}} placeholder="请输入浮动汇率" />)}%
+          })(<Input maxLength={4} style={{width: 100}} placeholder="请输入浮动汇率" />)}%
         </FormItem>
       </Form>
     </Modal>
