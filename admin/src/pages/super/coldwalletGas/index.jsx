@@ -106,7 +106,7 @@ class ColdwalletGas extends Component {
       type: 'coldwalletGasList/fetch',
     }).then(data => {
       let rows = token_id == 1 ? data.erc20 : data.omni;
-      rows.map(v => {
+      rows && rows.length > 0 && rows.map(v => {
         dispatch({
           type: 'coldwalletGasList/getBanlance',
           payload: {

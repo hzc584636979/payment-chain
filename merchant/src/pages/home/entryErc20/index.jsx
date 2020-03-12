@@ -165,7 +165,7 @@ class EntryErc20 extends Component {
       payload: {
         ...values,
         pay_type: payType,
-        pay_amount: payment_amount,
+        pay_amount: Number(payment_amount),
         payment_pwd,
         currency_type: cashType,
         id_number,
@@ -195,11 +195,30 @@ class EntryErc20 extends Component {
 
   handlePaymentAmount = e => {
     let payment_amount = e.target.value;
-    if(parseFloat(payment_amount) && payment_amount.indexOf('.') > -1) {
-      let int = payment_amount.split('.')[0];
-      let float = payment_amount.split('.')[1];
-      if(float.length > 4) {
-        payment_amount = int+'.'+float.substr(0, 4);
+    const { payType } = this.state;
+    if(!Number(payment_amount) && payment_amount != 0) {
+      this.setState({
+        payment_amount_errmsg: '请输入数字的入金金额'
+      })
+    }else if(payment_amount <= 0) {
+      this.setState({
+        payment_amount_errmsg: '入金金额最小金额为10元'
+      })
+    }else if((payType == 2 || payType == 3) && payment_amount > 50000) {
+      payment_amount = 50000;
+    }else if((payType == 1 || payType == 4 || payType == 5) && payment_amount > 1000000) {
+      payment_amount = 1000000;
+    }else {
+      this.setState({
+        payment_amount_errmsg: null,
+      });
+    }
+
+    if(parseFloat(payment_amount) && payment_amount.toString().indexOf('.') > -1) {
+      let int = payment_amount.toString().split('.')[0];
+      let float = payment_amount.toString().split('.')[1];
+      if(float.length > 2) {
+        payment_amount = int+'.'+float.substr(0, 2);
       }
     }
     this.setState({
@@ -208,6 +227,18 @@ class EntryErc20 extends Component {
   };
 
   changeType = payType => {
+    const { payment_amount } = this.state;
+    if(Number(payment_amount)) {
+      if((payType == 2 || payType == 3) && payment_amount > 50000) {
+        this.setState({
+          payment_amount: 50000
+        })
+      }else if((payType == 1 || payType == 4 || payType == 5) && payment_amount > 1000000) {
+        this.setState({
+          payment_amount: 1000000
+        })
+      }
+    }
     this.setState({
       payType,
       imageUrl: null,
@@ -226,7 +257,7 @@ class EntryErc20 extends Component {
 
   render() {
     const { currentUser, fetchLoading } = this.props;
-    const { submitLock, payType, payment_amount, cashType } = this.state;
+    const { submitLock, payType, payment_amount, cashType, payment_amount_errmsg } = this.state;
     const {
       bank_name,
       bank_number,
@@ -336,6 +367,13 @@ class EntryErc20 extends Component {
                 cashType == 1 ? 'CNY' : 'USD'
               }</span>
               <p style={{ fontSize: 14, color: '#333' }}>
+                {
+                  payment_amount_errmsg &&
+                  <Fragment>
+                    <span style={{color: '#ff4141'}}>{payment_amount_errmsg}</span>
+                    <br/>
+                  </Fragment>
+                }
                 <span>
                   当前入金代币：{cashToCoin} USDT <span style={{color: '#ff4141'}}>(汇率实时变动，具体金额以订单为准)</span>
                 </span>
