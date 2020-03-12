@@ -139,7 +139,7 @@ console.log(fieldsValue)
         </Row>
         <Row>
           <Col xl={8} lg={12} sm={24}>
-            <FormItem>
+            <FormItem label="创建时间">
               {getFieldDecorator('time', { initialValue: history.time })(
                 <RangePicker style={{ width: '100%' }} />,
               )}
