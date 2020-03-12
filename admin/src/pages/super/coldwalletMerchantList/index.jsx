@@ -8,6 +8,7 @@ import styles from './style.less';
 
 @connect(({ coldwalletMerchantList, loading }) => ({
   coldwalletMerchantList,
+  loading: loading.effects['coldwalletMerchantList/fetch'],
   loadingErc20: loading.effects['coldwalletMerchantList/modifyErc20'],
   loadingOmni: loading.effects['coldwalletMerchantList/modifyOmni'],
 }))
@@ -47,7 +48,7 @@ class ColdwalletMerchantList extends Component {
     }
 
     dispatch({
-      type: 'coldwalletMerchantList/modify',
+      type: arg.chain == 'eth' ? 'coldwalletMerchantList/modifyErc20' : 'coldwalletMerchantList/modifyOmni',
       payload: {
         chain: arg.chain,
         telephone_verify_code: arg.telephone_verify_code,
@@ -69,13 +70,13 @@ class ColdwalletMerchantList extends Component {
   }
 
   render() {
-    const { coldwalletMerchantList, loadingErc20, loadingOmni } = this.props;
+    const { coldwalletMerchantList, loading, loadingErc20, loadingOmni } = this.props;
     const { count } = this.state;
     const erc20Wallet = coldwalletMerchantList.wallet ? coldwalletMerchantList.wallet.erc20 : null;
     const omniWallet = coldwalletMerchantList.wallet ? coldwalletMerchantList.wallet.omni : null;
 
     return (
-      <ContLayout>
+      <ContLayout loading={loading}>
         <div className={styles.wrap}>
           <div className={styles.inner}>
             <ModulFromColdWallet 

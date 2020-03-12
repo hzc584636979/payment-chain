@@ -13,6 +13,7 @@ const { TextArea } = Input;
 @connect(({ goldYieldOrderDetail, loading }) => ({
   goldYieldOrderDetail,
   loading: loading.effects['goldYieldOrderDetail/fetch'],
+  yieldLoading: loading.effects['goldYieldOrderDetail/yieldOrder'],
 }))
 class GoldYieldOrderDetail extends Component {
   state = {};
@@ -105,7 +106,7 @@ class GoldYieldOrderDetail extends Component {
   }
 
   render() {
-    const { goldYieldOrderDetail, loading } = this.props;
+    const { goldYieldOrderDetail, loading, yieldLoading } = this.props;
     const { MM } = this.state;
 
     const yieldAmount = new BigNumber(goldYieldOrderDetail.m_pay_amount)
@@ -171,7 +172,7 @@ class GoldYieldOrderDetail extends Component {
                       style={{ width: 200 }}
                     />
                     <span style={{ display: 'inline-block', width: 15 }}></span>
-                    <Button type="primary" onClick={this.yield}>
+                    <Button loading={yieldLoading} type="primary" onClick={this.yield}>
                       出金
                     </Button>
                     <span style={{ display: 'inline-block', width: 15 }}></span>

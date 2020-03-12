@@ -47,6 +47,7 @@ class MerchantBuyDissentOrder extends Component {
         pageSize: 10,
         page: 0,
         order_id: null,
+        issue_state: 0,
       },
     })
   }
@@ -103,6 +104,19 @@ class MerchantBuyDissentOrder extends Component {
             </FormItem>
           </Col>
           <Col xl={8} lg={12} sm={24}>
+            <FormItem label="处理状态">
+              {getFieldDecorator('issue_state',{ initialValue: history.issue_state+'' })(
+                <Select placeholder="请选择">
+                  {
+                    Object.keys(issueTypeStatus).map(value => {
+                      return <Option value={value} key={value}>{issueTypeStatus[value]}</Option>
+                    })
+                  }
+                </Select>
+              )}
+            </FormItem>
+          </Col>
+          <Col xl={8} lg={12} sm={24}>
             <span className={styles.submitButtons} style={{paddingTop: 4, display: 'inline-block'}}>
               <Button type="primary" htmlType="submit">
                 查询
@@ -135,6 +149,15 @@ class MerchantBuyDissentOrder extends Component {
         render: (val, record) => {
           return moment(val).local().format('YYYY-MM-DD HH:mm:ss');
         },
+      },
+      {
+        title: '处理状态',
+        dataIndex: 'issue_state',
+        key: 'issue_state',
+        align: 'center',
+        render: (val, record) => {
+          return issueTypeStatus[val];
+        }
       },
       {
         title: '问题类型',
@@ -173,21 +196,12 @@ class MerchantBuyDissentOrder extends Component {
         align: 'center',
       },
       {
-        title: '订单金额',
+        title: '订单金额/代币数量',
         dataIndex: 'pay_amount_cny',
         key: 'pay_amount_cny',
         align: 'center',
         render: (val,record) => {
-          return `${val} ${cashType[record.currency_type]}`;
-        }
-      },
-      {
-        title: '代币数量',
-        dataIndex: 'pay_amount',
-        key: 'pay_amount',
-        align: 'center',
-        render: (val,record) => {
-          return `${val} ${coinType[record.token_id]}`;
+          return `${val} ${cashType[record.currency_type]}/${record.m_pay_amount} ${cashType[record.currency_type]}`;
         }
       },
       {

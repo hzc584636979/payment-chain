@@ -399,7 +399,7 @@ export default {
   },
   proxy: {
     '/server/api/': {
-      target: 'http://www.boq.hk', //"http://192.168.1.20:7003"
+      target: 'http://usdt.usdtpay.net.cn', //"http://192.168.1.20:7003"
       changeOrigin: true,
       pathRewrite: { '^/server': '/merchant' },
     },

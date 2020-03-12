@@ -422,6 +422,17 @@ class YieldErc20 extends Component {
                               .toNumber()} ${cashType == 1 ? 'CNY' : 'USD'}`
                   } ≈ {gas || 0} USDT
                 </span>
+                <br/>
+                <span>
+                  限额：
+                  {
+                    (payType == 1 || payType == 4 || payType == 5) ?
+                    100
+                    :
+                    5
+                  } 
+                  万
+                </span>
               </p>
             </Descriptions.Item>
 

@@ -36,7 +36,10 @@ const passwordProgressMap = {
 
 @connect(({ userForget, loading }) => ({
   userForget,
-  submitting: loading.effects['userForget/submit'],
+  nextPhoneStep2Loding: loading.effects['userForget/nextPhoneStep2'],
+  phoneSubmitLoding: loading.effects['userForget/phoneSubmit'],
+  nextEmailStep2Loding: loading.effects['userForget/nextEmailStep2'],
+  emailSubmitLoding: loading.effects['userForget/emailSubmit'],
 }))
 class Forget extends Component {
   state = {
@@ -239,7 +242,7 @@ class Forget extends Component {
   }
 
   phoneRenderFrom = () => {
-    const { form, submitting } = this.props;
+    const { form, nextPhoneStep2Loding, phoneSubmitLoding } = this.props;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: {
@@ -346,7 +349,7 @@ class Forget extends Component {
           <FormItem>
             <Button
               size="large"
-              loading={submitting}
+              loading={nextPhoneStep2Loding}
               className={styles.submit}
               type="primary"
               htmlType="submit"
@@ -409,7 +412,7 @@ class Forget extends Component {
           <FormItem>
             <Button
               size="large"
-              loading={submitting}
+              loading={phoneSubmitLoding}
               className={styles.submit}
               type="primary"
               htmlType="submit"
@@ -505,7 +508,7 @@ class Forget extends Component {
   }
 
   emailRenderFrom = () => {
-    const { form, submitting } = this.props;
+    const { form, nextEmailStep2Loding, emailSubmitLoding } = this.props;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: {
@@ -580,7 +583,7 @@ class Forget extends Component {
           <FormItem>
             <Button
               size="large"
-              loading={submitting}
+              loading={nextEmailStep2Loding}
               className={styles.submit}
               type="primary"
               htmlType="submit"
@@ -643,7 +646,7 @@ class Forget extends Component {
           <FormItem>
             <Button
               size="large"
-              loading={submitting}
+              loading={emailSubmitLoding}
               className={styles.submit}
               type="primary"
               htmlType="submit"

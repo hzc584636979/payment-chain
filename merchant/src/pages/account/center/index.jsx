@@ -292,7 +292,7 @@ class UserBase extends Component {
     }else if(!real_name) {
       message.error('请填写真实姓名后提交');
       return;
-    }else if(!id_number) {
+    }/*else if(!id_number) {
       message.error('请填写身份证号后提交');
       return;
     }else if(!id_card_front_path) {
@@ -301,7 +301,7 @@ class UserBase extends Component {
     }else if(!id_card_back_path) {
       message.error('请上传身份证国徽面后提交');
       return;
-    }else if(!payment_pwd || !(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d]{6,24}$/.test(payment_pwd))) {
+    }*/else if(!payment_pwd || !(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d]{6,24}$/.test(payment_pwd))) {
       message.error('请填写正确的交易密码后提交');
       return;
     }else if(!telephone_number || !regPhone(telephone_number)) {
@@ -337,9 +337,9 @@ class UserBase extends Component {
       payload: {
         user_name, 
         real_name,
-        id_number,
-        id_card_front: id_card_front_path,
-        id_card_back: id_card_back_path,
+        // id_number,
+        // id_card_front: id_card_front_path,
+        // id_card_back: id_card_back_path,
         payment_pwd,
         telephone_number,
         email_address,
@@ -434,7 +434,7 @@ class UserBase extends Component {
               <Descriptions.Item label={<span className={styles.itemLabel}>真实姓名</span>}>
                 <Input disabled={disabled} onChange={this.handleName} style={{width: 385}} placeholder="输入真实姓名" value={real_name} maxLength={50} />
               </Descriptions.Item>
-              <Descriptions.Item label={<span className={styles.itemLabel}>身份证号</span>}>
+              {/*<Descriptions.Item label={<span className={styles.itemLabel}>身份证号</span>}>
                 <Input disabled={disabled} onChange={this.handleID} style={{width: 385}} placeholder="输入身份证号" value={id_number} maxLength={30} />
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>上传身份证</span>} className={styles.textTop}>
@@ -466,7 +466,7 @@ class UserBase extends Component {
                     <div className={styles.upImgDesc}>上传身份证 <span style={{color: '#2194FF'}}>国徽面</span></div>
                   </Col>
                 </Row>
-              </Descriptions.Item>
+              </Descriptions.Item>*/}
               <Descriptions.Item label={<span className={styles.itemLabel}>交易密码</span>} className={styles.textTop}>
                 <Input type="password" disabled={disabled} onChange={this.handleTx} style={{width: 385}} placeholder="输入交易密码" maxLength={24} value={payment_pwd} />
                 <p style={{fontSize: 14, color: '#EA0000'}}>必须由大写字母，小写字母，数字且不含有特殊字符组成的6位~24位密码</p>

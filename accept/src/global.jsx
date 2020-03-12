@@ -161,6 +161,11 @@ window.cashType = {
   1: 'CNY',
   2: 'USD',
 }
+window.issueTypeStatus = {
+  0: '全部',
+  1: '未处理',
+  2: '已处理',
+}
 
 if (pwa) {
   // Notify user if offline now

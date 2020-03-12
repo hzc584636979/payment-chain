@@ -266,11 +266,15 @@ class MerchantSellDissentOrderDetail extends Component {
             <Descriptions.Item label="问题图片">
               { fileList.map((v, i) => <a key={i} target="_blank" href={v}><img src={v} style={{maxWidth: 150}} /></a>) }
             </Descriptions.Item>
+            <Descriptions.Item label="处理状态">{ issueTypeStatus[merchantSellDissentOrderDetail.issue_state] }</Descriptions.Item>
+            {
+              merchantSellDissentOrderDetail.issue_state == 2 &&
+              <Descriptions.Item label="处理结果">{ merchantSellDissentOrderDetail.issue_result }</Descriptions.Item>
+            }
             <Descriptions.Item label="平台订单号">{ merchantSellDissentOrderDetail.order_id }</Descriptions.Item>
             <Descriptions.Item label="唯一标示号">{ merchantSellDissentOrderDetail.out_order_id }</Descriptions.Item>
             <Descriptions.Item label="订单状态">{ buyStatusType[merchantSellDissentOrderDetail.state] }</Descriptions.Item>
-            <Descriptions.Item label="订单金额">{ `${merchantSellDissentOrderDetail.pay_amount_cny} ${cashType[merchantSellDissentOrderDetail.currency_type]}` }</Descriptions.Item>
-            <Descriptions.Item label="代币数量">{ `${merchantSellDissentOrderDetail.pay_amount} ${coinType[merchantSellDissentOrderDetail.token_id]}` }</Descriptions.Item>
+            <Descriptions.Item label="订单金额/代币数量">{ `${merchantSellDissentOrderDetail.pay_amount_cny} ${cashType[merchantSellDissentOrderDetail.currency_type]}/${merchantSellDissentOrderDetail.m_pay_amount} ${coinType[merchantSellDissentOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="承兑商昵称">{ merchantSellDissentOrderDetail.a_user_name }</Descriptions.Item>
             <Descriptions.Item label="承兑商手机号">{ merchantSellDissentOrderDetail.a_telephone_number }</Descriptions.Item>
             {
@@ -325,28 +329,33 @@ class MerchantSellDissentOrderDetail extends Component {
             <Descriptions.Item label="订单更新时间">{ moment(merchantSellDissentOrderDetail.updated_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
             <Descriptions.Item label="接单时间">{ merchantSellDissentOrderDetail.transfer_time ? moment(merchantSellDissentOrderDetail.transfer_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
             <Descriptions.Item label="转款时间">{ merchantSellDissentOrderDetail.confirm_time ? moment(merchantSellDissentOrderDetail.confirm_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
-            <Descriptions.Item label="操作">
-              <Popconfirm title="是否要确认释放给承兑商？" onConfirm={this.toAccept}>
-                <Button loading={toAcceptLock} disabled={operLock} type="primary">释放给承兑商</Button>
-              </Popconfirm>
-              <span style={{display: 'inline-block', width: '10px'}}></span>
-              <Popconfirm title="是否要确认释放给商户？" onConfirm={this.toMerchant}>
-                <Button loading={toMerchantLock} disabled={operLock} type="primary">释放给商户</Button>
-              </Popconfirm>
-              <span style={{display: 'inline-block', width: '10px'}}></span>
-              <Popconfirm title="是否要确认取消订单？" onConfirm={this.closeObjection}>
-                <Button loading={closeLock} disabled={operLock} type="danger">取消订单</Button>
-              </Popconfirm>
-            </Descriptions.Item>
-            <Descriptions.Item>
-              <Button onClick={() => this.handlePunishModalVisible(1)} disabled={operLock} type="primary">惩罚承兑商</Button>
-              <span style={{display: 'inline-block', width: '10px'}}></span>
-              <Button onClick={() => this.handlePunishModalVisible(2)} disabled={operLock} type="primary">惩罚商户</Button>
-              <span style={{display: 'inline-block', width: '10px'}}></span>
-              <Popconfirm title="是否要确认和解？" onConfirm={this.compromise}>
-                <Button loading={compromiseLock} disabled={operLock} type="danger">和解</Button>
-              </Popconfirm>
-            </Descriptions.Item>
+            {
+              merchantSellDissentOrderDetail.issue_state == 1 &&
+              <Fragment>
+                <Descriptions.Item label="操作">
+                  <Popconfirm title="是否要确认释放给承兑商？" onConfirm={this.toAccept}>
+                    <Button loading={toAcceptLock} disabled={operLock} type="primary">释放给承兑商</Button>
+                  </Popconfirm>
+                  <span style={{display: 'inline-block', width: '10px'}}></span>
+                  <Popconfirm title="是否要确认释放给商户？" onConfirm={this.toMerchant}>
+                    <Button loading={toMerchantLock} disabled={operLock} type="primary">释放给商户</Button>
+                  </Popconfirm>
+                  <span style={{display: 'inline-block', width: '10px'}}></span>
+                  <Popconfirm title="是否要确认取消订单？" onConfirm={this.closeObjection}>
+                    <Button loading={closeLock} disabled={operLock} type="danger">取消订单</Button>
+                  </Popconfirm>
+                </Descriptions.Item>
+                <Descriptions.Item>
+                  <Button onClick={() => this.handlePunishModalVisible(1)} disabled={operLock} type="primary">惩罚承兑商</Button>
+                  <span style={{display: 'inline-block', width: '10px'}}></span>
+                  <Button onClick={() => this.handlePunishModalVisible(2)} disabled={operLock} type="primary">惩罚商户</Button>
+                  <span style={{display: 'inline-block', width: '10px'}}></span>
+                  <Popconfirm title="是否要确认和解？" onConfirm={this.compromise}>
+                    <Button loading={compromiseLock} disabled={operLock} type="danger">和解</Button>
+                  </Popconfirm>
+                </Descriptions.Item>
+              </Fragment>
+            }
           </Descriptions>
         </div>
         <CreatePunishForm {...punishMethods} modalVisible={ punishVisible } />

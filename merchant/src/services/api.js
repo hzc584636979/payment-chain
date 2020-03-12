@@ -171,26 +171,18 @@ export async function homeWithdrawApplyErc20(params) {
 
 /*首页-erc20出金-出金*/
 export async function homeYieldErc20(params) {
-  return request(`${apiAddress}/order/testGoldYield`, {
+  return request(`${apiAddress}/order/applyGoldYield`, {
     method: 'POST',
     data: params,
   });
-  /*return request(`${apiAddress}/order/applyGoldYield`, {
-    method: 'POST',
-    data: params,
-  });*/
 }
 
 /*首页-erc20入金-入金*/
 export async function homeEntryErc20(params) {
-  return request(`${apiAddress}/order/testDeposit`, {
+  return request(`${apiAddress}/order/applyDeposit`, {
     method: 'POST',
     data: params,
   });
-  /*return request(`${apiAddress}/order/applyDeposit`, {
-    method: 'POST',
-    data: params,
-  });*/
 }
 
 /*首页-入金付款详情页-请求*/

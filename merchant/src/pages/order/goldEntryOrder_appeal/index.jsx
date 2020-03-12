@@ -12,6 +12,7 @@ const statusType = {
   '金额问题': '金额问题',
   '流程问题': '流程问题',
   '异常问题': '异常问题',
+  '投诉承兑商': '投诉承兑商',
 };
 
 function beforeUpload(file) {

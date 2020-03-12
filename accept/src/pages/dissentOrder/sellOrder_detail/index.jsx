@@ -151,11 +151,15 @@ class SellDissentOrderDetail extends Component {
             <Descriptions.Item label="问题图片">
               { fileList.map((v, i) => <a key={i} target="_blank" href={v}><img src={v} style={{maxWidth: 150}} /></a>) }
             </Descriptions.Item>
+            <Descriptions.Item label="处理状态">{ issueTypeStatus[sellDissentOrderDetail.issue_state] }</Descriptions.Item>
+            {
+              sellDissentOrderDetail.issue_state == 2 &&
+              <Descriptions.Item label="处理结果">{ sellDissentOrderDetail.issue_result }</Descriptions.Item>
+            }
             <Descriptions.Item label="平台订单号">{ sellDissentOrderDetail.order_id }</Descriptions.Item>
             <Descriptions.Item label="唯一标示号">{ sellDissentOrderDetail.out_order_id }</Descriptions.Item>
             <Descriptions.Item label="订单状态">{ sellStatusType[sellDissentOrderDetail.state] }</Descriptions.Item>
-            <Descriptions.Item label="订单金额">{ `${sellDissentOrderDetail.pay_amount_cny} ${cashType[sellDissentOrderDetail.currency_type]}` }</Descriptions.Item>
-            <Descriptions.Item label="代币数量">{ `${sellDissentOrderDetail.pay_amount} ${coinType[sellDissentOrderDetail.token_id]}` }</Descriptions.Item>
+            <Descriptions.Item label="订单金额/代币数量">{ `${sellDissentOrderDetail.pay_amount_cny} ${cashType[sellDissentOrderDetail.currency_type]}/${sellDissentOrderDetail.pay_amount} ${coinType[sellDissentOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="付款用户">{ sellDissentOrderDetail.payee_name }</Descriptions.Item>
             <Descriptions.Item label="付款账户">{ sellDissentOrderDetail.user_pay_account }</Descriptions.Item>
             {

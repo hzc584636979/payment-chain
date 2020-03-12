@@ -139,6 +139,11 @@ class GoldEntryDissentOrderDetail extends Component {
             <Descriptions.Item label="问题图片">
               { fileList.map((v, i) => <a key={i} target="_blank" href={v}><img src={v} style={{maxWidth: 150}} /></a>) }
             </Descriptions.Item>
+            <Descriptions.Item label="处理状态">{ issueTypeStatus[goldEntryDissentOrderDetail.issue_state] }</Descriptions.Item>
+            {
+              goldEntryDissentOrderDetail.issue_state == 2 &&
+              <Descriptions.Item label="处理结果">{ goldEntryDissentOrderDetail.issue_result }</Descriptions.Item>
+            }
             <Descriptions.Item label="平台订单号">
               {goldEntryDissentOrderDetail.order_id}
             </Descriptions.Item>
@@ -148,8 +153,7 @@ class GoldEntryDissentOrderDetail extends Component {
             <Descriptions.Item label="订单状态">
               {sellStatusType[goldEntryDissentOrderDetail.state]}
             </Descriptions.Item>
-            <Descriptions.Item label="订单金额">{ `${goldEntryDissentOrderDetail.pay_amount_cny} ${cashType[goldEntryDissentOrderDetail.currency_type]}` }</Descriptions.Item>
-            <Descriptions.Item label="代币数量">{ `${goldEntryDissentOrderDetail.m_pay_amount} ${coinType[goldEntryDissentOrderDetail.token_id]}` }</Descriptions.Item>
+            <Descriptions.Item label="订单金额/代币数量">{ `${goldEntryDissentOrderDetail.pay_amount_cny} ${cashType[goldEntryDissentOrderDetail.currency_type]}/${goldEntryDissentOrderDetail.m_pay_amount} ${coinType[goldEntryDissentOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="承兑商姓名">
               {goldEntryDissentOrderDetail.a_user_name}
             </Descriptions.Item>

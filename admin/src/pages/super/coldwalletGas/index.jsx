@@ -86,7 +86,9 @@ const CreatePayForm = Form.create()(props => {
 @Form.create()
 class ColdwalletGas extends Component {
   state = {
-    selectedRowKeys: []
+    selectedRowKeys: [],
+    addresss: [],
+    token_id: 1,
   };
 
   componentDidMount() {
@@ -99,13 +101,21 @@ class ColdwalletGas extends Component {
 
   getInfo = () => {
     const { dispatch } = this.props;
+    const { token_id } = this.state;
     dispatch({
       type: 'coldwalletGasList/fetch',
-      payload:{
-        pageSize: 10,
-        page: 0,
-      },
-    });
+    }).then(data => {
+      let rows = token_id == 1 ? data.erc20 : data.omni;
+      rows.map(v => {
+        dispatch({
+          type: 'coldwalletGasList/getBanlance',
+          payload: {
+            token_id: token_id == 1 ? -1 : -2, 
+            address: v.address
+          },
+        })
+      })
+    })
   }
 
   clickDownLoad = () => {
@@ -125,26 +135,15 @@ class ColdwalletGas extends Component {
     }
   };
 
-  handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
-
-    const params = {
-      page: pagination.current -1,
-      pageSize: pagination.pageSize,
-    };
-
-    dispatch({
-      type: 'coldwalletGasList/fetch',
-      payload: params,
-    });
-  };
-
   handleType = e => {
     this.setState({
       token_id: e,
       address: null,
       private_key: null,
+      selectedRowKeys: [],
+      addresss: [],
     })
+    this.getInfo();
   }
 
   handleAddress = e => {
@@ -166,9 +165,9 @@ class ColdwalletGas extends Component {
     dispatch({
       type: 'coldwalletGasList/add',
       payload: {
-        token_id, 
+        chain: token_id == '1' ? 'eth' : 'omni', 
         address, 
-        private_key
+        privatekey: private_key
       },
     }).then(data => {
       if(data.status != 1) {
@@ -186,13 +185,14 @@ class ColdwalletGas extends Component {
   }
 
   deleteWallet = () => {
-    const { selectedRowKeys } = this.state;
+    const { selectedRowKeys, token_id, addresss } = this.state;
     const { dispatch } = this.props;
 
     dispatch({
       type: 'coldwalletGasList/delete',
       payload: {
-        selectedRowKeys, 
+        chain: token_id == 1 ? 'eth' : 'omni',
+        address: addresss.join(','), 
       },
     }).then(data => {
       if(data.status != 1) {
@@ -202,7 +202,8 @@ class ColdwalletGas extends Component {
         message.success('操作成功');
       }
       this.setState({
-        selectedRowKeys: []
+        selectedRowKeys: [],
+        addresss: [],
       })
       this.getInfo();
     })
@@ -216,7 +217,7 @@ class ColdwalletGas extends Component {
         <Row gutter={24}>
           <Col xl={8} lg={12} sm={24}>
             <FormItem label="钱包类型">
-              <Select value={token_id} placeholder="请选择币种" onChange={this.handleType}>
+              <Select value={token_id+''} placeholder="请选择币种" onChange={this.handleType}>
                 {Object.keys(coinType2).map((value, index) => {
                   if (index != 0) {
                     return (
@@ -297,15 +298,32 @@ class ColdwalletGas extends Component {
   }
 
   handleSelectRows = selectedRowKeys => {
+    const { erc20, omni } = this.props.coldwalletGasList.data;
+    const { token_id } = this.state;
+    let addresss = [];
+    if(token_id == 1) {
+      selectedRowKeys.map((v, i) => {
+        if(erc20[v]) {
+          addresss.push(erc20[v].address);
+        }
+      })
+    }else {
+      selectedRowKeys.map((v, i) => {
+        if(omni[v]) {
+          addresss.push(omni[v].address);
+        }
+      })
+    }
     this.setState({
-      selectedRowKeys
+      selectedRowKeys,
+      addresss,
     });
   };
 
   render() {
     const { loading } = this.props;
-    const { list, pagination } = this.props.coldwalletGasList.data;
-    const { selectedRowKeys, payVisible, payAddress } = this.state;
+    const { erc20, omni } = this.props.coldwalletGasList.data;
+    const { selectedRowKeys, payVisible, payAddress, token_id } = this.state;
 
     const payMethods = {
       submit: this.payCancel,
@@ -322,7 +340,7 @@ class ColdwalletGas extends Component {
         key: 'token_id',
         align: 'center',
         render: (val, record) => {
-          return coinType2[record.token_id];
+          return coinType2[token_id];
         },
       },
       {
@@ -333,11 +351,11 @@ class ColdwalletGas extends Component {
       },
       {
         title: '钱包余额',
-        dataIndex: '12313',
-        key: '123213',
+        dataIndex: '',
+        key: '',
         align: 'center',
         render: (val, record) => {
-          return `${wei2USDT(val, record.token_id == 1 ? 'erc20' : 'omni')} ${coinType2[record.token_id]}`;
+          return `${wei2USDT(val, token_id == 1 ? 'eth' : 'btc')} ${token_id == 1 ? 'ETH' : 'BTC'}`;
         },
       },
       {
@@ -365,9 +383,8 @@ class ColdwalletGas extends Component {
             rowKey={'id'}
             onSelectRow={this.handleSelectRows}
             loading={loading}
-            data={{ list, pagination }}
+            data={{ list: token_id == 1 ? erc20 : omni }}
             columns={columns}
-            onChange={this.handleStandardTableChange}
           />
         </div>
         <CreatePayForm {...payMethods} modalVisible={ payVisible } />

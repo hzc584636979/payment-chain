@@ -45,6 +45,7 @@ class GoldYieldDissentOrder extends Component {
         page: 0,
         state: 0,
         token_id: 0,
+        issue_state: 0,
         time: [moment().startOf('month'), moment().endOf('month')],
       },
     });
@@ -92,7 +93,7 @@ class GoldYieldDissentOrder extends Component {
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={24}>
-          <Col xl={6} lg={12} sm={24}>
+          <Col xl={8} lg={12} sm={24}>
             <FormItem label="币种">
               {getFieldDecorator('token_id', { initialValue: history.token_id + '' })(
                 <Select placeholder="请选择">
@@ -107,7 +108,7 @@ class GoldYieldDissentOrder extends Component {
               )}
             </FormItem>
           </Col>
-          <Col xl={6} lg={12} sm={24}>
+          <Col xl={8} lg={12} sm={24}>
             <FormItem label="订单状态">
               {getFieldDecorator('state', { initialValue: history.state + '' })(
                 <Select placeholder="请选择">
@@ -123,17 +124,31 @@ class GoldYieldDissentOrder extends Component {
             </FormItem>
           </Col>
           <Col xl={8} lg={12} sm={24}>
-            <FormItem>
-              {getFieldDecorator('time', { initialValue: history.time })(
-                <RangePicker style={{ width: '100%' }} />,
+            <FormItem label="处理状态">
+              {getFieldDecorator('issue_state',{ initialValue: history.issue_state+'' })(
+                <Select placeholder="请选择">
+                  {
+                    Object.keys(issueTypeStatus).map(value => {
+                      return <Option value={value} key={value}>{issueTypeStatus[value]}</Option>
+                    })
+                  }
+                </Select>
+              )}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row gutter={24}>
+          <Col xl={8} lg={12} sm={24}>
+            <FormItem label="创建时间">
+              {getFieldDecorator('time',{ initialValue: history.time })(
+                <RangePicker
+                  style={{ width: '100%' }}
+                />
               )}
             </FormItem>
           </Col>
           <Col xl={4} lg={12} sm={24}>
-            <span
-              className={styles.submitButtons}
-              style={{ paddingTop: 4, display: 'inline-block' }}
-            >
+            <span className={styles.submitButtons} style={{paddingTop: 4, display: 'inline-block'}}>
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
@@ -242,6 +257,15 @@ class GoldYieldDissentOrder extends Component {
         align: 'center',
       },
       {
+        title: '处理状态',
+        dataIndex: 'issue_state',
+        key: 'issue_state',
+        align: 'center',
+        render: (val, record) => {
+          return issueTypeStatus[val];
+        }
+      },
+      {
         title: '平台订单号',
         dataIndex: 'order_id',
         key: 'order_id',
@@ -260,21 +284,12 @@ class GoldYieldDissentOrder extends Component {
         align: 'center',
       },
       {
-        title: '订单金额',
+        title: '订单金额/代币数量',
         dataIndex: 'pay_amount_cny',
         key: 'pay_amount_cny',
         align: 'center',
         render: (val,record) => {
-          return `${val} ${cashType[record.currency_type]}`;
-        }
-      },
-      {
-        title: '代币数量',
-        dataIndex: 'm_pay_amount',
-        key: 'm_pay_amount',
-        align: 'center',
-        render: (val,record) => {
-          return `${val} ${coinType[record.token_id]}`;
+          return `${val} ${cashType[record.currency_type]}/${record.m_pay_amount} ${coinType[record.token_id]}`;
         }
       },
       {

@@ -36,7 +36,10 @@ const passwordProgressMap = {
 
 @connect(({ userAndregister, loading }) => ({
   userAndregister,
-  submitting: loading.effects['userAndregister/submit'],
+  nextPhoneStep2Loding: loading.effects['userAndregister/nextPhoneStep2'],
+  phoneSubmitLoding: loading.effects['userAndregister/phoneSubmit'],
+  nextEmailStep2Loding: loading.effects['userAndregister/nextEmailStep2'],
+  emailSubmitLoding: loading.effects['userAndregister/emailSubmit'],
 }))
 class Register extends Component {
   state = {
@@ -240,7 +243,7 @@ class Register extends Component {
   }
 
   phoneRenderFrom = () => {
-    const { form, submitting } = this.props;
+    const { form, nextPhoneStep2Loding, phoneSubmitLoding } = this.props;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: {
@@ -347,7 +350,7 @@ class Register extends Component {
           <FormItem>
             <Button
               size="large"
-              loading={submitting}
+              loading={nextPhoneStep2Loding}
               className={styles.submit}
               type="primary"
               htmlType="submit"
@@ -410,7 +413,7 @@ class Register extends Component {
           <FormItem>
             <Button
               size="large"
-              loading={submitting}
+              loading={phoneSubmitLoding}
               className={styles.submit}
               type="primary"
               htmlType="submit"
@@ -506,7 +509,7 @@ class Register extends Component {
   }
 
   emailRenderFrom = () => {
-    const { form, submitting } = this.props;
+    const { form, nextEmailStep2Loding, emailSubmitLoding } = this.props;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: {
@@ -581,7 +584,7 @@ class Register extends Component {
           <FormItem>
             <Button
               size="large"
-              loading={submitting}
+              loading={nextEmailStep2Loding}
               className={styles.submit}
               type="primary"
               htmlType="submit"
@@ -644,7 +647,7 @@ class Register extends Component {
           <FormItem>
             <Button
               size="large"
-              loading={submitting}
+              loading={emailSubmitLoding}
               className={styles.submit}
               type="primary"
               htmlType="submit"

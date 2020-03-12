@@ -16,8 +16,18 @@ window.g_setLocalStorage = (params, key="paymentChain") => {
   return localStorage.setItem(key, JSON.stringify(params));
 };
 
-window.wei2USDT = (val) => {
-  return Number(val) ? Number(val) / Math.pow(10, 6) : 0;
+window.wei2USDT = (val, type = 'erc20') => {
+  let base = 0;
+  if(type == 'erc20') {
+    base = 6;
+  }else if(type == 'omni') {
+    base = 8;
+  }else if(type == 'eth') {
+    base = 18;
+  }else if(type == 'btc') {
+    base = 6;
+  }
+  return Number(val) ? Number(val) / Math.pow(10, base) : 0;
 }
 
 window.regPhone = phone => {
@@ -134,6 +144,11 @@ window.cashType = {
   0: '全部',
   1: 'CNY',
   2: 'USD',
+}
+window.issueTypeStatus = {
+  0: '全部',
+  1: '未处理',
+  2: '已处理',
 }
 
 if (pwa) {

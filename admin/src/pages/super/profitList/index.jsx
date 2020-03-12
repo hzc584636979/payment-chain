@@ -56,7 +56,7 @@ const CreateAddForm = Form.create()(props => {
     >
       <Form>
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="合伙人">
-          {form.getFieldDecorator('user_name', {
+          {form.getFieldDecorator('remark', {
             rules: [{ required: true, message: '请输入合伙人姓名' }],
           })(<Input placeholder="请输入合伙人姓名" />)}
         </FormItem>
@@ -85,11 +85,6 @@ class ProfitList extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'profitList/fetch',
-      payload:{
-        pageSize: 999,
-        page: 0,
-        search_value: null,
-      },
     })
   }
 
@@ -97,41 +92,13 @@ class ProfitList extends Component {
     
   }
 
-  handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
-    const { history } = this.props.profitList.data;
-
-    const params = {
-      ...history,
-      page: pagination.current -1,
-      pageSize: pagination.pageSize,
-    };
-
+  handleSearch = () => {
     dispatch({
-      type: 'profitList/search',
-      payload: params,
-    });
-  };
-
-  handleSearch = (e, pagination={}) => {
-    e && e.preventDefault();
-    const { dispatch, form } = this.props;
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-
-      const values = {
-        ...fieldsValue,
-        search_value: fieldsValue.search_value || null,
-        page: pagination.page || 0,
-        pageSize: pagination.pageSize || 999,
-      };
-      dispatch({
-        type: 'profitList/search',
-        payload: values,
-      }).then(data => {
-        this.handleSelectRows([])
-      })
-    });
+      type: 'profitList/fetch',
+      payload: values,
+    }).then(data => {
+      this.handleSelectRows([])
+    })
   };
 
   handleEdit = () => {
@@ -150,11 +117,10 @@ class ProfitList extends Component {
 
   renderForm() {
     const { getFieldDecorator } = this.props.form;
-    const { history } = this.props.profitList.data;
     const { selectedRowKeys, editStatus } = this.state;
 
     return (
-      <Form onSubmit={this.handleSearch} layout="inline">
+      <Form layout="inline">
         <Row gutter={24}>
           <Col xl={24} lg={24} sm={24} style={{textAlign: 'right'}}>
             <span className={styles.submitButtons} style={{paddingTop: 4, display: 'inline-block'}}>
@@ -196,38 +162,20 @@ class ProfitList extends Component {
 
   add = arg => {
     const { dispatch } = this.props;
-    const { pagination } = this.props.profitList.data;
-    const params = {
-      page: 0,
-      pageSize: 999,
-    };
-
-    dispatch({
-      type: 'profitList/add',
-      payload: arg,
-    }).then(data => {
-      if(data.status != 1) {
-        message.error(data.msg);
-        return;
-      }else {
-        message.success('操作成功');
-      }
-      this.handleSearch(null, params);
-    })
-  }
-
-  delete = () => {
-    const { dispatch } = this.props;
+    const { list } = this.props.profitList.data;
     const { selectedRowKeys } = this.state;
+    let newList = JSON.parse(JSON.stringify(list));
 
-    const params = {
-      page: 0,
-      pageSize: 999,
-    };
+    newList.push({
+      address: arg.address,
+      ratio: 0,
+      remark: arg.remark,
+    })
+
     dispatch({
-      type: 'profitList/delete',
+      type: 'profitList/modify',
       payload: {
-        users: selectedRowKeys
+        data: newList
       },
     }).then(data => {
       if(data.status != 1) {
@@ -236,7 +184,38 @@ class ProfitList extends Component {
       }else {
         message.success('操作成功');
       }
-      this.handleSearch(null, params);
+      this.handleSearch();
+    })
+  }
+
+  delete = () => {
+    const { dispatch } = this.props;
+    const { list } = this.props.profitList.data;
+    const { selectedRowKeys } = this.state;
+    let newList = JSON.parse(JSON.stringify(list));
+    let dataList = [];
+
+    selectedRowKeys.map(k => {
+      delete newList[k]
+    })
+
+    newList.map(v => {
+      v && dataList.push(v);
+    })
+    
+    dispatch({
+      type: 'profitList/modify',
+      payload: {
+        data: dataList
+      },
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      this.handleSearch();
     })
   }
 
@@ -257,15 +236,17 @@ class ProfitList extends Component {
     const { editData } = this.state;
     let newList = editData || JSON.parse(JSON.stringify(list));
 
-    if(key == 'profit') {
+    if(key == 'ratio') {
       if(!(Number(e.target.value)) && e.target.value != 0) {
         message.error('请输入数字的利润比');
         return;
       }else if(e.target.value.indexOf('.') > -1 && e.target.value.split('.')[1].length == 0) {
-        newList[index][key] = (new BigNumber(Number(e.target.value.split('.')[0])).dividedBy(100).toNumber()) + '.';
-        console.log()
+        newList[index][key] = (new BigNumber(Number(e.target.value.split('.')[0])).multipliedBy(100).toNumber()) + '.';
+      }else if(e.target.value.indexOf('.') > -1 && e.target.value.split('.')[1].length > 2) {
+        message.error('利润比的小数不能超过2位');
+        return;
       }else {
-        newList[index][key] = new BigNumber(Number(e.target.value)).dividedBy(100).toNumber();
+        newList[index][key] = new BigNumber(Number(e.target.value)).multipliedBy(100).toNumber();
       }
     }else {
       newList[index][key] = e.target.value;
@@ -279,21 +260,21 @@ class ProfitList extends Component {
   checkTotalNum = list => {
     let total = 0;
     for(let i = 0; i < list.length; i++) {
-      console.log(list[i].profit)
-      if((!Number(list[i].profit) && list[i].profit != 0) 
-        || list[i].profit.toString().split('.').length > 2
-        || list[i].profit.toString() == '0.'
+      console.log(list[i].ratio)
+      if((!Number(list[i].ratio) && list[i].ratio != 0) 
+        || list[i].ratio.toString().split('.').length > 2
+        || list[i].ratio.toString() == '0.'
       ) {
         message.error('利润比不是数字');
         return false;
       }
-      total = new BigNumber(total).plus(new BigNumber(Number(list[i].profit))).toNumber();
+      total = new BigNumber(total).plus(new BigNumber(Number(list[i].ratio))).toNumber();
     }
-    if(total != 1) {
+    if(total != 10000) {
       message.error('利润比总和必须等于100%，请修改后提交')
     }
     console.log(total)
-    return total == 1 ? true : false;
+    return total == 10000 ? true : false;
   }
 
   handleSubmit = () => {
@@ -306,10 +287,6 @@ class ProfitList extends Component {
       return;
     }
 
-    const params = {
-      page: 0,
-      pageSize: 999,
-    };
     dispatch({
       type: 'profitList/modify',
       payload: {
@@ -323,13 +300,13 @@ class ProfitList extends Component {
         message.success('操作成功');
       }
       this.handleEditCancel();
-      this.handleSearch(null, params);
+      this.handleSearch();
     })
   }
 
   render() {
     const { loading } = this.props;
-    const { history, list, pagination } = this.props.profitList.data;
+    const { list } = this.props.profitList.data;
     const { selectedRowKeys, addVisible, editStatus, editData } = this.state;
 
     const addMethods = {
@@ -340,12 +317,12 @@ class ProfitList extends Component {
     const columns = [
       {
         title: '合伙人',
-        dataIndex: 'user_name',
-        key: 'user_name',
+        dataIndex: 'remark',
+        key: 'remark',
         align: 'center',
         render: (val, record, index) => {
           if(editStatus) {
-            return <Input value={val} onChange={e => this.handleEditData(e, 'user_name', index)} />
+            return <Input value={val} onChange={e => this.handleEditData(e, 'remark', index)} />
           }else {
             return val;
           }
@@ -366,19 +343,19 @@ class ProfitList extends Component {
       },
       {
         title: '利润比',
-        dataIndex: 'profit',
-        key: 'profit',
+        dataIndex: 'ratio',
+        key: 'ratio',
         align: 'center',
         render: (val, record, index) => {
           if(editStatus) {
             if(typeof val == 'string') {
-              const newVal = new BigNumber(val.substr(0, val.lastIndexOf('.'))).multipliedBy(100).toNumber();
-              return <span><Input style={{width: 100}} value={newVal+'.'} onChange={e => this.handleEditData(e, 'profit', index)} />%</span>;
+              const newVal = new BigNumber(val.substr(0, val.lastIndexOf('.'))).dividedBy(100).toNumber();
+              return <span><Input style={{width: 100}} value={newVal+'.'} onChange={e => this.handleEditData(e, 'ratio', index)} />%</span>;
             }else {
-              return <span><Input style={{width: 100}} value={new BigNumber(val).multipliedBy(100).toNumber()} onChange={e => this.handleEditData(e, 'profit', index)} />%</span>;
+              return <span><Input style={{width: 100}} value={new BigNumber(val).dividedBy(100).toNumber()} onChange={e => this.handleEditData(e, 'ratio', index)} />%</span>;
             }
           }else {
-            return <span style={{color: '#EA8A00'}}>{`${val * 100}%`}</span>;
+            return <span style={{color: '#EA8A00'}}>{`${new BigNumber(val).dividedBy(100).toNumber()}%`}</span>;
           }
         },
       },

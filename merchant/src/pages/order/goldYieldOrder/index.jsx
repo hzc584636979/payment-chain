@@ -35,6 +35,7 @@ const getValue = obj =>
 @connect(({ goldYieldOrder, loading }) => ({
   goldYieldOrder,
   loading: loading.effects['goldYieldOrder/fetch'],
+  yieldLoading: loading.effects['goldYieldOrder/yieldOrder'],
 }))
 @Form.create()
 class GoldYieldOrder extends Component {
@@ -333,7 +334,7 @@ class GoldYieldOrder extends Component {
   };
 
   renderItem = record => {
-    const { currentUser } = this.props;
+    const { currentUser, yieldLoading } = this.props;
     const { yieldId, MM } = this.state;
     let renderStr = record.order_id;
     if (yieldId == record.order_id) {
@@ -350,7 +351,7 @@ class GoldYieldOrder extends Component {
                 style={{ width: '25%' }}
               />
               <span style={{ display: 'inline-block', width: 15 }}></span>
-              <Button type="primary" onClick={() => this.yield(record)}>
+              <Button loading={yieldLoading} type="primary" onClick={() => this.yield(record)}>
                 出金
               </Button>
               <span style={{ display: 'inline-block', width: 15 }}></span>
