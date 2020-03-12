@@ -35,7 +35,7 @@ const errorHandler = error => {
       message: `请求错误 ${status}: ${url}`,
       description: errorText,
     });
-    /*if(status == 504 && !loginOutStatus) {
+    if(status == 504 && !loginOutStatus) {
       loginOutStatus = true;
       window.g_app._store.dispatch({
         type: 'login/logout',
@@ -44,7 +44,7 @@ const errorHandler = error => {
           loginOutStatus = false;
         }, 1000) 
       })
-    }*/
+    }
   } else if (!response) {
     notification.error({
       description: '您的网络发生异常，无法连接服务器',
