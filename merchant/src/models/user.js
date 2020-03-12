@@ -59,7 +59,7 @@ const UserModel = {
   },
   reducers: {
     saveCurrentUser(state, action) {
-      g_setLocalStorage(action.payload);
+      g_setLocalStorage({...action.payload, token: g_getLocalStorage() ? g_getLocalStorage().token : null});
       return { ...state, currentUser: action.payload || {} };
     },
   },
