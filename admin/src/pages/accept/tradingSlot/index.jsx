@@ -50,8 +50,8 @@ const CreateForm = Form.create()(props => {
 	    	callback('请输入整数的可交易数');
 	    }else if(value < 1) {
         callback('同时可交易数不能小于1单');
-      }else if(value > 50) {
-        callback('同时可交易数不能大于50单');
+      }else if(value > 100) {
+        callback('同时可交易数不能大于100单');
       }
   	}
     callback();
@@ -81,7 +81,7 @@ const CreateForm = Form.create()(props => {
                 validator: validator
               }
             ],
-          })(<Input maxLength={2} style={{width: 100}} placeholder="请输入可交易数" />)}
+          })(<Input maxLength={3} style={{width: 100}} placeholder="请输入可交易数" />)}
           单
         </FormItem>
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="购买交易槽">
@@ -97,7 +97,7 @@ const CreateForm = Form.create()(props => {
                 validator: validator
               }
             ],
-          })(<Input maxLength={2} style={{width: 100}} placeholder="请输入可交易数" />)}
+          })(<Input maxLength={3} style={{width: 100}} placeholder="请输入可交易数" />)}
           单
         </FormItem>
       </Form>

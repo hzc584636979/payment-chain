@@ -79,12 +79,27 @@ class ProfitList extends Component {
   state = {
     selectedRowKeys: [],
     editData: null,
+    totalError: null
   };
 
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
       type: 'profitList/fetch',
+    }).then(data => {
+      let total = 0;
+      for(let i = 0; i < data.list.length; i++) {
+        total = new BigNumber(total).plus(new BigNumber(Number(data.list[i].ratio))).toNumber();
+      }
+      if(total != 10000) {
+        this.setState({
+          totalError: '当前利润比总和不等于100%，请及时修改避免造成分配问题'
+        })
+      }else {
+        this.setState({
+          totalError: null
+        })
+      }
     })
   }
 
@@ -117,7 +132,7 @@ class ProfitList extends Component {
 
   renderForm() {
     const { getFieldDecorator } = this.props.form;
-    const { selectedRowKeys, editStatus } = this.state;
+    const { selectedRowKeys, editStatus, totalError } = this.state;
 
     return (
       <Form layout="inline">
@@ -299,6 +314,9 @@ class ProfitList extends Component {
       }else {
         message.success('操作成功');
       }
+      this.setState({
+        totalError: null
+      })
       this.handleEditCancel();
       this.handleSearch();
     })
@@ -307,7 +325,7 @@ class ProfitList extends Component {
   render() {
     const { loading } = this.props;
     const { list } = this.props.profitList.data;
-    const { selectedRowKeys, addVisible, editStatus, editData } = this.state;
+    const { selectedRowKeys, addVisible, editStatus, editData, totalError } = this.state;
 
     const addMethods = {
       submit: this.add,
@@ -365,6 +383,10 @@ class ProfitList extends Component {
       <ContLayout>
         <div className={styles.wrap}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
+          {
+            totalError &&
+            <div className={styles.errMsg}>{ totalError }</div>
+          }
           <StandardTable
             selectedRowKeys={selectedRowKeys}
             rowKey={'id'}

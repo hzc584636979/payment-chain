@@ -72,8 +72,7 @@ class ProfitChart extends Component {
     const { getFieldDecorator } = this.props.form;
     const { history } = this.props.profitChart.data;
     function disabledDate(current) {
-      console.log(current, moment().endOf('month'))
-      return current && (current < moment('2020-03-01').startOf('month') || current > moment().endOf('month'));
+      return current && (/*current < moment('2020-03-01').startOf('month') || */current > moment().endOf('month'));
     }
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
@@ -116,8 +115,8 @@ class ProfitChart extends Component {
     const { profitChart, loading } = this.props;
     const { chartType } = this.state;
 
-    const data = profitChart.list ? profitChart.list.map(v => ({
-      day: moment(v.created_at).local().format('MM-DD'),
+    const data = profitChart.data.list ? profitChart.data.list.map(v => ({
+      day: moment(v.created_at).local().format('DD'),
       value: v.profit
     }))
     :
@@ -142,19 +141,19 @@ class ProfitChart extends Component {
               <Col xl={8} md={8} sm={12} xs={12}>
                 <div className={`${styles.item} ${chartType == 1 ? styles.itemOn : null}`}>
                   <div className={styles.name}>当月总手续费(USDT)</div>
-                  <div className={styles.num}>{ 123213213 }</div>
+                  <div className={styles.num}>{ profitChart.data.total_gas.toFixed(4) }</div>
                 </div>
               </Col>
               <Col xl={8} md={8} sm={12} xs={12}>
                 <div className={`${styles.item} ${chartType == 2 ? styles.itemOn : null}`}>
                   <div className={styles.name}>当月承兑商总收益(USDT)</div>
-                  <div className={styles.num}>{ 1232132313 }</div>
+                  <div className={styles.num}>{ profitChart.data.total_profit.toFixed(4) }</div>
                 </div>
               </Col>
               <Col xl={8} md={8} sm={12} xs={12}>
                 <div className={`${styles.item} ${chartType == 3 ? styles.itemOn : null}`}>
                   <div className={styles.name}>当月平台总收益(USDT)</div>
-                  <div className={styles.num}>{ 1232132313 }</div>
+                  <div className={styles.num}>{ profitChart.data.total_share.toFixed(4) }</div>
                 </div>
               </Col>
             </Row>
