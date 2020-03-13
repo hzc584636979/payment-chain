@@ -83,10 +83,19 @@ class ProfitList extends Component {
   };
 
   componentDidMount() {
+    this.getInfo();
+  }
+
+  componentWillUnmount() {
+    
+  }
+
+  getInfo = () => {
     const { dispatch } = this.props;
     dispatch({
       type: 'profitList/fetch',
     }).then(data => {
+      this.handleEditCancel();
       let total = 0;
       for(let i = 0; i < data.list.length; i++) {
         total = new BigNumber(total).plus(new BigNumber(Number(data.list[i].ratio))).toNumber();
@@ -103,19 +112,6 @@ class ProfitList extends Component {
     })
   }
 
-  componentWillUnmount() {
-    
-  }
-
-  handleSearch = () => {
-    dispatch({
-      type: 'profitList/fetch',
-      payload: values,
-    }).then(data => {
-      this.handleSelectRows([])
-    })
-  };
-
   handleEdit = () => {
     this.setState({
       editStatus: true,
@@ -128,6 +124,7 @@ class ProfitList extends Component {
       editStatus: false,
       editData: null,
     })
+    this.handleSelectRows([])
   }
 
   renderForm() {
@@ -148,14 +145,14 @@ class ProfitList extends Component {
                     <Button onClick={this.handleEdit} type="primary" style={{ marginLeft: 8 }}>
                       编辑
                     </Button>
-                    <Button onClick={this.delete} type="danger" disabled={selectedRowKeys.length > 0 ? false : true} style={{ marginLeft: 8 }}>
-                      删除
-                    </Button>
                   </Fragment>
                   :
                   <Fragment>
                     <Button onClick={this.handleSubmit} type="primary">
                       提交
+                    </Button>
+                    <Button onClick={this.delete} type="danger" disabled={selectedRowKeys.length > 0 ? false : true} style={{ marginLeft: 8 }}>
+                      删除
                     </Button>
                     <Button onClick={this.handleEditCancel} style={{ marginLeft: 8 }}>
                       取消
@@ -199,14 +196,17 @@ class ProfitList extends Component {
       }else {
         message.success('操作成功');
       }
-      this.handleSearch();
+      this.getInfo();
+      this.setState({
+        'addVisible': false,
+      })
     })
   }
 
   delete = () => {
     const { dispatch } = this.props;
     const { list } = this.props.profitList.data;
-    const { selectedRowKeys } = this.state;
+    const { selectedRowKeys, editData } = this.state;
     let newList = JSON.parse(JSON.stringify(list));
     let dataList = [];
 
@@ -214,8 +214,11 @@ class ProfitList extends Component {
       delete newList[k]
     })
 
-    newList.map(v => {
-      v && dataList.push(v);
+    newList.map((v, i) => {
+      v && dataList.push({
+        ...v,
+        ...editData[i]
+      });
     })
     
     dispatch({
@@ -230,7 +233,7 @@ class ProfitList extends Component {
       }else {
         message.success('操作成功');
       }
-      this.handleSearch();
+      this.getInfo();
     })
   }
 
@@ -275,7 +278,6 @@ class ProfitList extends Component {
   checkTotalNum = list => {
     let total = 0;
     for(let i = 0; i < list.length; i++) {
-      console.log(list[i].ratio)
       if((!Number(list[i].ratio) && list[i].ratio != 0) 
         || list[i].ratio.toString().split('.').length > 2
         || list[i].ratio.toString() == '0.'
@@ -288,7 +290,6 @@ class ProfitList extends Component {
     if(total != 10000) {
       message.error('利润比总和必须等于100%，请修改后提交')
     }
-    console.log(total)
     return total == 10000 ? true : false;
   }
 
@@ -317,8 +318,7 @@ class ProfitList extends Component {
       this.setState({
         totalError: null
       })
-      this.handleEditCancel();
-      this.handleSearch();
+      this.getInfo();
     })
   }
 
@@ -384,10 +384,11 @@ class ProfitList extends Component {
         <div className={styles.wrap}>
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           {
-            totalError &&
-            <div className={styles.errMsg}>{ totalError }</div>
+            (totalError || selectedRowKeys.length > 0) &&
+            <div className={styles.errMsg}>{ totalError || '删除合伙人时，请先将该合伙人的利润比分配到其他合伙人上' }</div>
           }
           <StandardTable
+            noRowSelection={editStatus ? false : true}
             selectedRowKeys={selectedRowKeys}
             rowKey={'id'}
             onSelectRow={this.handleSelectRows}
