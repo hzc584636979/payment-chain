@@ -71,13 +71,17 @@ class ProfitChart extends Component {
   renderForm() {
     const { getFieldDecorator } = this.props.form;
     const { history } = this.props.profitChart.data;
+    function disabledDate(current) {
+      console.log(current, moment().endOf('month'))
+      return current && (current < moment('2020-03-01').startOf('month') || current > moment().endOf('month'));
+    }
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={24}>
           <Col xl={12} lg={12} sm={24}>
             <FormItem label="选择时间">
               {getFieldDecorator('time',{ initialValue: history.time })(
-                <MonthPicker style={{ width: '100%' }} placeholder="请选择月份" />
+                <MonthPicker disabledDate={disabledDate} style={{ width: '100%' }} placeholder="请选择月份" />
               )}
             </FormItem>
           </Col>
@@ -98,7 +102,7 @@ class ProfitChart extends Component {
       chartType
     })
     const { dispatch } = this.props;
-    const { history } = this.props.profitChart.data;
+    const { history, list } = this.props.profitChart.data;
     dispatch({
       type: 'profitChart/fetch',
       payload: {
@@ -111,28 +115,13 @@ class ProfitChart extends Component {
   render() {
     const { profitChart, loading } = this.props;
     const { chartType } = this.state;
-    const data = [
-      {
-          day: "03-01",
-          value: 7
-      },
-      {
-          day: "03-02",
-          value: 6.9
-      },
-      {
-          day: "03-03",
-          value: 109.5
-      },
-      {
-          day: "03-04",
-          value: 14.5
-      },
-      {
-          day: "03-05",
-          value: 18.4
-      },
-    ];
+
+    const data = profitChart.list ? profitChart.list.map(v => ({
+      day: moment(v.created_at).local().format('MM-DD'),
+      value: v.profit
+    }))
+    :
+    []
 
     const cols = {
       month: {
@@ -195,47 +184,50 @@ class ProfitChart extends Component {
             </Row>
           </div>
           <div>
-            <Chart height={400} data={data} scale={cols} forceFit>
-              <Legend />
-              <Axis name="day" />
-              <Axis
-                name="value"
-                label={{
-                  formatter: val => `${val}`
-                }}
-              />
-              <Tooltip
-                showTitle={false}
-                containerTpl='<div class="g2-tooltip"><table class="g2-tooltip-list"></table></div>'
-                itemTpl='<tr class="g2-tooltip-list-item"><td>{value}</td></tr>'
-                g2-tooltip={{
-                  position: 'absolute',
-                  left: 0,
-                  top: 0,
-                  visibility: 'hidden',
-                  border : '1px solid #efefef',
-                  backgroundColor: 'white',
-                  color: '#000',
-                  opacity: '0.8',
-                }}
-              />
-              <Geom
-                type="line"
-                position="day*value"
-                size={2}
-                shape={"smooth"}
-              />
-              <Geom
-                type="point"
-                position="day*value"
-                size={4}
-                shape={"circle"}
-                style={{
-                  stroke: "#fff",
-                  lineWidth: 1
-                }}
-              />
-            </Chart>
+            {
+              data.length > 0 &&
+              <Chart height={400} data={data} scale={cols} forceFit>
+                <Legend />
+                <Axis name="day" />
+                <Axis
+                  name="value"
+                  label={{
+                    formatter: val => `${val}`
+                  }}
+                />
+                <Tooltip
+                  showTitle={false}
+                  containerTpl='<div class="g2-tooltip"><table class="g2-tooltip-list"></table></div>'
+                  itemTpl='<tr class="g2-tooltip-list-item"><td>{value}</td></tr>'
+                  g2-tooltip={{
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    visibility: 'hidden',
+                    border : '1px solid #efefef',
+                    backgroundColor: 'white',
+                    color: '#000',
+                    opacity: '0.8',
+                  }}
+                />
+                <Geom
+                  type="line"
+                  position="day*value"
+                  size={2}
+                  shape={"smooth"}
+                />
+                <Geom
+                  type="point"
+                  position="day*value"
+                  size={4}
+                  shape={"circle"}
+                  style={{
+                    stroke: "#fff",
+                    lineWidth: 1
+                  }}
+                />
+              </Chart>
+            }
           </div>
         </div>
       </ContLayout>

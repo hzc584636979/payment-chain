@@ -25,21 +25,21 @@ export function socketSubscribe(options) {
 
 	let sendHeartTimeout = null;
 
-	let heartCheck = () => {
+	/*let heartCheck = () => {
 		sendHeartTimeout = setInterval(() => {
 			console.log(`heart: ${new Date()}`)
 			client.publish(`/heart`, `${window.g_getLocalStorage().id}`, {qos: 1});
 		}, 10000)
-	}
+	}*/
 
 	client.on('reconnect', (error) => {
-		clearInterval(sendHeartTimeout);
+		// clearInterval(sendHeartTimeout);
 	    console.log('正在重连:', error)
 	})
 
 	client.on('error', (error) => {
 		console.log('错误:',error);
-		clearInterval(sendHeartTimeout);
+		// clearInterval(sendHeartTimeout);
 	    destroyWebSocket();
 	    socketSubscribe(options);
 	})
@@ -48,7 +48,7 @@ export function socketSubscribe(options) {
     	client.subscribe(options.subscribeList, { qos:0 }, function (error) {
         	console.log(error || '订阅成功')
     	})
-    	heartCheck();
+    	// heartCheck();
 	    step = 1;
 	})
 
@@ -65,7 +65,7 @@ export function socketSubscribe(options) {
 	})
 
 	client.on('close',() => {
-		clearInterval(sendHeartTimeout);
+		// clearInterval(sendHeartTimeout);
 		console.log('断开MQTT')
 	});
 

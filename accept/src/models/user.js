@@ -1,4 +1,4 @@
-import { getUserInfo } from '@/services/api';
+import { getUserInfo, sendUserHeart } from '@/services/api';
 import {
   message,
 } from 'antd';
@@ -54,6 +54,9 @@ const UserModel = {
         } : null,
       });
       return response;
+    },
+    *heart({ payload }, { call, put }) {
+      const response = yield call(sendUserHeart);
     },
   },
   reducers: {

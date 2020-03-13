@@ -17,6 +17,7 @@ import { connect } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
 import StandardTable from '@/components/StandardTable';
+import copy from 'copy-to-clipboard';
 import moment from 'moment';
 import styles from './style.less';
 
@@ -27,6 +28,21 @@ const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
+const orderType = {
+  0: '全部',
+  1: '充币账单',
+  2: '提币账单',
+};
+const statusType = {
+  0: '全部',
+  1: '提起交易',
+  2: '交易已广播',
+  3: '交易上链已确认',
+  4: '交易广播失败',
+  5: '交易上链失败',
+  6: '已上链等待达到确认数',
+  20: '拒绝提币申请',
+};
 
 @connect(({ withdrawList, loading }) => ({
   withdrawList,
@@ -45,8 +61,10 @@ class WithdrawList extends Component {
       payload:{
         pageSize: 10,
         page: 0,
-        search_value: null,
         token_id: 0,
+        order_type: 0,
+        state: 0,
+        time: [moment().startOf('month'), moment().endOf('month')],
       },
     });
   }
@@ -95,12 +113,7 @@ class WithdrawList extends Component {
     const { history } = this.props.withdrawList.data;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={24}>
-          <Col xl={8} lg={12} sm={24}>
-            <FormItem>
-              {getFieldDecorator('search_value',{ initialValue: history.search_value })(<Input placeholder="姓名/手机号" />)}
-            </FormItem>
-          </Col>
+        <Row>
           <Col xl={8} lg={12} sm={24}>
             <FormItem label="币种">
               {getFieldDecorator('token_id',{ initialValue: history.token_id+'' })(
@@ -115,6 +128,43 @@ class WithdrawList extends Component {
             </FormItem>
           </Col>
           <Col xl={8} lg={12} sm={24}>
+            <FormItem label="订单分类">
+              {getFieldDecorator('order_type',{ initialValue: history.order_type+'' })(
+                <Select placeholder="请选择">
+                  {
+                    Object.keys(orderType).map(value => {
+                      return <Option value={value} key={value}>{orderType[value]}</Option>
+                    })
+                  }
+                </Select>
+              )}
+            </FormItem>
+          </Col>
+          <Col xl={8} lg={12} sm={24}>
+            <FormItem label="状态">
+              {getFieldDecorator('state',{ initialValue: history.state+'' })(
+                <Select placeholder="请选择">
+                  {
+                    Object.keys(statusType).map(value => {
+                      return <Option value={value} key={value}>{statusType[value]}</Option>
+                    })
+                  }
+                </Select>
+              )}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col xl={8} lg={12} sm={24}>
+            <FormItem label="时间">
+              {getFieldDecorator('time',{ initialValue: history.time })(
+                <RangePicker
+                  style={{ width: '100%' }}
+                />
+              )}
+            </FormItem>
+          </Col>
+          <Col xl={4} lg={12} sm={24}>
             <span className={styles.submitButtons} style={{paddingTop: 4, display: 'inline-block'}}>
               <Button type="primary" htmlType="submit">
                 查询
@@ -126,21 +176,36 @@ class WithdrawList extends Component {
     );
   }
 
+  handleClipBoard = val => {
+    if(copy(val)){
+      message.success('复制成功') 
+    }else{
+      message.error('复制失败，请重试') 
+    }
+  }
+
   render() {
     const { loading } = this.props;
     const { history, list, pagination } = this.props.withdrawList.data;
     const columns = [
       {
-        title: '姓名',
-        dataIndex: 'user_name',
-        key: 'user_name',
+        title: '订单分类',
+        dataIndex: 'type',
+        key: 'type',
         align: 'center',
+        render:(val,record)=>{
+          return orderType[val];
+        },
       },
       {
-        title: '手机号',
-        dataIndex: 'telephone_number',
-        key: 'telephone_number',
+        title: 'Txhash',
+        dataIndex: 'txid',
+        key: 'txid',
         align: 'center',
+        ellipsis: true,
+        render:(val,record)=>{
+          return <a onClick={() => this.handleClipBoard(val)}>{ val }</a>;
+        },
       },
       {
         title: '币种',
@@ -152,16 +217,35 @@ class WithdrawList extends Component {
         },
       },
       {
-        title: '转账金额',
-        dataIndex: 'pay_amount',
-        key: 'pay_amount',
+        title: '代币数量',
+        dataIndex: 'count',
+        key: 'count',
         align: 'center',
         render: (val, record) => {
           return `${wei2USDT(val, record.token_id == 1 ? 'erc20' : 'omni')} ${coinType2[record.token_id]}`;
         },
       },
       {
-        title: '转账时间',
+        title: '地址',
+        dataIndex: 'to_address',
+        key: 'to_address',
+        align: 'center',
+        ellipsis: true,
+        render:(val,record)=>{
+          return <a onClick={() => this.handleClipBoard(val)}>{ val }</a>;
+        },
+      },
+      {
+        title: '订单状态',
+        dataIndex: 'state',
+        key: 'state',
+        align: 'center',
+        render:(val,record)=>{
+          return statusType[val >= 20 ? val : Number(val) + 1];
+        },
+      },
+      {
+        title: '创建时间',
         dataIndex: 'create_time',
         key: 'create_time',
         align: 'center',

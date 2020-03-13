@@ -104,6 +104,7 @@ class BasicLayout extends PureComponent {
     super(props);
   
     this.state = {};
+    this.sendHeartTimeout = null;
   }
 
   componentDidMount() {
@@ -112,6 +113,7 @@ class BasicLayout extends PureComponent {
     this.props.dispatch({
       type: 'user/getUserInfo',
     });
+    this.heartCheck();
     //this.testNotification();
     socketSubscribe({
       subscribeList: `${window.g_getLocalStorage().id}order`,
@@ -126,7 +128,19 @@ class BasicLayout extends PureComponent {
   }
 
   componentWillUnmount() {
+    clearInterval(this.sendHeartTimeout);
     destroyWebSocket();
+  }
+
+  heartCheck = () => {
+    this.props.dispatch({
+      type: 'user/heart',
+    });
+    this.sendHeartTimeout = setInterval(() => {
+      this.props.dispatch({
+        type: 'user/heart',
+      });
+    }, 15000)
   }
 
   onLogoutClick = () => {

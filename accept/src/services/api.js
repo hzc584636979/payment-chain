@@ -145,6 +145,14 @@ export async function getUserInfo(params) {
   });
 }
 
+/*首页-发送用户心跳*/
+export async function sendUserHeart(params) {
+  return request(`${apiAddress}/home/heart`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
 /*首页-获取交易信息*/
 export async function homeGetTxInfo(params) {
   return request(`${apiAddress}/home/getTxInfo`, {

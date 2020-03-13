@@ -94,7 +94,7 @@ class ColdwalletMerchantList extends Component {
               coldwalletInfo={{
                 walletType: 'omni钱包',
                 walletAddress: omniWallet,
-                chain: 'eth',
+                chain: 'omni',
                 onGetCaptcha: this.onGetCaptcha,
                 submit: this.modify,
                 loading: loadingOmni,

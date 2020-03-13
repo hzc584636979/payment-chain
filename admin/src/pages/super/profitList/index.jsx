@@ -175,7 +175,7 @@ class ProfitList extends Component {
     dispatch({
       type: 'profitList/modify',
       payload: {
-        data: newList
+        accounts: JSON.stringify(newList)
       },
     }).then(data => {
       if(data.status != 1) {
@@ -206,7 +206,7 @@ class ProfitList extends Component {
     dispatch({
       type: 'profitList/modify',
       payload: {
-        data: dataList
+        accounts: JSON.stringify(dataList)
       },
     }).then(data => {
       if(data.status != 1) {
@@ -290,7 +290,7 @@ class ProfitList extends Component {
     dispatch({
       type: 'profitList/modify',
       payload: {
-        editData: newList,
+        accounts: JSON.stringify(newList),
       },
     }).then(data => {
       if(data.status != 1) {

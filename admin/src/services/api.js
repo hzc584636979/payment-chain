@@ -269,7 +269,7 @@ export async function coldwalletMerchantSearchAll(params) {
 
 /*超级管理员-手续费冷钱包-添加钱包*/
 export async function coldwalletGasAdd(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
+  return request(`${apiAddress}/wallet/center/gas/add`, {
     method: 'POST',
     data: params,
   });
@@ -277,15 +277,15 @@ export async function coldwalletGasAdd(params) {
 
 /*超级管理员-手续费冷钱包-删除钱包*/
 export async function coldwalletGasDelete(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
+  return request(`${apiAddress}/wallet/center/gas/delete`, {
     method: 'POST',
     data: params,
   });
 }
 
 /*超级管理员-手续费冷钱包-获取钱包余额*/
-export async function coldwalletGasBanlance(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
+export async function coldwalletGasBalance(params) {
+  return request(`${apiAddress}/wallet/center/chain/balance`, {
     method: 'POST',
     data: params,
   });
@@ -325,7 +325,7 @@ export async function withdrawListSearchAll(params) {
 
 /*超级管理员-平台收益-请求*/
 export async function profitChart(params) {
-  return request(`${apiAddress}/manager/merchant/list`, {
+  return request(`${apiAddress}/wallet/center/profit/list`, {
     method: 'POST',
     data: params,
   });
@@ -333,7 +333,7 @@ export async function profitChart(params) {
 
 /*超级管理员-平台利润-请求*/
 export async function profitList(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
+  return request(`${apiAddress}/wallet/center/share/list`, {
     method: 'POST',
     data: params,
   });
@@ -341,7 +341,7 @@ export async function profitList(params) {
 
 /*超级管理员-平台利润-更新*/
 export async function profitListModify(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
+  return request(`${apiAddress}/wallet/center/share/update`, {
     method: 'POST',
     data: params,
   });

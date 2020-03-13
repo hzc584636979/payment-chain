@@ -1,4 +1,4 @@
-import { getWalletList, coldwalletGasAdd, coldwalletGasDelete, coldwalletGasBanlance } from '@/services/api';
+import { getWalletList, coldwalletGasAdd, coldwalletGasDelete, coldwalletGasBalance } from '@/services/api';
 
 
 const Model = {
@@ -23,13 +23,13 @@ const Model = {
         omni: response.data.omniAccount.gasAccount,
       };
     },
-    *getBanlance({ payload }, { call, put }) {
-      const response = yield call(coldwalletGasBanlance, payload);
+    *getBalance({ payload }, { call, put }) {
+      const response = yield call(coldwalletGasBalance, payload);
       yield put({
         type: 'saveBanlance',
         payload: {
           data: response.data,
-          token_id: payload.token_id
+          ...payload,
         },
       });
     },
@@ -50,24 +50,17 @@ const Model = {
       };
     },
     saveBanlance(state, action) {
-      let { data, token_id } = action.payload;
+      let { data, token_id, index } = action.payload;
       let newData = {};
       let list = token_id == -1 ? JSON.parse(JSON.stringify(state.data.erc20)) : JSON.parse(JSON.stringify(state.data.omni));
       if(token_id == -1) {
-        list.map((v, i) => {
-          if(v.address == data.address) {
-            list[v].banlance = data.banlance;
-          }
-        })
+        list[index].balance = data.balance
+        console.log(list)
         newData = {
           erc20: list
         }
       }else {
-        list.map((v, i) => {
-          if(v.address == data.address) {
-            list[v].banlance = data.banlance;
-          }
-        })
+        list[index].balance = data.balance
         newData = {
           omni: list
         }

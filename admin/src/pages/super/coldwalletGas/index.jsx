@@ -106,12 +106,13 @@ class ColdwalletGas extends Component {
       type: 'coldwalletGasList/fetch',
     }).then(data => {
       let rows = token_id == 1 ? data.erc20 : data.omni;
-      rows && rows.length > 0 && rows.map(v => {
+      rows && rows.length > 0 && rows.map((v, i) => {
         dispatch({
-          type: 'coldwalletGasList/getBanlance',
+          type: 'coldwalletGasList/getBalance',
           payload: {
             token_id: token_id == 1 ? -1 : -2, 
-            address: v.address
+            address: v.address,
+            index: i,
           },
         })
       })
@@ -136,14 +137,13 @@ class ColdwalletGas extends Component {
   };
 
   handleType = e => {
-    this.setState({
+    this.setState(() => ({
       token_id: e,
       address: null,
       private_key: null,
       selectedRowKeys: [],
       addresss: [],
-    })
-    this.getInfo();
+    }), this.getInfo)
   }
 
   handleAddress = e => {
@@ -167,7 +167,7 @@ class ColdwalletGas extends Component {
       payload: {
         chain: token_id == '1' ? 'eth' : 'omni', 
         address, 
-        privatekey: private_key
+        private_key
       },
     }).then(data => {
       if(data.status != 1) {
@@ -192,7 +192,7 @@ class ColdwalletGas extends Component {
       type: 'coldwalletGasList/delete',
       payload: {
         chain: token_id == 1 ? 'eth' : 'omni',
-        address: addresss.join(','), 
+        addresses: addresss.join(','), 
       },
     }).then(data => {
       if(data.status != 1) {
@@ -351,8 +351,8 @@ class ColdwalletGas extends Component {
       },
       {
         title: '钱包余额',
-        dataIndex: '',
-        key: '',
+        dataIndex: 'balance',
+        key: 'balance',
         align: 'center',
         render: (val, record) => {
           return `${wei2USDT(val, token_id == 1 ? 'eth' : 'btc')} ${token_id == 1 ? 'ETH' : 'BTC'}`;
