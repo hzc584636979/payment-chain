@@ -19,7 +19,7 @@ const Model = {
       }else{
         response = yield call(withdrawList, payload);
       }
-      let { list, total } = response.data || {};
+      let { list, total } = response.data || {total: 0, list: []};
       let page = payload && payload.page;
       let pageSize = payload && payload.pageSize;
       const responseResult = { list, pagination: { total, current: page+1, pageSize }, history: { ...payload } };

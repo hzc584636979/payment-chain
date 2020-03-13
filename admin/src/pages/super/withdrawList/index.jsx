@@ -43,10 +43,15 @@ const statusType = {
   6: '已上链等待达到确认数',
   20: '拒绝提币申请',
 };
+const userType = {
+  1: '商户',
+  2: '承兑商',
+}
 
 @connect(({ withdrawList, loading }) => ({
   withdrawList,
   loading: loading.effects['withdrawList/fetch'],
+  searchLoding: loading.effects['withdrawList/search'],
 }))
 @Form.create()
 class WithdrawList extends Component {
@@ -62,8 +67,8 @@ class WithdrawList extends Component {
         pageSize: 10,
         page: 0,
         token_id: 0,
+        telephone_number: null,
         order_type: 0,
-        state: 0,
         time: [moment().startOf('month'), moment().endOf('month')],
       },
     });
@@ -97,7 +102,7 @@ class WithdrawList extends Component {
 
       const values = {
         ...fieldsValue,
-        search_value: fieldsValue.search_value || null,
+        telephone_number: fieldsValue.telephone_number || null,
         page: 0,
         pageSize: 10,
       };
@@ -115,6 +120,11 @@ class WithdrawList extends Component {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row>
           <Col xl={8} lg={12} sm={24}>
+            <FormItem>
+              {getFieldDecorator('telephone_number',{ initialValue: history.telephone_number })(<Input placeholder="手机号" />)}
+            </FormItem>
+          </Col>
+          <Col xl={8} lg={12} sm={24}>
             <FormItem label="币种">
               {getFieldDecorator('token_id',{ initialValue: history.token_id+'' })(
                 <Select placeholder="请选择">
@@ -128,7 +138,7 @@ class WithdrawList extends Component {
             </FormItem>
           </Col>
           <Col xl={8} lg={12} sm={24}>
-            <FormItem label="订单分类">
+            <FormItem label="订单类型">
               {getFieldDecorator('order_type',{ initialValue: history.order_type+'' })(
                 <Select placeholder="请选择">
                   {
@@ -140,23 +150,10 @@ class WithdrawList extends Component {
               )}
             </FormItem>
           </Col>
-          <Col xl={8} lg={12} sm={24}>
-            <FormItem label="状态">
-              {getFieldDecorator('state',{ initialValue: history.state+'' })(
-                <Select placeholder="请选择">
-                  {
-                    Object.keys(statusType).map(value => {
-                      return <Option value={value} key={value}>{statusType[value]}</Option>
-                    })
-                  }
-                </Select>
-              )}
-            </FormItem>
-          </Col>
         </Row>
         <Row>
-          <Col xl={8} lg={12} sm={24}>
-            <FormItem label="时间">
+          <Col xl={12} lg={12} sm={24}>
+            <FormItem label="创建时间">
               {getFieldDecorator('time',{ initialValue: history.time })(
                 <RangePicker
                   style={{ width: '100%' }}
@@ -185,9 +182,30 @@ class WithdrawList extends Component {
   }
 
   render() {
-    const { loading } = this.props;
+    const { loading, searchLoding } = this.props;
     const { history, list, pagination } = this.props.withdrawList.data;
     const columns = [
+      {
+        title: '姓名',
+        dataIndex: 'user_name',
+        key: 'user_name',
+        align: 'center',
+      },
+      {
+        title: '手机号',
+        dataIndex: 'telephone_number',
+        key: 'telephone_number',
+        align: 'center',
+      },
+      {
+        title: '用户类型',
+        dataIndex: 'user_type',
+        key: 'user_type',
+        align: 'center',
+        render:(val,record)=>{
+          return userType[val];
+        },
+      },
       {
         title: '订单分类',
         dataIndex: 'type',
@@ -195,16 +213,6 @@ class WithdrawList extends Component {
         align: 'center',
         render:(val,record)=>{
           return orderType[val];
-        },
-      },
-      {
-        title: 'Txhash',
-        dataIndex: 'txid',
-        key: 'txid',
-        align: 'center',
-        ellipsis: true,
-        render:(val,record)=>{
-          return <a onClick={() => this.handleClipBoard(val)}>{ val }</a>;
         },
       },
       {
@@ -222,17 +230,7 @@ class WithdrawList extends Component {
         key: 'count',
         align: 'center',
         render: (val, record) => {
-          return `${wei2USDT(val, record.token_id == 1 ? 'erc20' : 'omni')} ${coinType2[record.token_id]}`;
-        },
-      },
-      {
-        title: '地址',
-        dataIndex: 'to_address',
-        key: 'to_address',
-        align: 'center',
-        ellipsis: true,
-        render:(val,record)=>{
-          return <a onClick={() => this.handleClipBoard(val)}>{ val }</a>;
+          return `${wei2USDT(val, record.token_id == 1 ? 'erc20' : 'omni')}`;
         },
       },
       {
@@ -242,6 +240,16 @@ class WithdrawList extends Component {
         align: 'center',
         render:(val,record)=>{
           return statusType[val >= 20 ? val : Number(val) + 1];
+        },
+      },
+      {
+        title: 'Txhash',
+        dataIndex: 'txid',
+        key: 'txid',
+        align: 'center',
+        width: 150,
+        render:(val,record)=>{
+          return <a onClick={() => this.handleClipBoard(val)}>{ val }</a>;
         },
       },
       {
@@ -261,7 +269,8 @@ class WithdrawList extends Component {
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           <StandardTable
             noRowSelection={true}
-            loading={loading}
+            rowKey={'id'}
+            loading={loading || searchLoding}
             data={{ list, pagination }}
             columns={columns}
             onChange={this.handleStandardTableChange}

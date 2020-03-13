@@ -72,7 +72,7 @@ class ProfitChart extends Component {
     const { getFieldDecorator } = this.props.form;
     const { history } = this.props.profitChart.data;
     function disabledDate(current) {
-      return current && (/*current < moment('2020-03-01').startOf('month') || */current > moment().endOf('month'));
+      return current && (current < moment('2020-03-01').startOf('month') || current > moment().endOf('month'));
     }
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
@@ -116,7 +116,7 @@ class ProfitChart extends Component {
     const { chartType } = this.state;
 
     const data = profitChart.data.list ? profitChart.data.list.map(v => ({
-      day: moment(v.created_at).local().format('DD'),
+      day: moment(v.created_at.split('T')[0]).local().format('DD'),
       value: v.profit
     }))
     :

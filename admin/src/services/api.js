@@ -309,17 +309,31 @@ export async function centerWithdrawApplySubmit(params) {
 
 /*超级管理员-充提币记录-请求*/
 export async function withdrawList(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
+  let time = params.time && formatMomentTime(params.time);
+  let begin_time = parseInt(time[0] / 1000)+'';
+  let end_time = parseInt(time[1] / 1000)+'';
+  return request(`${apiAddress}/wallet/center/order/list`, {
     method: 'POST',
-    data: params,
+    data: {
+      ...params,
+      begin_time,
+      end_time
+    },
   });
 }
 
 /*超级管理员-充提币记录-搜索*/
 export async function withdrawListSearchAll(params) {
-  return request(`${apiAddress}/order/buyOrder`, {
+  let time = params.time && formatMomentTime(params.time);
+  let begin_time = parseInt(time[0] / 1000)+'';
+  let end_time = parseInt(time[1] / 1000)+'';
+  return request(`${apiAddress}/wallet/center/order/list`, {
     method: 'POST',
-    data: params,
+    data: {
+      ...params,
+      begin_time,
+      end_time
+    },
   });
 }
 
