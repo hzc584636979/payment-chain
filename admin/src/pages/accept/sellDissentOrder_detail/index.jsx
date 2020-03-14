@@ -266,8 +266,13 @@ class AcceptSellDissentOrderDetail extends Component {
             <Descriptions.Item label="问题图片">
               { fileList.map((v, i) => <a key={i} target="_blank" href={v}><img src={v} style={{maxWidth: 150}} /></a>) }
             </Descriptions.Item>
-            <Descriptions.Item label="客服介入联系方式">{ acceptSellDissentOrderDetail.contact }</Descriptions.Item>
-            <Descriptions.Item label="客服介入申诉描述">{ acceptSellDissentOrderDetail.content }</Descriptions.Item>
+            {
+              acceptSellDissentOrderDetail.issue_state == 3 &&
+              <Fragment>
+                <Descriptions.Item label="客服介入联系方式">{ acceptSellDissentOrderDetail.contact }</Descriptions.Item>
+                <Descriptions.Item label="客服介入申诉描述">{ acceptSellDissentOrderDetail.content }</Descriptions.Item>
+              </Fragment>
+            }
             <Descriptions.Item label="处理状态">{ issueTypeStatus[acceptSellDissentOrderDetail.issue_state] }</Descriptions.Item>
             {
               acceptSellDissentOrderDetail.issue_state == 2 &&

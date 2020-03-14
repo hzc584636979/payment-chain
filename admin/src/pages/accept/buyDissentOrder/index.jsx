@@ -32,6 +32,7 @@ const getValue = obj =>
 @connect(({ acceptBuyDissentOrder, loading }) => ({
   acceptBuyDissentOrder,
   loading: loading.effects['acceptBuyDissentOrder/fetch'],
+  searchLoading: loading.effects['acceptBuyDissentOrder/search'],
 }))
 @Form.create()
 class AcceptBuyDissentOrder extends Component {
@@ -129,7 +130,7 @@ class AcceptBuyDissentOrder extends Component {
   }
 
   render() {
-    const { loading } = this.props;
+    const { loading, searchLoading } = this.props;
     const { history, list, pagination } = this.props.acceptBuyDissentOrder.data;
     const columns = [
       {
@@ -237,7 +238,7 @@ class AcceptBuyDissentOrder extends Component {
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           <StandardTable
             noRowSelection={true}
-            loading={loading}
+            loading={loading || searchLoading}
             data={{ list, pagination }}
             columns={columns}
             onChange={this.handleStandardTableChange}

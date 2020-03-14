@@ -32,6 +32,7 @@ const getValue = obj =>
 @connect(({ merchantBuyDissentOrder, loading }) => ({
   merchantBuyDissentOrder,
   loading: loading.effects['merchantBuyDissentOrder/fetch'],
+  searchLoading: loading.effects['merchantBuyDissentOrder/search'],
 }))
 @Form.create()
 class MerchantBuyDissentOrder extends Component {
@@ -129,7 +130,7 @@ class MerchantBuyDissentOrder extends Component {
   }
 
   render() {
-    const { loading } = this.props;
+    const { loading, searchLoading } = this.props;
     const { history, list, pagination } = this.props.merchantBuyDissentOrder.data;
     const columns = [
       {
@@ -237,7 +238,7 @@ class MerchantBuyDissentOrder extends Component {
           <div className={styles.tableListForm}>{this.renderForm()}</div>
           <StandardTable
             noRowSelection={true}
-            loading={loading}
+            loading={loading || searchLoading}
             data={{ list, pagination }}
             columns={columns}
             onChange={this.handleStandardTableChange}
