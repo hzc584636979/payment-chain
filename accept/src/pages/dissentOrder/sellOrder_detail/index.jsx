@@ -1,23 +1,39 @@
-import { Button, Descriptions, Popconfirm, Input, message } from 'antd';
+import { Button, Descriptions, Popconfirm, Input, message, Upload, Icon } from 'antd';
 import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
+import { getBase64 } from '@/utils/utils';
 import Layer from '@/components/Layer';
 import moment from 'moment';
 import styles from './style.less';
 
 const { TextArea } = Input;
 
+function beforeUpload(file) {
+  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+  if (!isJpgOrPng) {
+    message.error('只能上传JPG/PNG文件!');
+    return false;
+  }
+  const isLt2M = file.size / 1024 / 1024 < 2;
+  if (!isLt2M) {
+    message.error('图片超过2MB!');
+    return false;
+  }
+  return true;
+}
+
 @connect(({ sellDissentOrderDetail, loading }) => ({
   sellDissentOrderDetail,
-  loading: loading.effects['sellDissentOrderDetail/fetch'],
+  fetchLoading: loading.effects['sellDissentOrderDetail/fetch'],
 }))
 class SellDissentOrderDetail extends Component {
   state = {
     KFVisible: false,
     contact: '',
     content: '',
+    fileList: [],
   };
 
   componentDidMount() {
@@ -29,6 +45,27 @@ class SellDissentOrderDetail extends Component {
 
   componentWillUnmount() {
 
+  }
+
+  handleChange = file => {
+    if(!beforeUpload(file)) return false;
+    getBase64(file, imageUrl => {
+      if(!imageUrl) {
+        this.setState({
+          loading: false,
+        });
+        return;
+      }
+      this.setState({
+        fileList: [
+          ...this.state.fileList,
+          imageUrl,
+        ],
+        upLock: this.state.fileList.length < 2 ? false : true,
+        loading: false,
+      })
+    });
+    return false;
   }
 
   handleContact = e => {
@@ -51,7 +88,7 @@ class SellDissentOrderDetail extends Component {
 
   handleOk = () => {
     const { dispatch } = this.props;
-    const { contact, content } = this.state;
+    const { contact, content, fileList } = this.state;
     
     if(contact == '' || !regPhone(contact)) {
       message.error('请填写正确的联系方式后提交');
@@ -70,6 +107,7 @@ class SellDissentOrderDetail extends Component {
       payload: {
         contact,
         content,
+        // fileList
       },
     }).then(data => {
       this.setState({
@@ -81,8 +119,12 @@ class SellDissentOrderDetail extends Component {
       }else {
         message.success('操作成功');
       }
+      dispatch({
+        type: 'sellDissentOrderDetail/fetch',
+      });
       this.setState({
         KFVisible: false,
+        fileList: [],
       })
     })
   }
@@ -136,13 +178,19 @@ class SellDissentOrderDetail extends Component {
   }
 
   render() {
-    const { sellDissentOrderDetail, loading } = this.props;
-    const { KFVisible, submitLock, closeLock } = this.state;
+    const { sellDissentOrderDetail, fetchLoading } = this.props;
+    const { KFVisible, submitLock, closeLock, loading, upLock } = this.state;
     const KFStatus = true/*new Date().getTime() - moment(sellDissentOrderDetail.issue_create_time).local().format('x') > 3 * 60 * 60 * 1000 ? true : false*/;
     const fileList = sellDissentOrderDetail.issue_file ? sellDissentOrderDetail.issue_file.split(',') : [];
-                                               
+    
+    const uploadButton = (
+      <div>
+        <Icon type={loading ? 'loading' : 'plus'} />
+      </div>
+    );
+
     return (
-      <ContLayout>
+      <ContLayout loading={fetchLoading}>
         <div className={styles.wrap}>
           <Descriptions column={1}>
             <Descriptions.Item label="异议时间">{ moment(sellDissentOrderDetail.issue_create_time).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
@@ -173,6 +221,8 @@ class SellDissentOrderDetail extends Component {
               </Fragment>
             }
             <Descriptions.Item label="代币数量">{ `${sellDissentOrderDetail.pay_amount} ${coinType[sellDissentOrderDetail.token_id]}` }</Descriptions.Item>
+            <Descriptions.Item label="商户昵称">{ sellDissentOrderDetail.m_user_name }</Descriptions.Item>
+            <Descriptions.Item label="商户手机号">{ sellDissentOrderDetail.m_telephone_number }</Descriptions.Item>
             <Descriptions.Item label="付款用户">{ sellDissentOrderDetail.payee_name }</Descriptions.Item>
             <Descriptions.Item label="付款账户">{ sellDissentOrderDetail.user_pay_account }</Descriptions.Item>
             {
@@ -220,6 +270,20 @@ class SellDissentOrderDetail extends Component {
                 <Descriptions.Item label={<span className={styles.itemLabel}>申诉描述</span>} className={styles.textTop}>
                   <TextArea placeholder="请输入申诉描述" onChange={this.handleContent} style={{width: '100%', height: 162}} />
                 </Descriptions.Item>
+                {/*<Descriptions.Item label={<span className={styles.itemLabel}>申诉图片</span>} className={styles.textTop}>
+                                  <Upload
+                                    name="avatar"
+                                    listType="picture-card"
+                                    showUploadList={true}
+                                    beforeUpload={this.handleChange}
+                                    disabled={upLock}
+                                    multiple={true}
+                                    accept={'.jpg,.jpeg,.png'}
+                                  >
+                                    {!submitLock && !upLock && uploadButton}
+                                  </Upload>
+                                  <div className={styles.upImgDesc}>图片上传限制:最多3张，最大2MB</div>
+                                </Descriptions.Item>*/}
                 <Descriptions.Item className={styles.noneBeforeIcon}>
                   <Button type="primary" loading={submitLock} onClick={this.handleOk}>确定提交</Button>
                 </Descriptions.Item>

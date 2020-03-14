@@ -19,7 +19,7 @@ const Model = {
     },
     *KF({ payload }, { call, put }) {
       const match = pathToRegexp('/dissentOrder/buyOrder_detail/:id').exec(window.location.pathname);
-      const payload1 = { order_id: match[1], order_type: 1 };
+      const payload1 = { ...payload, order_id: match[1], order_type: 1 };
       const response = yield call(buyDissentOrderKF, payload1);
       return response;
     },

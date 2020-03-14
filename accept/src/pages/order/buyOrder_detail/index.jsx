@@ -329,6 +329,14 @@ class buyOrderDetail extends Component {
                 }
               </Descriptions.Item>
             }
+            {
+              buyOrderDetail.state == 7 && 
+              <Descriptions.Item label="操作">
+                <Popconfirm title="是否要确认成交？" onConfirm={this.receiptFromMerchant}>
+                  <Button>确认成交</Button>
+                </Popconfirm>
+              </Descriptions.Item>
+            }
           </Descriptions>
         </div>
       </ContLayout>

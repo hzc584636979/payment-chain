@@ -165,6 +165,7 @@ window.issueTypeStatus = {
   0: '全部',
   1: '未处理',
   2: '已处理',
+  3: '客服介入',
 }
 
 if (pwa) {

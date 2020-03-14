@@ -266,6 +266,8 @@ class AcceptSellDissentOrderDetail extends Component {
             <Descriptions.Item label="问题图片">
               { fileList.map((v, i) => <a key={i} target="_blank" href={v}><img src={v} style={{maxWidth: 150}} /></a>) }
             </Descriptions.Item>
+            <Descriptions.Item label="客服介入联系方式">{ acceptSellDissentOrderDetail.contact }</Descriptions.Item>
+            <Descriptions.Item label="客服介入申诉描述">{ acceptSellDissentOrderDetail.content }</Descriptions.Item>
             <Descriptions.Item label="处理状态">{ issueTypeStatus[acceptSellDissentOrderDetail.issue_state] }</Descriptions.Item>
             {
               acceptSellDissentOrderDetail.issue_state == 2 &&
@@ -304,7 +306,7 @@ class AcceptSellDissentOrderDetail extends Component {
             <Descriptions.Item label="付款时间">{ acceptSellDissentOrderDetail.transfer_time ? moment(acceptSellDissentOrderDetail.transfer_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
             <Descriptions.Item label="承兑商确认时间">{ acceptSellDissentOrderDetail.confirm_time ? moment(acceptSellDissentOrderDetail.confirm_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
             {
-              acceptSellDissentOrderDetail.issue_state == 1 &&
+              (acceptSellDissentOrderDetail.issue_state == 1 || acceptSellDissentOrderDetail.issue_state == 3) &&
               <Fragment>
                 <Descriptions.Item label="操作">
                   <Popconfirm title="是否要确认释放给承兑商？" onConfirm={this.toAccept}>

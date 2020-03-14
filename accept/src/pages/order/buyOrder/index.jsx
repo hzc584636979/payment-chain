@@ -525,6 +525,12 @@ class BuyOrder extends Component {
                 :
                 null
               }
+              {
+                record.state == 7 &&
+                <Popconfirm title="是否要确认成交？" onConfirm={() => this.receiptFromMerchant(record.order_id)}>
+                  <Button>确认成交</Button>
+                </Popconfirm>
+              }
               <span style={{display: 'inline-block', width: '10px'}}></span>
               <Button>
                 <Link to={`/order/buyOrder_detail/${record.order_id}`}>查看</Link>

@@ -212,7 +212,7 @@ class WithdrawApply extends Component {
                       全部提币
                     </Button>
                     <p style={{fontSize: 14, color: '#333'}}>
-                      <span style={{paddingRight: 10}}>手续费:{ gas } USDT</span><span>可用余额:{ new BigNumber(allBalance)
+                      {/*<span style={{paddingRight: 10}}>手续费:{ gas } USDT</span>*/}<span>可用余额:{ new BigNumber(allBalance)
                           .minus(new BigNumber(allLockBalance))
                           .toNumber() } USDT</span>
                     </p>

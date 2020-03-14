@@ -25,7 +25,7 @@ const Model = {
     },
     *close({ payload }, { call, put }) {
       const match = pathToRegexp('/dissentOrder/sellOrder_detail/:id').exec(window.location.pathname);
-      const payload1 = { order_id: match[1], order_type: 2 };
+      const payload1 = { ...payload, order_id: match[1], order_type: 2 };
       const response = yield call(sellDissentOrderClose, payload1);
       return response;
     },

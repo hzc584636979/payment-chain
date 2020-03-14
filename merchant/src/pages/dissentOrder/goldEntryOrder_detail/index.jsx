@@ -1,23 +1,39 @@
-import { Button, Descriptions, Popconfirm, Input, message } from 'antd';
+import { Button, Descriptions, Popconfirm, Input, message, Upload, Icon } from 'antd';
 import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
+import { getBase64 } from '@/utils/utils';
 import Layer from '@/components/Layer';
 import moment from 'moment';
 import styles from './style.less';
 
 const { TextArea } = Input;
 
+function beforeUpload(file) {
+  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+  if (!isJpgOrPng) {
+    message.error('只能上传JPG/PNG文件!');
+    return false;
+  }
+  const isLt2M = file.size / 1024 / 1024 < 2;
+  if (!isLt2M) {
+    message.error('图片超过2MB!');
+    return false;
+  }
+  return true;
+}
+
 @connect(({ goldEntryDissentOrderDetail, loading }) => ({
   goldEntryDissentOrderDetail,
-  loading: loading.effects['goldEntryDissentOrderDetail/fetch'],
+  fetchLoading: loading.effects['goldEntryDissentOrderDetail/fetch'],
 }))
 class GoldEntryDissentOrderDetail extends Component {
   state = {
     KFVisible: false,
     contact: '',
     content: '',
+    fileList: [],
   };
 
   componentDidMount() {
@@ -28,6 +44,27 @@ class GoldEntryDissentOrderDetail extends Component {
   }
 
   componentWillUnmount() {}
+
+  handleChange = file => {
+    if(!beforeUpload(file)) return false;
+    getBase64(file, imageUrl => {
+      if(!imageUrl) {
+        this.setState({
+          loading: false,
+        });
+        return;
+      }
+      this.setState({
+        fileList: [
+          ...this.state.fileList,
+          imageUrl,
+        ],
+        upLock: this.state.fileList.length < 2 ? false : true,
+        loading: false,
+      })
+    });
+    return false;
+  }
 
   handleContact = e => {
     this.setState({
@@ -49,7 +86,7 @@ class GoldEntryDissentOrderDetail extends Component {
 
   handleOk = () => {
     const { dispatch } = this.props;
-    const { contact, content } = this.state;
+    const { contact, content, fileList } = this.state;
 
     if (contact == '' || !regPhone(contact)) {
       message.error('请填写正确的联系方式后提交');
@@ -68,6 +105,7 @@ class GoldEntryDissentOrderDetail extends Component {
       payload: {
         contact,
         content,
+        // fileList
       },
     }).then(data => {
       this.setState({
@@ -79,8 +117,12 @@ class GoldEntryDissentOrderDetail extends Component {
       } else {
         message.success('操作成功');
       }
+      dispatch({
+        type: 'goldEntryDissentOrderDetail/fetch',
+      });
       this.setState({
         KFVisible: false,
+        fileList: [],
       });
     });
   };
@@ -117,12 +159,18 @@ class GoldEntryDissentOrderDetail extends Component {
   };
 
   render() {
-    const { goldEntryDissentOrderDetail, loading } = this.props;
-    const { KFVisible, submitLock, closeLock } = this.state;
+    const { goldEntryDissentOrderDetail, fetchLoading } = this.props;
+    const { KFVisible, submitLock, closeLock, loading, upLock } = this.state;
     const fileList = goldEntryDissentOrderDetail.issue_file ? goldEntryDissentOrderDetail.issue_file.split(',') : [];
 
+    const uploadButton = (
+      <div>
+        <Icon type={loading ? 'loading' : 'plus'} />
+      </div>
+    );
+
     return (
-      <ContLayout>
+      <ContLayout loading={fetchLoading}>
         <div className={styles.wrap}>
           <Descriptions column={1}>
             <Descriptions.Item label="异议时间">
@@ -168,6 +216,7 @@ class GoldEntryDissentOrderDetail extends Component {
             <Descriptions.Item label="承兑商姓名">
               {goldEntryDissentOrderDetail.a_user_name}
             </Descriptions.Item>
+            <Descriptions.Item label="承兑商手机号">{ goldEntryDissentOrderDetail.a_telephone_number }</Descriptions.Item>
             <Descriptions.Item label="订单创建时间">
               {moment(goldEntryDissentOrderDetail.created_at)
                 .local()
@@ -206,6 +255,20 @@ class GoldEntryDissentOrderDetail extends Component {
                     style={{ width: '100%', height: 162 }}
                   />
                 </Descriptions.Item>
+                {/*<Descriptions.Item label={<span className={styles.itemLabel}>申诉图片</span>} className={styles.textTop}>
+                                  <Upload
+                                    name="avatar"
+                                    listType="picture-card"
+                                    showUploadList={true}
+                                    beforeUpload={this.handleChange}
+                                    disabled={upLock}
+                                    multiple={true}
+                                    accept={'.jpg,.jpeg,.png'}
+                                  >
+                                    {!submitLock && !upLock && uploadButton}
+                                  </Upload>
+                                  <div className={styles.upImgDesc}>图片上传限制:最多3张，最大2MB</div>
+                                </Descriptions.Item>*/}
                 <Descriptions.Item className={styles.noneBeforeIcon}>
                   <Button type="primary" loading={submitLock} onClick={this.handleOk}>
                     确定提交
