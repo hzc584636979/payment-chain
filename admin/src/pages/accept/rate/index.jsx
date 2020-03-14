@@ -47,11 +47,11 @@ const CreateForm = Form.create()(props => {
   const validator = (rule, value, callback) => {
     if(value) {
       if(!Number(value) && value != 0) {
-        callback('请输入整数的浮动汇率');
+        callback('请输入数字的浮动汇率');
       }else if(value > 10) {
         callback('浮动汇率不能大于10%');
-      }else if(value.toString().indexOf('.') > -1 && value.toString().split('.')[1].length > 1) {
-          callback('浮动汇率的小数不能多于1位');
+      }else if(value.toString().indexOf('.') > -1 && value.toString().split('.')[1].length > 2) {
+          callback('浮动汇率的小数不能多于2位');
       }
     }
     callback();
@@ -104,6 +104,7 @@ const CreateForm = Form.create()(props => {
 @connect(({ acceptRate, loading }) => ({
   acceptRate,
   loading: loading.effects['acceptRate/fetch'],
+  searchLoading: loading.effects['acceptRate/search'],
 }))
 @Form.create()
 class AccpetRate extends Component {
@@ -230,7 +231,7 @@ class AccpetRate extends Component {
   }
 
   render() {
-    const { loading } = this.props;
+    const { loading, searchLoading } = this.props;
     const { history, list, pagination } = this.props.acceptRate.data;
     const { visible, params } = this.state;
 
@@ -328,7 +329,7 @@ class AccpetRate extends Component {
           <StandardTable
             rowKey='user_id'
             noRowSelection={true}
-            loading={loading}
+            loading={loading || searchLoading}
             data={{ list, pagination }}
             columns={columns}
             onChange={this.handleStandardTableChange}

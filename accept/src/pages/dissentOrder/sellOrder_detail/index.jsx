@@ -158,8 +158,21 @@ class SellDissentOrderDetail extends Component {
             }
             <Descriptions.Item label="平台订单号">{ sellDissentOrderDetail.order_id }</Descriptions.Item>
             <Descriptions.Item label="唯一标示号">{ sellDissentOrderDetail.out_order_id }</Descriptions.Item>
-            <Descriptions.Item label="订单状态">{ sellStatusType[sellDissentOrderDetail.state] }</Descriptions.Item>
-            <Descriptions.Item label="订单金额/代币数量">{ `${sellDissentOrderDetail.pay_amount_cny} ${cashType[sellDissentOrderDetail.currency_type]}/${sellDissentOrderDetail.pay_amount} ${coinType[sellDissentOrderDetail.token_id]}` }</Descriptions.Item>
+            {
+              sellDissentOrderDetail.real_pay_amount > 0 ?
+              <Fragment>
+                <Descriptions.Item label="订单状态">{ `${sellStatusType[sellDissentOrderDetail.state]}(${sellDissentOrderDetail.pay_amount_cny > sellDissentOrderDetail.real_pay_amount ? '多收钱调价' : '少收钱调价'})` }</Descriptions.Item>
+                <Descriptions.Item label="订单金额(原有金额/调价金额)">{ `${sellDissentOrderDetail.real_pay_amount} ${cashType[sellDissentOrderDetail.currency_type]}/${sellDissentOrderDetail.pay_amount_cny} ${cashType[sellDissentOrderDetail.currency_type]}` }
+                </Descriptions.Item>
+              </Fragment>
+              :
+              <Fragment>
+                <Descriptions.Item label="订单状态">{ sellStatusType[sellDissentOrderDetail.state] }</Descriptions.Item>
+                <Descriptions.Item label="订单金额">{ `${sellDissentOrderDetail.pay_amount_cny} ${cashType[sellDissentOrderDetail.currency_type]}` }
+                </Descriptions.Item>
+              </Fragment>
+            }
+            <Descriptions.Item label="代币数量">{ `${sellDissentOrderDetail.pay_amount} ${coinType[sellDissentOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="付款用户">{ sellDissentOrderDetail.payee_name }</Descriptions.Item>
             <Descriptions.Item label="付款账户">{ sellDissentOrderDetail.user_pay_account }</Descriptions.Item>
             {

@@ -145,7 +145,11 @@ class WithdrawApply extends Component {
         message.error(data.msg);
         return;
       }else {
-        message.success('提现申请已提交，请耐心等待管理员审核');
+        if(data.data.withdraw_without_audit) {
+          message.success('提现成功');
+        }else {
+          message.success('提现申请已提交，请耐心等待管理员审核');
+        }
       }
       this.handleType(token_id);
     })

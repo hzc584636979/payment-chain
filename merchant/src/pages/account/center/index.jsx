@@ -279,7 +279,7 @@ class UserBase extends Component {
       payment_pwd,
       telephone_number,
       email_address,
-      // telephone_verify_code,
+      telephone_verify_code,
       // qq_number,
       // wechat_number,
       // payment_link,
@@ -310,10 +310,13 @@ class UserBase extends Component {
     }else if(!email_address || !(/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(email_address))) {
       message.error('请填写正确的绑定邮箱后提交');
       return;
-    }/*else if(!telephone_verify_code) {
+    }else if(g_getLocalStorage() && !g_getLocalStorage().telephone_number && !telephone_verify_code) {
       message.error('请填写手机验证码后提交');
       return;
-    }else if(!qq_number) {
+    }else if(g_getLocalStorage() && !g_getLocalStorage().email_address && !email_verify_code) {
+      message.error('请填写邮箱验证码后提交');
+      return;
+    }/*else if(!qq_number) {
       message.error('请填写绑定QQ后提交');
       return;
     }else if(!wechat_number) {
@@ -322,10 +325,7 @@ class UserBase extends Component {
     }else if(!payment_link) {
       message.error('请填写收款链接后提交');
       return;
-    }*/else if(!email_verify_code) {
-      message.error('请填写邮箱验证码后提交');
-      return;
-    }
+    }*/
 
     this.setState({
       submitLoading: true,
@@ -343,11 +343,11 @@ class UserBase extends Component {
         payment_pwd,
         telephone_number,
         email_address,
-        // telephone_verify_code,
+        telephone_verify_code: telephone_verify_code || null,
         // qq_number,
         // wechat_number,
         // payment_link,
-        email_verify_code,
+        email_verify_code: email_verify_code || null,
       },
     }).then(data => {
       this.setState({
@@ -472,13 +472,13 @@ class UserBase extends Component {
                 <p style={{fontSize: 14, color: '#EA0000'}}>必须由大写字母，小写字母，数字且不含有特殊字符组成的6位~24位密码</p>
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>绑定邮箱</span>}>
-                <Input disabled={disabled} onChange={this.handleEmail} style={{width: 385}} placeholder="输入邮箱号" value={email_address} />
+                <Input disabled={(g_getLocalStorage() && g_getLocalStorage().email_address) ? true : false} onChange={this.handleEmail} style={{width: 385}} placeholder="输入邮箱号" value={email_address} />
               </Descriptions.Item>
               <Descriptions.Item label={<span className={styles.itemLabel}>绑定手机</span>}>
-                <Input disabled={disabled} onChange={this.handlePhone} style={{width: 385}} placeholder="输入手机号" maxLength={11} value={telephone_number} />
+                <Input disabled={(g_getLocalStorage() && g_getLocalStorage().telephone_number) ? true : false} onChange={this.handlePhone} style={{width: 385}} placeholder="输入手机号" maxLength={11} value={telephone_number} />
               </Descriptions.Item>
               {
-                !disabled && 
+                (!disabled && (g_getLocalStorage() && !g_getLocalStorage().email_address)) && 
                 <Descriptions.Item label={<span className={styles.itemLabel}>邮箱验证码</span>}>
                   <Input disabled={disabled} onChange={this.handleEmailCaptcha} style={{width: 385}} placeholder="输入邮箱验证码" maxLength={6} />
                   <Button
@@ -498,7 +498,7 @@ class UserBase extends Component {
                 </Descriptions.Item>
               }
               {
-                /*!disabled && 
+                (!disabled && (g_getLocalStorage() && !g_getLocalStorage().telephone_number)) && 
                 <Descriptions.Item label={<span className={styles.itemLabel}>手机验证码</span>}>
                   <Input disabled={disabled} onChange={this.handlePhoneCaptcha} style={{width: 385}} placeholder="输入手机验证码" maxLength={6} />
                   <Button
@@ -515,7 +515,7 @@ class UserBase extends Component {
                       ? `${phoneCount} s`
                       : '获取手机验证码'}
                   </Button>
-                </Descriptions.Item>*/
+                </Descriptions.Item>
               }
               {/*<Descriptions.Item label={<span className={styles.itemLabel}>绑定QQ</span>}>
                 <Input disabled={disabled} onChange={this.handleQQ} style={{width: 385}} placeholder="输入QQ号" value={qq_number} maxLength={20} />

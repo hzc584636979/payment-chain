@@ -242,6 +242,9 @@ class SuperMerchant extends Component {
       }else {
         message.success('操作成功');
       }
+      this.setState({
+        'addVisible': false,
+      });
       this.handleSearch(null, params);
     })
   }

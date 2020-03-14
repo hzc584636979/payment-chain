@@ -13,17 +13,14 @@ const Model = {
       const response = yield call(queryGoldEntryOrderDetail, payload1);
       yield put({
         type: 'save',
-        payload: response.data,
+        payload: response.data || {},
       });
       return response;
     },
   },
   reducers: {
     save(state, action) {
-      return {
-        ...state,
-        ...action.payload,
-      };
+      return action.payload;
     },
   },
 };

@@ -273,8 +273,21 @@ class AcceptSellDissentOrderDetail extends Component {
             }
             <Descriptions.Item label="平台订单号">{ acceptSellDissentOrderDetail.order_id }</Descriptions.Item>
             <Descriptions.Item label="唯一标示号">{ acceptSellDissentOrderDetail.out_order_id }</Descriptions.Item>
-            <Descriptions.Item label="订单状态">{ sellStatusType[acceptSellDissentOrderDetail.state] }</Descriptions.Item>
-            <Descriptions.Item label="订单金额/代币数量">{ `${acceptSellDissentOrderDetail.pay_amount_cny} ${cashType[acceptSellDissentOrderDetail.currency_type]}/${acceptSellDissentOrderDetail.pay_amount} ${coinType[acceptSellDissentOrderDetail.token_id]}` }</Descriptions.Item>
+            {
+              acceptSellDissentOrderDetail.real_pay_amount > 0 ?
+              <Fragment>
+                <Descriptions.Item label="订单状态">{ `${sellStatusType[acceptSellDissentOrderDetail.state]}(${acceptSellDissentOrderDetail.pay_amount_cny > acceptSellDissentOrderDetail.real_pay_amount ? '多收钱调价' : '少收钱调价'})` }</Descriptions.Item>
+                <Descriptions.Item label="订单金额(原有金额/调价金额)">{ `${acceptSellDissentOrderDetail.real_pay_amount} ${cashType[acceptSellDissentOrderDetail.currency_type]}/${acceptSellDissentOrderDetail.pay_amount_cny} ${cashType[acceptSellDissentOrderDetail.currency_type]}` }
+                </Descriptions.Item>
+              </Fragment>
+              :
+              <Fragment>
+                <Descriptions.Item label="订单状态">{ sellStatusType[acceptSellDissentOrderDetail.state] }</Descriptions.Item>
+                <Descriptions.Item label="订单金额">{ `${acceptSellDissentOrderDetail.pay_amount_cny} ${cashType[acceptSellDissentOrderDetail.currency_type]}` }
+                </Descriptions.Item>
+              </Fragment>
+            }
+            <Descriptions.Item label="代币数量">{ `${acceptSellDissentOrderDetail.pay_amount} ${coinType[acceptSellDissentOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="承兑商昵称">{ acceptSellDissentOrderDetail.a_user_name }</Descriptions.Item>
             <Descriptions.Item label="承兑商手机号">{ acceptSellDissentOrderDetail.a_telephone_number }</Descriptions.Item>
             <Descriptions.Item label="商户昵称">{ acceptSellDissentOrderDetail.m_user_name }</Descriptions.Item>

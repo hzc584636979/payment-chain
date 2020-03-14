@@ -312,6 +312,12 @@ class Home extends Component {
                       </div>*/}
                       <span style={{fontSize: 12}}>{ currentUser.telephone_number }</span>
                     </div>
+                    <ul className={styles.priceList}>
+                      <li>火币购买汇率(USDT:CNY)：<br/>1:{home.buy_price}</li>
+                      <li style={{color: '#cf0000'}}>平台购买汇率(USDT:CNY)：<br/>1:{home.platform_buy_price}</li>
+                      <li>火币出售汇率(USDT:CNY)：<br/>1:{home.sell_price}</li>
+                      <li style={{color: '#cf0000'}}>平台出售汇率(USDT:CNY)：<br/>1:{home.platform_sell_price}</li>
+                    </ul>
                     <div className={styles.bottom}>
                       <div className={styles.button}><Link to="/account">账户管理</Link></div>
                       <div className={styles.time}>上次登录：{ moment(currentUser.login_date).local().format('YYYY-MM-DD HH:mm:ss') }</div>

@@ -293,6 +293,11 @@ export default {
                   component: './accept/coinWithdrawApply',
                 },
                 {
+                  name: '免提币审核管理',
+                  path: '/accept/withoutAudit',
+                  component: './accept/withoutAudit',
+                },
+                {
                   name: '出售异议订单处理',
                   path: '/accept/sellDissentOrder',
                   component: './accept/sellDissentOrder',

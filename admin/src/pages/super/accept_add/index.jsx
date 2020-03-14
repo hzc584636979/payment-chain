@@ -40,6 +40,7 @@ const bindStatus = {
 @connect(({ superAcceptMember, loading }) => ({
   superAcceptMember,
   loading: loading.effects['superAcceptMember/fetch'],
+  searchLoading: loading.effects['superAcceptMember/search'],
 }))
 @Form.create()
 class SuperAcceptMember extends Component {
@@ -225,7 +226,7 @@ class SuperAcceptMember extends Component {
   }
 
   render() {
-    const { loading } = this.props;
+    const { loading, searchLoading } = this.props;
     const { history, list, pagination } = this.props.superAcceptMember.data;
     const { selectedRowKeys } = this.state;
     const columns = [
@@ -266,7 +267,7 @@ class SuperAcceptMember extends Component {
             selectedRowKeys={selectedRowKeys}
             rowKey={'id'}
             onSelectRow={this.handleSelectRows}
-            loading={loading}
+            loading={loading || searchLoading}
             data={{ list, pagination }}
             columns={columns}
             onChange={this.handleStandardTableChange}

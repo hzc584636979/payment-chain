@@ -14,12 +14,14 @@ const Model = {
       });
       return response.data;
     },
-    *getCode({ payload }, { call, put }) {
-      const response = yield call(financeSettingsBankCode, payload);
+    *getCode({ payload }, { call, put, select }) {
+      const telephone_number = yield select(state => state.user.currentUser.telephone_number);
+      const response = yield call(financeSettingsBankCode, {...payload, telephone_number});
       return response;
     },
-    *submit({ payload }, { call, put }) {
-      const response = yield call(financeSettingsBankSubmit, payload);
+    *submit({ payload }, { call, put, select }) {
+      const telephone_number = yield select(state => state.user.currentUser.telephone_number);
+      const response = yield call(financeSettingsBankSubmit, {...payload, telephone_number});
       yield put({
         type: 'save',
         payload: response,

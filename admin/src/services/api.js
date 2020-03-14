@@ -497,6 +497,14 @@ export async function acceptCoinWithdrawApplyRefuse(params) {
   });
 }
 
+/*承兑商管理员-免提币审核*/
+export async function acceptWithoutAudit(params) {
+  return request(`${apiAddress}/accept/withdraw/permission/update`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
 /*承兑商管理员-出售异议订单-请求*/
 export async function acceptSellDissentOrder(params) {
   return request(`${apiAddress}/accept/objection/sell`, {

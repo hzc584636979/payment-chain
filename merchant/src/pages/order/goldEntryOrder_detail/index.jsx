@@ -1,5 +1,5 @@
 import { Button, Descriptions, Popconfirm, Input, message } from 'antd';
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
@@ -54,10 +54,20 @@ class GoldEntryOrderDetail extends Component {
             <Descriptions.Item label="平台订单号">
               {goldEntryOrderDetail.order_id}
             </Descriptions.Item>
-            <Descriptions.Item label="订单状态">
-              {sellStatusType[goldEntryOrderDetail.state]}
-            </Descriptions.Item>
-            <Descriptions.Item label="订单金额">{ `${goldEntryOrderDetail.pay_amount_cny} ${cashType[goldEntryOrderDetail.currency_type]}` }</Descriptions.Item>
+            {
+              goldEntryOrderDetail.real_pay_amount > 0 ?
+              <Fragment>
+                <Descriptions.Item label="订单状态">{ `${sellStatusType[goldEntryOrderDetail.state]}(${goldEntryOrderDetail.pay_amount_cny > goldEntryOrderDetail.real_pay_amount ? '多收钱调价' : '少收钱调价'})` }</Descriptions.Item>
+                <Descriptions.Item label="订单金额(原有金额/调价金额)">{ `${goldEntryOrderDetail.real_pay_amount} ${cashType[goldEntryOrderDetail.currency_type]}/${goldEntryOrderDetail.pay_amount_cny} ${cashType[goldEntryOrderDetail.currency_type]}` }
+                </Descriptions.Item>
+              </Fragment>
+              :
+              <Fragment>
+                <Descriptions.Item label="订单状态">{ sellStatusType[goldEntryOrderDetail.state] }</Descriptions.Item>
+                <Descriptions.Item label="订单金额">{ `${goldEntryOrderDetail.pay_amount_cny} ${cashType[goldEntryOrderDetail.currency_type]}` }
+                </Descriptions.Item>
+              </Fragment>
+            }
             <Descriptions.Item label="入金数量(入金代币数量 - 手续费)">{ `${entryAmount} - ${goldEntryOrderDetail.gas} = ${goldEntryOrderDetail.m_pay_amount} ${coinType[goldEntryOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="入金手续费">{ `${goldEntryOrderDetail.gas} ${coinType[goldEntryOrderDetail.token_id]}(${cnyGas}CNY)` }</Descriptions.Item>
             <Descriptions.Item label="唯一标示号">

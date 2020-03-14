@@ -1,5 +1,5 @@
 import { Button, Descriptions, Popconfirm, Input, message } from 'antd';
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
@@ -150,10 +150,21 @@ class GoldEntryDissentOrderDetail extends Component {
             <Descriptions.Item label="唯一标示号">
               {goldEntryDissentOrderDetail.out_order_id}
             </Descriptions.Item>
-            <Descriptions.Item label="订单状态">
-              {sellStatusType[goldEntryDissentOrderDetail.state]}
-            </Descriptions.Item>
-            <Descriptions.Item label="订单金额/代币数量">{ `${goldEntryDissentOrderDetail.pay_amount_cny} ${cashType[goldEntryDissentOrderDetail.currency_type]}/${goldEntryDissentOrderDetail.m_pay_amount} ${coinType[goldEntryDissentOrderDetail.token_id]}` }</Descriptions.Item>
+            {
+              goldEntryDissentOrderDetail.real_pay_amount > 0 ?
+              <Fragment>
+                <Descriptions.Item label="订单状态">{ `${sellStatusType[goldEntryDissentOrderDetail.state]}(${goldEntryDissentOrderDetail.pay_amount_cny > goldEntryDissentOrderDetail.real_pay_amount ? '多收钱调价' : '少收钱调价'})` }</Descriptions.Item>
+                <Descriptions.Item label="订单金额(原有金额/调价金额)">{ `${goldEntryDissentOrderDetail.real_pay_amount} ${cashType[goldEntryDissentOrderDetail.currency_type]}/${goldEntryDissentOrderDetail.pay_amount_cny} ${cashType[goldEntryDissentOrderDetail.currency_type]}` }
+                </Descriptions.Item>
+              </Fragment>
+              :
+              <Fragment>
+                <Descriptions.Item label="订单状态">{ sellStatusType[goldEntryDissentOrderDetail.state] }</Descriptions.Item>
+                <Descriptions.Item label="订单金额">{ `${goldEntryDissentOrderDetail.pay_amount_cny} ${cashType[goldEntryDissentOrderDetail.currency_type]}` }
+                </Descriptions.Item>
+              </Fragment>
+            }
+            <Descriptions.Item label="代币数量">{ `${goldEntryDissentOrderDetail.m_pay_amount} ${coinType[goldEntryDissentOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="承兑商姓名">
               {goldEntryDissentOrderDetail.a_user_name}
             </Descriptions.Item>

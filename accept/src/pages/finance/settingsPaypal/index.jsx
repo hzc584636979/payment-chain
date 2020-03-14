@@ -54,18 +54,9 @@ class FinanceSettingsPaypal extends Component {
 
   onGetCaptcha = () => {
     const { dispatch } = this.props;
-    const { telephone_number } = this.state.params;
-
-    if(!telephone_number || !regPhone(telephone_number)) {
-      message.error('请输入正确的手机号');
-      return;
-    }
 
     dispatch({
       type: 'financeSettingsPaypal/getCode',
-      payload: {
-        telephone_number
-      },
     }).then(data => {
       if(data.status != 1) {
         message.error(captchaError(data.msg));
@@ -102,17 +93,17 @@ class FinanceSettingsPaypal extends Component {
   submit = () => {
     const { 
       paypal_number,
-      telephone_number,
+      // telephone_number,
       telephone_verify_code,
     } = this.state.params;
 
     if(!paypal_number) {
       message.error('请填写Paypal账号后提交');
       return;
-    }else if(!telephone_number || !(/^1\d{10}$/.test(telephone_number))) {
+    }/*else if(!telephone_number || !(/^1\d{10}$/.test(telephone_number))) {
       message.error('请填写正确的手机号码后提交');
       return;
-    }else if(!telephone_verify_code) {
+    }*/else if(!telephone_verify_code) {
       message.error('请填写手机验证码后提交');
       return;
     }
@@ -126,7 +117,7 @@ class FinanceSettingsPaypal extends Component {
       type: 'financeSettingsPaypal/submit',
       payload: {
         paypal_number,
-        telephone_number,
+        // telephone_number,
         telephone_verify_code,
       },
     }).then(data => {
@@ -146,7 +137,7 @@ class FinanceSettingsPaypal extends Component {
     const { submitLoading, count } = this.state;
     const { 
       paypal_number,
-      telephone_number,
+      // telephone_number,
       telephone_verify_code,
     } = this.state.params;
 
@@ -158,9 +149,9 @@ class FinanceSettingsPaypal extends Component {
               <Descriptions.Item label={<span className={styles.itemLabel}>Paypal账号</span>}>
                 <Input onChange={this.handleNumber} style={{width: 385}} placeholder="输入Paypal账号" value={paypal_number} />
               </Descriptions.Item>
-              <Descriptions.Item label={<span className={styles.itemLabel}>手机号码</span>}>
+              {/*<Descriptions.Item label={<span className={styles.itemLabel}>手机号码</span>}>
                 <Input onChange={this.handlePhone} style={{width: 385}} placeholder="输入开户预留手机号" maxLength={11} value={telephone_number} />
-              </Descriptions.Item>
+              </Descriptions.Item>*/}
               <Descriptions.Item label={<span className={styles.itemLabel}>手机验证码</span>}>
                 <Input onChange={this.handleCaptcha} style={{width: 385}} placeholder="输入手机验证码" maxLength={6} value={telephone_verify_code} />
                 <Button

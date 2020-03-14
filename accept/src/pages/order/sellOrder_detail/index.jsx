@@ -2,6 +2,7 @@ import { Button, Descriptions, Popconfirm, Input, message, Form, Modal } from 'a
 import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
+import router from 'umi/router';
 import ContLayout from '@/components/ContLayout';
 import Layer from '@/components/Layer';
 import BigNumber from 'bignumber.js';
@@ -88,6 +89,17 @@ class SellOrderDetail extends Component {
 
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { dispatch } = this.props;
+    if(nextProps.location.query.key && this.initKey != nextProps.location.query.key) {
+      clearInterval(this.interval);
+      this.initKey = nextProps.location.query.key;
+      dispatch({
+        type: 'sellOrderDetail/fetch',
+      });
+    }
+  }
+
   receipt = () => {
     const { dispatch } = this.props;
     dispatch({
@@ -163,13 +175,13 @@ class SellOrderDetail extends Component {
         return;
       }else {
         message.success('操作成功');
+        router.push({
+          pathname: `/order/sellOrder_detail/${data.data.new_order_id}`,
+          query: {
+            key: data.data.new_order_id,
+          },
+        });
       }
-      this.setState({
-        'modifyVisible': false,
-      });
-      dispatch({
-        type: 'sellOrderDetail/fetch',
-      });
     })
   }
 
@@ -241,11 +253,24 @@ class SellOrderDetail extends Component {
     };
                                                
     return (
-      <ContLayout>
+      <ContLayout loading={loading}>
         <div className={styles.wrap}>
           <Descriptions column={1}>
-            <Descriptions.Item label="订单状态">{ sellStatusType[sellOrderDetail.state] }</Descriptions.Item>
-            <Descriptions.Item label="订单金额/代币数量">{ `${sellOrderDetail.pay_amount_cny} ${cashType[sellOrderDetail.currency_type]}/${sellOrderDetail.pay_amount} ${coinType[sellOrderDetail.token_id]}` }
+            {
+              sellOrderDetail.real_pay_amount > 0 ?
+              <Fragment>
+                <Descriptions.Item label="订单状态">{ `${sellStatusType[sellOrderDetail.state]}(${sellOrderDetail.pay_amount_cny > sellOrderDetail.real_pay_amount ? '多收钱调价' : '少收钱调价'})` }</Descriptions.Item>
+                <Descriptions.Item label="订单金额(原有金额/调价金额)">{ `${sellOrderDetail.real_pay_amount} ${cashType[sellOrderDetail.currency_type]}/${sellOrderDetail.pay_amount_cny} ${cashType[sellOrderDetail.currency_type]}` }
+                </Descriptions.Item>
+              </Fragment>
+              :
+              <Fragment>
+                <Descriptions.Item label="订单状态">{ sellStatusType[sellOrderDetail.state] }</Descriptions.Item>
+                <Descriptions.Item label="订单金额">{ `${sellOrderDetail.pay_amount_cny} ${cashType[sellOrderDetail.currency_type]}` }
+                </Descriptions.Item>
+              </Fragment>
+            }
+            <Descriptions.Item label="代币数量">{ `${sellOrderDetail.pay_amount} ${coinType[sellOrderDetail.token_id]}` }
             </Descriptions.Item>
             <Descriptions.Item label="交易汇率(USDT:CNY)">{ `1:${sellOrderDetail.deal_rate}` }</Descriptions.Item>
             <Descriptions.Item label="火币汇率(USDT:CNY)">{ `1:${sellOrderDetail.cny_price}` }</Descriptions.Item>

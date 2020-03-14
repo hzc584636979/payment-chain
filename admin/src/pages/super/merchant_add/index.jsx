@@ -40,6 +40,7 @@ const bindStatus = {
 @connect(({ superMerchantMember, loading }) => ({
   superMerchantMember,
   loading: loading.effects['superMerchantMember/fetch'],
+  searchLoading: loading.effects['superMerchantMember/search'],
 }))
 @Form.create()
 class SuperMerchantMember extends Component {
@@ -225,7 +226,7 @@ class SuperMerchantMember extends Component {
   }
 
   render() {
-    const { loading } = this.props;
+    const { loading, searchLoading } = this.props;
     const { history, list, pagination } = this.props.superMerchantMember.data;
     const { selectedRowKeys } = this.state;
     const columns = [
@@ -266,7 +267,7 @@ class SuperMerchantMember extends Component {
             selectedRowKeys={selectedRowKeys}
             rowKey={'id'}
             onSelectRow={this.handleSelectRows}
-            loading={loading}
+            loading={loading || searchLoading}
             data={{ list, pagination }}
             columns={columns}
             onChange={this.handleStandardTableChange}

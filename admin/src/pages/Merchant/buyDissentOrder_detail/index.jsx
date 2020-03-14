@@ -273,8 +273,21 @@ class MerchantBuyDissentOrderDetail extends Component {
             }
             <Descriptions.Item label="平台订单号">{ merchantBuyDissentOrderDetail.order_id }</Descriptions.Item>
             <Descriptions.Item label="唯一标示号">{ merchantBuyDissentOrderDetail.out_order_id }</Descriptions.Item>
-            <Descriptions.Item label="订单状态">{ sellStatusType[merchantBuyDissentOrderDetail.state] }</Descriptions.Item>
-            <Descriptions.Item label="订单金额/代币数量">{ `${merchantBuyDissentOrderDetail.pay_amount_cny} ${cashType[merchantBuyDissentOrderDetail.currency_type]}/${merchantBuyDissentOrderDetail.m_pay_amount} ${coinType[merchantBuyDissentOrderDetail.token_id]}` }</Descriptions.Item>
+            {
+              merchantBuyDissentOrderDetail.real_pay_amount > 0 ?
+              <Fragment>
+                <Descriptions.Item label="订单状态">{ `${sellStatusType[merchantBuyDissentOrderDetail.state]}(${merchantBuyDissentOrderDetail.pay_amount_cny > merchantBuyDissentOrderDetail.real_pay_amount ? '多收钱调价' : '少收钱调价'})` }</Descriptions.Item>
+                <Descriptions.Item label="订单金额(原有金额/调价金额)">{ `${merchantBuyDissentOrderDetail.real_pay_amount} ${cashType[merchantBuyDissentOrderDetail.currency_type]}/${merchantBuyDissentOrderDetail.pay_amount_cny} ${cashType[merchantBuyDissentOrderDetail.currency_type]}` }
+                </Descriptions.Item>
+              </Fragment>
+              :
+              <Fragment>
+                <Descriptions.Item label="订单状态">{ sellStatusType[merchantBuyDissentOrderDetail.state] }</Descriptions.Item>
+                <Descriptions.Item label="订单金额">{ `${merchantBuyDissentOrderDetail.pay_amount_cny} ${cashType[merchantBuyDissentOrderDetail.currency_type]}` }
+                </Descriptions.Item>
+              </Fragment>
+            }
+            <Descriptions.Item label="代币数量">{ `${merchantBuyDissentOrderDetail.m_pay_amount} ${coinType[merchantBuyDissentOrderDetail.token_id]}` }</Descriptions.Item>
             <Descriptions.Item label="承兑商昵称">{ merchantBuyDissentOrderDetail.a_user_name }</Descriptions.Item>
             <Descriptions.Item label="承兑商手机号">{ merchantBuyDissentOrderDetail.a_telephone_number }</Descriptions.Item>
             <Descriptions.Item label="商户昵称">{ merchantBuyDissentOrderDetail.m_user_name }</Descriptions.Item>
