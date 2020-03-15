@@ -14,13 +14,13 @@ export function socketSubscribe(options) {
 	const mqttOptions = {
 	      connectTimeout: 4000, // 超时时间
 	      reconnect : false,
-	      port: 1883,
+	      // port: 1883,
 	      // 认证信息
 	      username: 'client',
 	      password: 'client'
 	}
 
-	const client = mqtt.connect('mqtt://34.237.138.218', mqttOptions);
+	const client = mqtt.connect('wss://usdt.usdtpay.net.cn/websocket', mqttOptions);
 	console.log(client, options)
 
 	let sendHeartTimeout = null;
