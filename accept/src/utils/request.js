@@ -4,6 +4,7 @@
  */
 import { extend } from 'umi-request';
 import { notification } from 'antd';
+import { JSEncrypt } from 'jsencrypt';
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
   201: '新建或修改数据成功。',
@@ -21,13 +22,30 @@ const codeMessage = {
   503: '服务不可用，服务器暂时过载或维护。',
   504: '服务器异常，请重新登陆稍后再试。',
 };
+
+// let decrypt = new JSEncrypt();
+// const public1 = await Common.readFile("/Users/lijiachai/Documents/dinglian/accpectment/app/public/rsa_1024_priv.pem");
+// decrypt.setPrivateKey(public1);
+// let uncrypted = decrypt.decrypt(data);
+// return uncrypted;
+const publicKey = 
+`-----BEGIN RSA PUBLIC KEY-----
+MIICXQIBAAKBgQDlOJu6TyygqxfWT7eLtGDwajtNFOb9I5XRb6khyfD1Yt3YiCgQ
+WMNW649887VGJiGr/L5i2osbl8C9+WJTeucF+S76xFxdU6jE0NQ+Z+zEdhUTooNR
+aY5nZiu5PgDB0ED/ZKBUSLKL7eibMxZtMlUDHjm4gwQco1KRMDSmXSMkDwIDAQAB
+AoGAfY9LpnuWK5Bs50UVep5c93SJdUi82u7yMx4iHFMc/Z2hfenfYEzu+57fI4fv
+xTQ//5DbzRR/XKb8ulNv6+CHyPF31xk7YOBfkGI8qjLoq06V+FyBfDSwL8KbLyeH
+m7KUZnLNQbk8yGLzB3iYKkRHlmUanQGaNMIJziWOkN+N9dECQQD0ONYRNZeuM8zd
+-----END RSA PUBLIC KEY----- `;
+
+const encrypt = new JSEncrypt();
+
 /**
  * 异常处理程序
  */
 let loginOutStatus = false;
 const errorHandler = error => {
   const { response } = error;
-
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
     const { status, url } = response;
@@ -83,7 +101,6 @@ request.interceptors.request.use((url, options) => {
 });
 
 request.interceptors.response.use(async (response) => {
-
   if(response.status == 200) {
     const data = await response.clone().json();
     if(data.status == 50012 || data.status == 50008) {//登陆过期拦截
@@ -101,8 +118,13 @@ request.interceptors.response.use(async (response) => {
         })
       }
     }
+    /*if(response.url == 'http://localhost:8000/server/api/xxx') {
+      encrypt.setPublicKey(publicKey);
+      let newdata= encrypt.encrypt(data); 
+      console.info(newdata);
+    }
+    return data;*/
   }
-
   return response;
 })
 

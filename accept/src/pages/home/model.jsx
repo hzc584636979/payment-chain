@@ -1,4 +1,4 @@
-import { homeGetTxInfo, homeBuyOnline, homeSellOnline, homeMortgage } from '@/services/api';
+import { homeGetTxInfo, homeBuyOnline, homeSellOnline, homeMortgage, testDecrypt } from '@/services/api';
 
 const Model = {
   namespace: 'home',
@@ -8,6 +8,7 @@ const Model = {
   effects: {
     *fetch({ payload }, { call, put }) {
       const response = yield call(homeGetTxInfo, payload);
+      // const response2 = yield call(testDecrypt);
       yield put({
         type: 'save',
         payload: response.data,

@@ -11,6 +11,13 @@ if(process.env.NODE_ENV == 'development') { //本地测试
 }
 console.log(process.env.NODE_ENV, process.env.BUILD_ENV)
 
+/*解密测试接口*/
+export async function testDecrypt(params) {
+  return request(`${apiAddress}/login/login`, {
+    method: 'POST',
+  });
+}
+
 /*手机登陆*/
 export async function phoneAccountLogin(params) {
   return request(`${apiAddress}/login/login`, {
