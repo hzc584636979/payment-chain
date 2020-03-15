@@ -384,7 +384,7 @@ export default {
   }, 
   "proxy": {
     "/server/api/": {
-      "target": "http://usdt.usdtpay.net.cn",//"http://192.168.1.20:7002"
+      "target": "https://usdt.usdtpay.net.cn",//"http://192.168.1.20:7002"
       "changeOrigin": true,
       pathRewrite: { '^/server': '/acceptance' },
     }

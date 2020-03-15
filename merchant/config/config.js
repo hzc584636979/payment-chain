@@ -399,7 +399,7 @@ export default {
   },
   proxy: {
     '/server/api/': {
-      target: 'http://usdt.usdtpay.net.cn', //"http://192.168.1.20:7003"
+      target: 'https://usdt.usdtpay.net.cn', //"http://192.168.1.20:7003"
       changeOrigin: true,
       pathRewrite: { '^/server': '/merchant' },
     },
