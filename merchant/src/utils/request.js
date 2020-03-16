@@ -47,8 +47,8 @@ const errorHandler = error => {
     }
   } else if (!response) {
     notification.error({
-      description: '您的网络发生异常，无法连接服务器',
-      message: '网络异常',
+      description: '未接收到服务器返回数据',
+      message: '发生异常',
     });
   }
 

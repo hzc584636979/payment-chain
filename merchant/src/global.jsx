@@ -8,13 +8,17 @@ const { pwa } = defaultSettings; // if pwa is true
 var script = document.createElement('script');
 script.type = 'text/javascript';
 script.async = true;
-script.src = 'http://pv.sohu.com/cityjson?ie=utf-8';
+script.src = 'https://pv.sohu.com/cityjson?ie=utf-8';
 document.head.appendChild(script);
 
 window.EXHIBITION = '/';
 window.EXHIBITION2 = '--';
 window.DEFAULTAVATAR =
   'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png';
+
+window.baseApi = 'http://47.100.91.221';
+window.baseMqttUrl = 'mqtt://47.100.91.221';
+window.baseMqttPort = 1883;
 
 window.g_getLocalStorage = (key = 'paymentChain') => {
   return localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key)) : null;

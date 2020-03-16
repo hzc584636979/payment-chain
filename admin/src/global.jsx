@@ -8,6 +8,8 @@ window.EXHIBITION = '/';
 window.EXHIBITION2 = '--';
 window.DEFAULTAVATAR = 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png';
 
+window.baseApi = 'http://47.100.91.221';
+
 window.g_getLocalStorage = (key="paymentChain") => {
   return localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key)) : null;
 };

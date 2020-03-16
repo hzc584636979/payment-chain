@@ -5,9 +5,9 @@ let apiAddress = '';
 if(process.env.NODE_ENV == 'development') { //本地测试
   apiAddress = '/server/api';
 }else if(process.env.BUILD_ENV == 'test') { //测试服务器
-  apiAddress = 'https://usdt.usdtpay.net.cn/merchant/api';
+  apiAddress = baseApi+'/merchant/api';
 }else { //正式服务器
-  apiAddress = 'https://usdt.usdtpay.net.cn/merchant/api';
+  apiAddress = baseApi+'/merchant/api';
 }
 console.log(process.env.NODE_ENV, process.env.BUILD_ENV)
 

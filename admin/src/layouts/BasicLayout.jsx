@@ -10,7 +10,6 @@ import { connect, routerRedux } from 'dva';
 import { Icon, Result, Button, Divider, Row, Col } from 'antd';
 import Authorized from '@/utils/Authorized';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
-import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
 import zh_CN from 'antd/lib/locale-provider/zh_CN'
 import { ConfigProvider } from 'antd';

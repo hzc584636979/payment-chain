@@ -108,7 +108,7 @@ class BasicLayout extends PureComponent {
   }
 
   componentDidMount() {
-    !g_getLocalStorage() && dispatch(routerRedux.push('/user/login'));
+    !g_getLocalStorage() && this.props.dispatch(routerRedux.push('/user/login'));
 
     this.props.dispatch({
       type: 'user/getUserInfo',
