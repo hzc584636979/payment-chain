@@ -148,7 +148,7 @@ request.interceptors.response.use(async (response) => {
         })
       }
     }
-    try {
+    /*try {
       const replaceUrl = process.env.NODE_ENV == 'development' ? response.url.replace(window.location.origin+'/server/api/', baseApi+'/management/api/') : response.url;
       //console.log(replaceUrl);
       if(replaceUrl == baseApi+'/management/api/login/login' 
@@ -159,7 +159,7 @@ request.interceptors.response.use(async (response) => {
       }
     }catch(err) {
       return response;
-    }
+    }*/
   }
 
   return response;

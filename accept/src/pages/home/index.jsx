@@ -297,7 +297,7 @@ class Home extends Component {
                   <div className={`${styles.layoutLeft} ${styles.userInfo}`}>
                     <div className={styles.avatar}><img src={ currentUser.logo_path || DEFAULTAVATAR } /></div>
                     <div className={styles.user}>
-                      { currentUser.user_name || <Link to="/account">设置名称</Link> } | <span style={{color: '#2194FF'}}>{ new BigNumber(currentUser.success_order_percent).multipliedBy(100).toNumber() }%</span><br/>
+                      { currentUser.user_name || <Link to="/account">设置名称</Link> } | <span style={{color: '#2194FF'}}>{ new BigNumber(currentUser.success_order_percent || 0).multipliedBy(100).toNumber() }%</span><br/>
                       {/*<div style={{margin: '5px 0'}}>
                         <label style={{fontSize: 16}}>USDT币种：</label>
                         <Select value={walletType || "1"} onChange={this.changeWallet}>
