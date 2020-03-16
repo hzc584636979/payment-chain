@@ -798,7 +798,7 @@ class UserSafe extends Component {
                 </Button>
               </Descriptions.Item>
               <Descriptions.Item label="交易密码">
-                <Input type="password" value={currentUser.payment_pwd} disabled={true} style={{width: 385}} />
+                <Input type="password" value={'password'} disabled={true} style={{width: 385}} />
                 <Button
                   type="primary"
                   onClick={() => this.handleModalVisible('TPVisible')}
