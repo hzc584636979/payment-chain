@@ -4,6 +4,7 @@
  */
 import { extend } from 'umi-request';
 import { notification } from 'antd';
+import { JSEncrypt } from 'encryptlong';
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
   201: '新建或修改数据成功。',
@@ -21,6 +22,48 @@ const codeMessage = {
   503: '服务不可用，服务器暂时过载或维护。',
   504: '服务器异常，请重新登陆稍后再试。',
 };
+
+const privLongkey = 
+`-----BEGIN RSA PRIVATE KEY-----
+MIICWwIBAAKBgQCrOrIgkdMo82Tx1Y+NoHEevlJp7Obkuj8DSlvFWGH3xvaJEo6/
+i2eGrMdTcIEP9OVsjcPhvXT7VKBhFkkRnTlXc5rpMcgBWYF2OAxeWo7x2h/3Yl4w
+Y0Ndr4y0mAAPoaP7Ysfho9vndMYXzrlP4ATvRNEbYK8aPGWSRwic2LGedQIDAQAB
+AoGARIlh8xdrZeDGbuYEZ7Pok12qrytb4AGMZ0zEHuGZlQvWclczPAgYkBdoUUWe
+4zwq+KBl311uDYt6BmJdLOe5o1fO/POGyjugLEQJ1XPcLAIuDZV8y7RWAwcWdXpw
+o3hRSdnbuRQkEn89ONJA6ZLNTG1xaOjtVZldBThkY7475aECQQDSOLeoYChTHa8U
+Ib4eKKaTet1o63UtQFA3hoRuzAneAoyprrD0ZRAoPbthbtGtkPaCUUjjASOYU2ZD
+gmOO6zwXAkEA0IRDx/u9NSG6w4PyKBW5c9QueRLYthy+pNLFlUYn32DEaoDDipBO
+U8vQrp7uHe5RqF24eE9GmZVs/tMBwMLVUwJAU+ZnBkA6V9HFClfdNNQshzfGHhW7
+EnBUk5SQTlgIqB6EXURnQ2MCa80Xd+9up8LvX1tpp4/Q0P6YFeF4MpYXyQJANHwW
+U5AZ3/XNfMkJeu188JrH19HWmoBBvFsRQLGX97HzvpsKnSYVkSIMNOfsJ7yE8Uwl
+0qKhsqbZ+IpENrDT4QJAV0KDiI3HJktnuqdoa4cNQy0Syax5TrpWdhEwYQ17w4X6
+89QA4rIe/ytpWZO6XLNGrz+9zmuc+5kVQO+ikhrTdw==
+-----END RSA PRIVATE KEY-----`;
+
+let decryptLongor = new JSEncrypt();
+decryptLongor.setPrivateKey(privLongkey);
+function rsaDecryptLong(content) {
+  try {
+    //console.log(`原始数据:${content.data}`)
+    let decryptLonData = decryptLongor.decryptLong(content.data);
+    let decodedata = decodeURI(decryptLonData);
+    //console.log(decodedata)
+    let newdata = JSON.parse(decodedata);
+    //console.log(newdata)
+    let decrypted = {
+      ...content,
+      data: newdata
+    };
+    return decrypted;
+  }catch(err) {
+    notification.error({
+      message: `数据异常`,
+      description: '接口请求返回数据异常JSON解析报错，请刷新重试',
+    });
+    return null;
+  }
+}
+
 /**
  * 异常处理程序
  */
@@ -84,7 +127,6 @@ request.interceptors.request.use((url, options) => {
 });
 
 request.interceptors.response.use(async (response) => {
-
   if(response.status == 200) {
     const data = await response.clone().json();
     if(data.status == 2) {//白名单拦截
@@ -115,6 +157,19 @@ request.interceptors.response.use(async (response) => {
           }, 1000) 
         })
       }
+    }
+    try {
+      const replaceUrl = process.env.NODE_ENV == 'development' ? response.url.replace(window.location.origin+'/server/api/', baseApi+'/merchant/api/') : response.url;
+      //console.log(replaceUrl);
+      if(replaceUrl == baseApi+'/merchant/api/login/login' 
+        || replaceUrl == baseApi+'/merchant/api/home/getUserInfo'
+        || replaceUrl == baseApi+'/merchant/api/home/getSimpleUserInfo') {
+        let newdata = rsaDecryptLong(data); 
+        //console.info(newdata);
+        return newdata;
+      }
+    }catch(err) {
+      return response;
     }
   }
 
