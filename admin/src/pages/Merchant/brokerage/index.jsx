@@ -50,7 +50,9 @@ const CreateForm = Form.create()(props => {
 	    	callback('请输入数字的手续费');
 	    }else if(value > 99.9) {
 	    	callback('手续费不能大于99.9%');
-	    }else if(value.toString().indexOf('.') > -1 && value.toString().split('.')[1].length > 1) {
+	    }else if(value < 0) {
+        callback('手续费不能小于0%');
+      }else if(value.toString().indexOf('.') > -1 && value.toString().split('.')[1].length > 1) {
 	        callback('手续费的小数不能多于1位');
 	    }
   	}

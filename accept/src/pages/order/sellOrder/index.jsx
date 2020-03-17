@@ -47,6 +47,8 @@ const CreateModifyForm = Form.create()(props => {
   const validator = (rule, value, callback) => {
     if(value && !Number(value)) {
      callback('请输入数字的实际金额');
+    }else if(value < 0) {
+      callback('实际金额不能小于0');
     }
     callback();
   }
