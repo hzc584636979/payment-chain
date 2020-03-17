@@ -492,8 +492,8 @@ class Home extends Component {
                     <div className={styles.itemBox} style={{borderBottom: '1px solid #ECECEC'}}>
                       <div className={styles.title}>
                         待处理
-                        <span style={{fontSize: 15, fontWeight: 600, padding: '0 15px', color: '#1890ff'}}>出售交易槽：{ `${home.sell_order_pending} / ${home.sell_accept_slot_max}` }</span>
-                        <span style={{fontSize: 15, fontWeight: 600, padding: '0 15px', color: '#1890ff'}}>购买交易槽：{ `${home.buy_order_pending} / ${home.buy_accept_slot_max}` }</span>
+                        <span style={{fontSize: 15, fontWeight: 600, padding: '0 15px', color: '#1890ff'}}>出售交易槽：{ `${home.sell_accept_slot_current} / ${home.sell_accept_slot_max}` }</span>
+                        <span style={{fontSize: 15, fontWeight: 600, padding: '0 15px', color: '#1890ff'}}>购买交易槽：{ `${home.buy_accept_slot_current} / ${home.buy_accept_slot_max}` }</span>
                         <Button loading={loading} onClick={this.getTxInfo}>刷新交易槽</Button>
                       </div>
                       <Row

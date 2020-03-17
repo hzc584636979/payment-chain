@@ -359,7 +359,7 @@ class SellOrderDetail extends Component {
               </Descriptions.Item>
             }
             {
-              sellOrderDetail.state == 8 &&
+              (sellOrderDetail.state == 4 || sellOrderDetail.state == 8) &&
               <Descriptions.Item label="操作">
                 <Popconfirm title="是否要确认收款？" onConfirm={this.receipt}>
                   <Button>确认收款</Button>

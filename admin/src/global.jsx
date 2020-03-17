@@ -6,7 +6,7 @@ const { pwa } = defaultSettings; // if pwa is true
 
 window.EXHIBITION = '/';
 window.EXHIBITION2 = '--';
-window.DEFAULTAVATAR = 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png';
+window.DEFAULTAVATAR = 'http://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png';
 
 window.baseApi = 'http://47.100.91.221';
 

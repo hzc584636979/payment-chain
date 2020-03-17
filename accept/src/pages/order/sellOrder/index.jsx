@@ -503,21 +503,22 @@ class SellOrder extends Component {
               {
                 (record.state == 1 || record.state == 2) &&
                 <Fragment>
-                  <Popconfirm title="是否要确认收款？" onConfirm={() => this.receipt(record.order_id)}>
-                    <Button>确认收款</Button>
-                  </Popconfirm>
-                  <span style={{display: 'inline-block', width: '10px'}}></span>
-                  {
-                    record.state == 1 ?
-                    <Popconfirm title="是否要确认取消订单？" onConfirm={() => this.orderCancel(record.order_id)}>
-                      <Button>取消订单</Button>
+                  <Row type="flex" justify="space-around">
+                    <Popconfirm title="是否要确认收款？" onConfirm={() => this.receipt(record.order_id)}>
+                      <Button>确认收款</Button>
                     </Popconfirm>
-                    :
-                    <Popconfirm title="是否要确认未收款？" onConfirm={() => this.noReceipt(record.order_id)}>
-                      <Button>未收到收款</Button>
-                    </Popconfirm>
-                  }
-                  <span style={{display: 'inline-block', width: '10px'}}></span>
+                    {
+                      record.state == 1 ?
+                      <Popconfirm title="是否要确认取消订单？" onConfirm={() => this.orderCancel(record.order_id)}>
+                        <Button>取消订单</Button>
+                      </Popconfirm>
+                      :
+                      <Popconfirm title="是否要确认未收款？" onConfirm={() => this.noReceipt(record.order_id)}>
+                        <Button>未收到收款</Button>
+                      </Popconfirm>
+                    }
+                  </Row>
+                  <br/>
                   <Button onClick={() => this.handleModifyModalVisible(record)}>调价确认</Button>
                   <span style={{display: 'inline-block', width: '10px'}}></span>
                 </Fragment> 
@@ -532,7 +533,7 @@ class SellOrder extends Component {
                 </Fragment> 
               }
               {
-                record.state == 8 &&
+                (record.state == 4 || record.state == 8) &&
                 <Fragment>
                   <Popconfirm title="是否要确认收款？" onConfirm={() => this.receipt(record.order_id)}>
                     <Button>确认收款</Button>
