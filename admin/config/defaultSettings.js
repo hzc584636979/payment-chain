@@ -9,7 +9,7 @@ export default {
   "menu": {
     "locale": true
   },
-  "title": "支付链承管理员后台",
+  "title": "支付链管理员后台",
   "pwa": false,
   "iconfontUrl": ""
 };
