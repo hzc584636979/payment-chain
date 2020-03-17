@@ -25,7 +25,7 @@ import BigNumber from 'bignumber.js';
 import styles from './style.less';
 import banner1 from '@/assets/img_home_banner.png';
 import ewm from '@/assets/icon_qianbi.png';
-import apiDoc from '@/assets/apiDoc-v1.0.3.docx';
+import apiDoc from '@/assets/apiDoc-V2.0.pdf';
 
 const { Option } = Select;
 
