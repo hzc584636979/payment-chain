@@ -50,6 +50,8 @@ const CreateForm = Form.create()(props => {
         callback('请输入数字的浮动汇率');
       }else if(value > 10) {
         callback('浮动汇率不能大于10%');
+      }else if(value < 0) {
+        callback('浮动汇率不能小于0%');
       }else if(value.toString().indexOf('.') > -1 && value.toString().split('.')[1].length > 2) {
           callback('浮动汇率的小数不能多于2位');
       }

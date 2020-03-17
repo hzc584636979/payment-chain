@@ -87,6 +87,8 @@ const CreateModifyForm = Form.create()(props => {
   const validator = (rule, value, callback) => {
     if(value && !Number(value) || value.indexOf('.') > -1) {
      callback('请输入整数的管理人数');
+    }else if(value < 0) {
+      callback('管理人数不能小于0');
     }
     callback();
   }

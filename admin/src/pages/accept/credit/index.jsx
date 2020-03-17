@@ -49,6 +49,8 @@ const CreateForm = Form.create()(props => {
      callback('请输入整数的综合信用额度');
     }else if(value > 10000000) {
       callback('综合信用额度不能大于10000000');
+    }else if(value < 0) {
+      callback('综合信用额度不能小于0');
     }
     callback();
   }

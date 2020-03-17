@@ -39,6 +39,8 @@ const CreatePunishForm = Form.create()(props => {
         callback('请输入数字的惩罚金额');
       }else if(value > params.lock_forfiet) {
         callback(`惩罚金额不能大于${params.lock_forfiet}USDT`);
+      }else if(value < 0) {
+        callback(`惩罚金额不能小于于0USDT`);
       }/*else if(value.toString().indexOf('.') > -1 && value.toString().split('.')[1].length > 8) {
           callback('惩罚金额的小数不能多于8位');
       }*/
