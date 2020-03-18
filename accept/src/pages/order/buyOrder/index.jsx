@@ -256,7 +256,7 @@ class BuyOrder extends Component {
         <div>
           <p>金额：{`${ record.pay_amount_cny } ${ cashType[record.currency_type] }`}</p>
           <p>收款方式：<img src={payIcon[record.pay_type]} style={{maxWidth: 40}} /></p>
-          <p>利润(CNY)：{`${ record.profit }`}</p>
+          <p>利润(USDT)：{`${ record.profit }`}</p>
           <p>交易汇率(USDT:CNY)：{`1:${ record.deal_rate }`}</p>
           <p>客户姓名：{record.payee_name}</p>
           {
@@ -580,7 +580,7 @@ class BuyOrder extends Component {
         }
       },*/
       {
-        title: '利润(CNY)',
+        title: '利润(USDT)',
         dataIndex: 'profit',
         key: 'profit',
         align: 'center',

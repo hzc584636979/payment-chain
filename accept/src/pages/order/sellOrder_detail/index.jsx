@@ -277,7 +277,7 @@ class SellOrderDetail extends Component {
             <Descriptions.Item label="交易汇率(USDT:CNY)">{ `1:${sellOrderDetail.deal_rate}` }</Descriptions.Item>
             <Descriptions.Item label="火币汇率(USDT:CNY)">{ `1:${sellOrderDetail.cny_price}` }</Descriptions.Item>
             <Descriptions.Item label="套利空间">{ `${profitPercent}%` }</Descriptions.Item>
-            <Descriptions.Item label="交易利润(CNY)">{ `${sellOrderDetail.profit > -1 ? '+' : '' } ${sellOrderDetail.profit}` }</Descriptions.Item>
+            <Descriptions.Item label="交易利润(USDT)">{ `${sellOrderDetail.profit > -1 ? '+' : '' } ${sellOrderDetail.profit}` }</Descriptions.Item>
             
             {
               sellOrderDetail.state == 2 &&

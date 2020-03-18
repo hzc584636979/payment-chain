@@ -584,7 +584,7 @@ class SellOrder extends Component {
         }
       },
       {
-        title: '利润(CNY)',
+        title: '利润(USDT)',
         dataIndex: 'profit',
         key: 'profit',
         align: 'center',

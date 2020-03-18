@@ -222,7 +222,7 @@ class buyOrderDetail extends Component {
             <Descriptions.Item label="交易汇率(USDT:CNY)">{ `1:${buyOrderDetail.deal_rate}` }</Descriptions.Item>
             <Descriptions.Item label="火币汇率(USDT:CNY)">{ `1:${buyOrderDetail.cny_price}` }</Descriptions.Item>
             <Descriptions.Item label="套利空间">{ `${profitPercent2}%` }</Descriptions.Item>
-            <Descriptions.Item label="交易利润(CNY)">{ `${buyOrderDetail.profit > -1 ? '+' : '' } ${buyOrderDetail.profit}` }</Descriptions.Item>
+            <Descriptions.Item label="交易利润(USDT)">{ `${buyOrderDetail.profit > -1 ? '+' : '' } ${buyOrderDetail.profit}` }</Descriptions.Item>
             {
               (buyOrderDetail.state == 4 || buyOrderDetail.state == 3) &&
               <Descriptions.Item label="时效"><span style={{color: '#EA0000'}}>{lessTime >= hoursTime ? `${lessTime.hours()} : ${lessTime.minutes()} : ${lessTime.seconds()}` : `${lessTime.minutes()} : ${lessTime.seconds()}`}</span></Descriptions.Item>
