@@ -362,7 +362,7 @@ class AcceptBuyDissentOrderDetail extends Component {
             {/*<Descriptions.Item label="处理状态">{ issueTypeStatus[acceptBuyDissentOrderDetail.issue_state] }</Descriptions.Item>*/}
             
             {
-              /*acceptBuyDissentOrderDetail.state == 5 &&
+              /*(acceptBuyDissentOrderDetail.state == 5 && acceptBuyDissentOrderDetail.payment_screenshot) &&
               <Descriptions.Item label="承兑商支付截图">
                 <a target="_blank" href={acceptBuyDissentOrderDetail.payment_screenshot}><img src={acceptBuyDissentOrderDetail.payment_screenshot} width="150" height="150" /></a>
               </Descriptions.Item>*/

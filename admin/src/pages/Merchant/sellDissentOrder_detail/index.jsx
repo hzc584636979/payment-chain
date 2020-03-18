@@ -361,7 +361,7 @@ class MerchantSellDissentOrderDetail extends Component {
             {/*<Descriptions.Item label="处理状态">{ issueTypeStatus[merchantSellDissentOrderDetail.issue_state] }</Descriptions.Item>*/}
             
             {
-              /*merchantSellDissentOrderDetail.state == 5 &&
+              /*(merchantSellDissentOrderDetail.state == 5 && merchantSellDissentOrderDetail.payment_screenshot) 5 &&
               <Descriptions.Item label="承兑商支付截图">
                 <a target="_blank" href={merchantSellDissentOrderDetail.payment_screenshot}><img src={merchantSellDissentOrderDetail.payment_screenshot} width="150" height="150" /></a>
               </Descriptions.Item>*/

@@ -247,7 +247,7 @@ class BuyDissentOrder extends Component {
           return(
             <span>
               {
-                record.state == 7 &&
+                (record.issue_state != 2 && record.state == 7) &&
                 <Fragment>
                   <Popconfirm title="是否要确认成交？" onConfirm={() => this.receiptFromMerchant(record.order_id)}>
                     <Button>确认成交</Button>

@@ -190,10 +190,6 @@ class GoldYieldDissentOrderDetail extends Component {
               { fileList.map((v, i) => <a key={i} target="_blank" href={v}><img src={v} style={{maxWidth: 150}} /></a>) }
             </Descriptions.Item>
             <Descriptions.Item label="处理状态">{ issueTypeStatus[goldYieldDissentOrderDetail.issue_state] }</Descriptions.Item>
-            {
-              goldYieldDissentOrderDetail.issue_state == 2 &&
-              <Descriptions.Item label="处理结果">{ goldYieldDissentOrderDetail.issue_result }</Descriptions.Item>
-            }
             <Descriptions.Item label="唯一标示号">
               {goldYieldDissentOrderDetail.out_order_id}
             </Descriptions.Item>
@@ -207,7 +203,7 @@ class GoldYieldDissentOrderDetail extends Component {
             <Descriptions.Item label="承兑商手机号">{ goldYieldDissentOrderDetail.a_telephone_number }</Descriptions.Item>*/}
             <Descriptions.Item label="手续费">{ `${goldYieldDissentOrderDetail.gas} ${cashType[goldYieldDissentOrderDetail.token_id]}` }</Descriptions.Item>
             {
-              goldYieldDissentOrderDetail.state == 5 &&
+              (goldYieldDissentOrderDetail.state == 5 && goldYieldDissentOrderDetail.payment_screenshot) &&
               <Descriptions.Item label="支付截图">
                 <a target="_blank" href={goldYieldDissentOrderDetail.payment_screenshot}><img src={goldYieldDissentOrderDetail.payment_screenshot} width="150" height="150" /></a>
               </Descriptions.Item>

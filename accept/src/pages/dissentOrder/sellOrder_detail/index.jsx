@@ -256,11 +256,11 @@ class SellDissentOrderDetail extends Component {
                   </Fragment>
                 }
                 {
-                  sellDissentOrderDetail.issue_state == 1 &&
+                  /*sellDissentOrderDetail.issue_state == 1 &&
                   <Fragment>
                     <Button type="primary" onClick={this.handleKF}>客服介入</Button>
                     <span style={{display: 'inline-block', width: '10px'}}></span>
-                  </Fragment>
+                  </Fragment>*/
                 }
                 {
                   sellDissentOrderDetail.complainant == 2 &&

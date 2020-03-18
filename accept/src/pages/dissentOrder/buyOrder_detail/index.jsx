@@ -280,11 +280,11 @@ class BuyDissentOrderDetail extends Component {
                   </Fragment>
                 }
                 {
-                  buyDissentOrderDetail.issue_state == 1 &&
+                  /*buyDissentOrderDetail.issue_state == 1 &&
                   <Fragment>
                     <Button type="primary" onClick={this.handleKF}>客服介入</Button>
                     <span style={{display: 'inline-block', width: '10px'}}></span>
-                  </Fragment>
+                  </Fragment>*/
                 }
                 {
                   buyDissentOrderDetail.complainant == 2 &&
