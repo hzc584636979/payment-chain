@@ -1,7 +1,8 @@
 import { Button, Descriptions, Popconfirm, Input, message, Upload, Icon } from 'antd';
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
+import router from 'umi/router';
 import ContLayout from '@/components/ContLayout';
 import { getBase64 } from '@/utils/utils';
 import Layer from '@/components/Layer';
@@ -152,9 +153,7 @@ class GoldYieldDissentOrderDetail extends Component {
       } else {
         message.success('操作成功');
       }
-      this.setState({
-        KFVisible: false,
-      });
+      router.push(`/dissentOrder/goldYieldOrder?history`);
     });
   };
 
@@ -178,9 +177,12 @@ class GoldYieldDissentOrderDetail extends Component {
                 .local()
                 .format('YYYY-MM-DD HH:mm:ss')}
             </Descriptions.Item>
-            <Descriptions.Item label="问题类型">
-              {goldYieldDissentOrderDetail.issue_type}
+            <Descriptions.Item label="平台订单号">
+              {goldYieldDissentOrderDetail.order_id}
             </Descriptions.Item>
+            {/*<Descriptions.Item label="问题类型">
+              {goldYieldDissentOrderDetail.issue_type}
+            </Descriptions.Item>*/}
             <Descriptions.Item label="问题描述">
               {goldYieldDissentOrderDetail.issue_desc}
             </Descriptions.Item>
@@ -192,9 +194,6 @@ class GoldYieldDissentOrderDetail extends Component {
               goldYieldDissentOrderDetail.issue_state == 2 &&
               <Descriptions.Item label="处理结果">{ goldYieldDissentOrderDetail.issue_result }</Descriptions.Item>
             }
-            <Descriptions.Item label="平台订单号">
-              {goldYieldDissentOrderDetail.order_id}
-            </Descriptions.Item>
             <Descriptions.Item label="唯一标示号">
               {goldYieldDissentOrderDetail.out_order_id}
             </Descriptions.Item>
@@ -202,10 +201,10 @@ class GoldYieldDissentOrderDetail extends Component {
               {buyStatusType[goldYieldDissentOrderDetail.state]}
             </Descriptions.Item>
             <Descriptions.Item label="订单金额/代币数量">{ `${goldYieldDissentOrderDetail.pay_amount_cny} ${cashType[goldYieldDissentOrderDetail.currency_type]}/${goldYieldDissentOrderDetail.m_pay_amount} ${coinType[goldYieldDissentOrderDetail.token_id]}` }</Descriptions.Item>
-            <Descriptions.Item label="承兑商姓名">
+            {/*<Descriptions.Item label="承兑商姓名">
               {goldYieldDissentOrderDetail.a_user_name}
             </Descriptions.Item>
-            <Descriptions.Item label="承兑商手机号">{ goldYieldDissentOrderDetail.a_telephone_number }</Descriptions.Item>
+            <Descriptions.Item label="承兑商手机号">{ goldYieldDissentOrderDetail.a_telephone_number }</Descriptions.Item>*/}
             <Descriptions.Item label="手续费">{ `${goldYieldDissentOrderDetail.gas} ${cashType[goldYieldDissentOrderDetail.token_id]}` }</Descriptions.Item>
             {
               goldYieldDissentOrderDetail.state == 5 &&
@@ -213,20 +212,42 @@ class GoldYieldDissentOrderDetail extends Component {
                 <a target="_blank" href={goldYieldDissentOrderDetail.payment_screenshot}><img src={goldYieldDissentOrderDetail.payment_screenshot} width="150" height="150" /></a>
               </Descriptions.Item>
             }
+            {
+              goldYieldDissentOrderDetail.issue_state == 2 &&
+              <Fragment>
+                <Descriptions.Item label="处理结果">{ goldYieldDissentOrderDetail.issue_result }</Descriptions.Item>
+                {
+                  goldYieldDissentOrderDetail.forfiet && 
+                  <Descriptions.Item label="惩罚金额">{ `${goldYieldDissentOrderDetail.forfiet}USDT` }</Descriptions.Item>
+                }
+              </Fragment>
+            }
             <Descriptions.Item label="创建时间">
               {moment(goldYieldDissentOrderDetail.created_at)
                 .local()
                 .format('YYYY-MM-DD HH:mm:ss')}
             </Descriptions.Item>
-            <Descriptions.Item label="操作">
-              <Button type="primary" onClick={this.handleKF}>
-                客服介入
-              </Button>
-              <span style={{ display: 'inline-block', width: '10px' }}></span>
-              <Button loading={closeLock} type="danger" onClick={this.closeObjection}>
-                关闭异议
-              </Button>
-            </Descriptions.Item>
+            {
+              (goldYieldDissentOrderDetail.issue_state == 1 
+              || goldYieldDissentOrderDetail.complainant == 1) &&
+              <Descriptions.Item label="操作">
+                {
+                  goldYieldDissentOrderDetail.issue_state == 1 &&
+                  <Fragment>
+                    <Button type="primary" onClick={this.handleKF}>
+                      客服介入
+                    </Button>
+                    <span style={{ display: 'inline-block', width: '10px' }}></span>
+                  </Fragment>
+                }
+                {
+                  goldYieldDissentOrderDetail.complainant == 1 &&
+                  <Popconfirm title="是否要确认关闭异议？" onConfirm={this.closeObjection}>
+                    <Button type="danger" loading={closeLock}>关闭异议</Button>
+                  </Popconfirm>
+                }
+              </Descriptions.Item>
+            }
           </Descriptions>
         </div>
         {KFVisible && (

@@ -86,14 +86,18 @@ class AcceptSellDissentOrderDetail extends Component {
   };
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'acceptSellDissentOrderDetail/fetch',
-    })
+    this.getInfo();
   }
 
   componentWillUnmount() {
     
+  }
+
+  getInfo = () => {
+  	const { dispatch } = this.props;
+    dispatch({
+      type: 'acceptSellDissentOrderDetail/fetch',
+    })
   }
 
   toAccept = () => {
@@ -117,6 +121,7 @@ class AcceptSellDissentOrderDetail extends Component {
       }else {
         message.success('操作成功');
       }
+      this.getInfo();
     })
   }
 
@@ -141,6 +146,7 @@ class AcceptSellDissentOrderDetail extends Component {
       }else {
         message.success('操作成功');
       }
+      this.getInfo();
     })
   }
 
@@ -165,6 +171,7 @@ class AcceptSellDissentOrderDetail extends Component {
       }else {
         message.success('操作成功');
       }
+      this.getInfo();
     })
   }
 
@@ -189,6 +196,7 @@ class AcceptSellDissentOrderDetail extends Component {
       }else {
         message.success('操作成功');
       }
+      this.getInfo();
     })
   }
 
@@ -233,6 +241,7 @@ class AcceptSellDissentOrderDetail extends Component {
       }else {
         message.success('操作成功');
       }
+      this.getInfo();
       this.setState({
         punishVisible: false,
       });
@@ -252,6 +261,23 @@ class AcceptSellDissentOrderDetail extends Component {
     } = this.state;
     const fileList = acceptSellDissentOrderDetail.issue_file ? acceptSellDissentOrderDetail.issue_file.split(',') : [];
 
+    let appeal = null,
+    	appeal_telephone_number = null,
+    	beAppeal = null,
+    	beAppeal_telephone_number = null;
+
+    if(acceptSellDissentOrderDetail.complainant == 1) {
+    	appeal = acceptSellDissentOrderDetail.m_user_name,
+    	appeal_telephone_number = acceptSellDissentOrderDetail.m_telephone_number,
+    	beAppeal = acceptSellDissentOrderDetail.a_user_name,
+    	beAppeal_telephone_number = acceptSellDissentOrderDetail.a_telephone_number;
+    }else {
+    	appeal = acceptSellDissentOrderDetail.a_user_name,
+    	appeal_telephone_number = acceptSellDissentOrderDetail.a_telephone_number,
+    	beAppeal = acceptSellDissentOrderDetail.m_user_name,
+    	beAppeal_telephone_number = acceptSellDissentOrderDetail.m_telephone_number;
+    }
+
     const punishMethods = {
       submit: this.punish,
       cancel: this.punishCancel,
@@ -262,24 +288,25 @@ class AcceptSellDissentOrderDetail extends Component {
       <ContLayout>
         <div className={styles.wrap}>
           <Descriptions column={1}>
-            <Descriptions.Item label="异议时间">{ moment(acceptSellDissentOrderDetail.updated_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
-            <Descriptions.Item label="问题类型">{ acceptSellDissentOrderDetail.issue_type }</Descriptions.Item>
-            <Descriptions.Item label="问题描述">{ acceptSellDissentOrderDetail.issue_desc }</Descriptions.Item>
-            <Descriptions.Item label="问题图片">
+          	<Descriptions.Item label="异议订单时间">{ moment(acceptSellDissentOrderDetail.updated_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
+            <Descriptions.Item label="申诉者">{ appeal }</Descriptions.Item>
+            <Descriptions.Item label="申诉者图片">
               { fileList.map((v, i) => <a key={i} target="_blank" href={v}><img src={v} style={{maxWidth: 150}} /></a>) }
             </Descriptions.Item>
+            <Descriptions.Item label="申诉者描述">{ acceptSellDissentOrderDetail.issue_desc }</Descriptions.Item>
+            <Descriptions.Item label="申诉者手机号">{ appeal_telephone_number }</Descriptions.Item>
+
             {
               acceptSellDissentOrderDetail.issue_state == 3 &&
               <Fragment>
-                <Descriptions.Item label="客服介入联系方式">{ acceptSellDissentOrderDetail.contact }</Descriptions.Item>
-                <Descriptions.Item label="客服介入申诉描述">{ acceptSellDissentOrderDetail.content }</Descriptions.Item>
+                <Descriptions.Item label="客服介入者联系方式">{ acceptSellDissentOrderDetail.contact }</Descriptions.Item>
+                <Descriptions.Item label="客服介入者申诉描述">{ acceptSellDissentOrderDetail.content }</Descriptions.Item>
               </Fragment>
             }
-            <Descriptions.Item label="处理状态">{ issueTypeStatus[acceptSellDissentOrderDetail.issue_state] }</Descriptions.Item>
-            {
-              acceptSellDissentOrderDetail.issue_state == 2 &&
-              <Descriptions.Item label="处理结果">{ acceptSellDissentOrderDetail.issue_result }</Descriptions.Item>
-            }
+
+            <Descriptions.Item label="被申诉者">{ beAppeal }</Descriptions.Item>
+            <Descriptions.Item label="被申诉者手机号">{ beAppeal_telephone_number }</Descriptions.Item>
+
             <Descriptions.Item label="平台订单号">{ acceptSellDissentOrderDetail.order_id }</Descriptions.Item>
             <Descriptions.Item label="唯一标示号">{ acceptSellDissentOrderDetail.out_order_id }</Descriptions.Item>
             {
@@ -296,22 +323,24 @@ class AcceptSellDissentOrderDetail extends Component {
                 </Descriptions.Item>
               </Fragment>
             }
-            <Descriptions.Item label="代币数量">{ `${acceptSellDissentOrderDetail.pay_amount} ${coinType[acceptSellDissentOrderDetail.token_id]}` }</Descriptions.Item>
-            <Descriptions.Item label="承兑商昵称">{ acceptSellDissentOrderDetail.a_user_name }</Descriptions.Item>
-            <Descriptions.Item label="承兑商手机号">{ acceptSellDissentOrderDetail.a_telephone_number }</Descriptions.Item>
-            <Descriptions.Item label="商户昵称">{ acceptSellDissentOrderDetail.m_user_name }</Descriptions.Item>
-            <Descriptions.Item label="商户手机号">{ acceptSellDissentOrderDetail.m_telephone_number }</Descriptions.Item>
-            <Descriptions.Item label="付款用户">{ acceptSellDissentOrderDetail.pay_real_name }</Descriptions.Item>
-            <Descriptions.Item label="付款账户">{ acceptSellDissentOrderDetail.user_pay_account }</Descriptions.Item>
-            {
-              (acceptSellDissentOrderDetail.pay_type == 1 || acceptSellDissentOrderDetail.pay_type == 4) &&
-              <Descriptions.Item label="开户行">{ acceptSellDissentOrderDetail.user_account_bank_name }</Descriptions.Item>
-            }
-            <Descriptions.Item label="付款方式"><img src={payIcon[acceptSellDissentOrderDetail.pay_type]} style={{maxWidth: 40}} /></Descriptions.Item>
+            <Descriptions.Item label="代币数量">{ `${acceptSellDissentOrderDetail.m_pay_amount} ${coinType[acceptSellDissentOrderDetail.token_id]}` }</Descriptions.Item>
+
             <Descriptions.Item label="创建时间">{ moment(acceptSellDissentOrderDetail.created_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
-            <Descriptions.Item label="订单更新时间">{ moment(acceptSellDissentOrderDetail.updated_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
-            <Descriptions.Item label="付款时间">{ acceptSellDissentOrderDetail.transfer_time ? moment(acceptSellDissentOrderDetail.transfer_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
-            <Descriptions.Item label="承兑商确认时间">{ acceptSellDissentOrderDetail.confirm_time ? moment(acceptSellDissentOrderDetail.confirm_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
+
+            {
+              acceptSellDissentOrderDetail.issue_state == 2 &&
+              <Fragment>	
+            	<Descriptions.Item label="管理员处理时间">{ moment(acceptSellDissentOrderDetail.manager_deal_time).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
+            	<Descriptions.Item label="管理员姓名">{ acceptSellDissentOrderDetail.manager_name }</Descriptions.Item>
+            	<Descriptions.Item label="管理员手机号">{ acceptSellDissentOrderDetail.manager_telephone_number }</Descriptions.Item>
+              	<Descriptions.Item label="处理结果">{ acceptSellDissentOrderDetail.issue_result }</Descriptions.Item>
+              	{
+              		acceptSellDissentOrderDetail.forfiet && 
+              		<Descriptions.Item label="惩罚金额">{ `${acceptSellDissentOrderDetail.forfiet}USDT` }</Descriptions.Item>
+              	}
+              </Fragment>
+            }
+
             {
               (acceptSellDissentOrderDetail.issue_state == 1 || acceptSellDissentOrderDetail.issue_state == 3) &&
               <Fragment>
@@ -328,17 +357,36 @@ class AcceptSellDissentOrderDetail extends Component {
                     <Button loading={closeLock} disabled={operLock} type="danger">取消订单</Button>
                   </Popconfirm>
                 </Descriptions.Item>
-                <Descriptions.Item>
-                  <Button onClick={() => this.handlePunishModalVisible(1)} disabled={operLock} type="primary">惩罚承兑商</Button>
-                  <span style={{display: 'inline-block', width: '10px'}}></span>
-                  <Button onClick={() => this.handlePunishModalVisible(2)} disabled={operLock} type="primary">惩罚商户</Button>
-                  <span style={{display: 'inline-block', width: '10px'}}></span>
-                  <Popconfirm title="是否要确认和解？" onConfirm={this.compromise}>
-                    <Button loading={compromiseLock} disabled={operLock} type="danger">和解</Button>
-                  </Popconfirm>
-                </Descriptions.Item>
+                {
+                	acceptSellDissentOrderDetail.issue_state == 3 &&
+                	<Descriptions.Item>
+	                  <Button onClick={() => this.handlePunishModalVisible(1)} disabled={operLock} type="primary">惩罚承兑商</Button>
+	                  <span style={{display: 'inline-block', width: '10px'}}></span>
+	                  <Button onClick={() => this.handlePunishModalVisible(2)} disabled={operLock} type="primary">惩罚商户</Button>
+	                  <span style={{display: 'inline-block', width: '10px'}}></span>
+	                  <Popconfirm title="是否要确认和解？" onConfirm={this.compromise}>
+	                    <Button loading={compromiseLock} disabled={operLock} type="danger">和解</Button>
+	                  </Popconfirm>
+	                </Descriptions.Item>
+                }
               </Fragment>
             }
+            
+            {/*<Descriptions.Item label="处理状态">{ issueTypeStatus[acceptSellDissentOrderDetail.issue_state] }</Descriptions.Item>*/}
+            
+            {/*<Descriptions.Item label="付款用户">{ acceptSellDissentOrderDetail.pay_real_name }</Descriptions.Item>
+            <Descriptions.Item label="付款账户">{ acceptSellDissentOrderDetail.user_pay_account }</Descriptions.Item>*/}
+            
+            {
+              /*(acceptSellDissentOrderDetail.pay_type == 1 || acceptSellDissentOrderDetail.pay_type == 4) &&
+              <Descriptions.Item label="开户行">{ acceptSellDissentOrderDetail.user_account_bank_name }</Descriptions.Item>*/
+            }
+            {/*<Descriptions.Item label="付款方式"><img src={payIcon[acceptSellDissentOrderDetail.pay_type]} style={{maxWidth: 40}} /></Descriptions.Item>
+            <Descriptions.Item label="创建时间">{ moment(acceptSellDissentOrderDetail.created_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
+            <Descriptions.Item label="订单更新时间">{ moment(acceptSellDissentOrderDetail.updated_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
+            <Descriptions.Item label="付款时间">{ acceptSellDissentOrderDetail.transfer_time ? moment(acceptSellDissentOrderDetail.transfer_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
+            <Descriptions.Item label="承兑商确认时间">{ acceptSellDissentOrderDetail.confirm_time ? moment(acceptSellDissentOrderDetail.confirm_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>*/}
+            
           </Descriptions>
         </div>
         <CreatePunishForm {...punishMethods} modalVisible={ punishVisible } />

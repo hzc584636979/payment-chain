@@ -11,7 +11,7 @@ import {
   Popconfirm,
   message,
 } from 'antd';
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import ContLayout from '@/components/ContLayout';
@@ -73,16 +73,16 @@ class BuyDissentOrder extends Component {
     });
   };
 
-  handleSearch = e => {
-    e.preventDefault();
+  handleSearch = (e, pagination={}) => {
+    e && e.preventDefault();
     const { dispatch, form } = this.props;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
 
       const values = {
         ...fieldsValue,
-        page:0,
-        pageSize:10,
+        page: pagination.page || 0,
+        pageSize: pagination.pageSize || this.basePageSize,
       };
       dispatch({
         type: 'buyDissentOrder/search',
@@ -208,6 +208,31 @@ class BuyDissentOrder extends Component {
     });
   }
 
+  receiptFromMerchant = id => {
+    const { dispatch } = this.props;
+    const { pagination } = this.props.buyDissentOrder.data;
+
+    const params = {
+      page: pagination.current -1,
+      pageSize: pagination.pageSize,
+    };
+    dispatch({
+      type: 'buyDissentOrder/receiptFromMerchant',
+      payload: {
+        order_id: id,
+        payment_screenshot: null
+      },
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      this.handleSearch(null, params);
+    })
+  }
+
   render() {
     const { loading } = this.props;
     const { history, list, pagination } = this.props.buyDissentOrder.data;
@@ -217,10 +242,19 @@ class BuyDissentOrder extends Component {
         key: 'action',
         fixed: 'left',
         align: 'center',
-        width: 100,
+        width: 200,
         render: (val, record) => {
           return(
             <span>
+              {
+                record.state == 7 &&
+                <Fragment>
+                  <Popconfirm title="是否要确认成交？" onConfirm={() => this.receiptFromMerchant(record.order_id)}>
+                    <Button>确认成交</Button>
+                  </Popconfirm>
+                  <span style={{display: 'inline-block', width: '10px'}}></span>
+                </Fragment> 
+              }
               <Button>
                 <Link to={`/dissentOrder/buyOrder_detail/${record.order_id}`}>查看</Link>
               </Button>

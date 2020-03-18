@@ -2,6 +2,7 @@ import { Button, Descriptions, Popconfirm, Input, message, Upload, Icon } from '
 import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
+import router from 'umi/router';
 import ContLayout from '@/components/ContLayout';
 import { getBase64 } from '@/utils/utils';
 import Layer from '@/components/Layer';
@@ -152,9 +153,7 @@ class GoldEntryDissentOrderDetail extends Component {
       } else {
         message.success('操作成功');
       }
-      this.setState({
-        KFVisible: false,
-      });
+      router.push(`/dissentOrder/goldEntryOrder?history`);
     });
   };
 
@@ -178,9 +177,12 @@ class GoldEntryDissentOrderDetail extends Component {
                 .local()
                 .format('YYYY-MM-DD HH:mm:ss')}
             </Descriptions.Item>
-            <Descriptions.Item label="问题类型">
-              {goldEntryDissentOrderDetail.issue_type}
+            <Descriptions.Item label="平台订单号">
+              {goldEntryDissentOrderDetail.order_id}
             </Descriptions.Item>
+            {/*<Descriptions.Item label="问题类型">
+              {goldEntryDissentOrderDetail.issue_type}
+            </Descriptions.Item>*/}
             <Descriptions.Item label="问题描述">
               {goldEntryDissentOrderDetail.issue_desc}
             </Descriptions.Item>
@@ -188,13 +190,6 @@ class GoldEntryDissentOrderDetail extends Component {
               { fileList.map((v, i) => <a key={i} target="_blank" href={v}><img src={v} style={{maxWidth: 150}} /></a>) }
             </Descriptions.Item>
             <Descriptions.Item label="处理状态">{ issueTypeStatus[goldEntryDissentOrderDetail.issue_state] }</Descriptions.Item>
-            {
-              goldEntryDissentOrderDetail.issue_state == 2 &&
-              <Descriptions.Item label="处理结果">{ goldEntryDissentOrderDetail.issue_result }</Descriptions.Item>
-            }
-            <Descriptions.Item label="平台订单号">
-              {goldEntryDissentOrderDetail.order_id}
-            </Descriptions.Item>
             <Descriptions.Item label="唯一标示号">
               {goldEntryDissentOrderDetail.out_order_id}
             </Descriptions.Item>
@@ -213,24 +208,46 @@ class GoldEntryDissentOrderDetail extends Component {
               </Fragment>
             }
             <Descriptions.Item label="代币数量">{ `${goldEntryDissentOrderDetail.m_pay_amount} ${coinType[goldEntryDissentOrderDetail.token_id]}` }</Descriptions.Item>
-            <Descriptions.Item label="承兑商姓名">
+            {/*<Descriptions.Item label="承兑商姓名">
               {goldEntryDissentOrderDetail.a_user_name}
             </Descriptions.Item>
-            <Descriptions.Item label="承兑商手机号">{ goldEntryDissentOrderDetail.a_telephone_number }</Descriptions.Item>
-            <Descriptions.Item label="订单创建时间">
+            <Descriptions.Item label="承兑商手机号">{ goldEntryDissentOrderDetail.a_telephone_number }</Descriptions.Item>*/}
+            {
+              goldEntryDissentOrderDetail.issue_state == 2 &&
+              <Fragment>
+                <Descriptions.Item label="处理结果">{ goldEntryDissentOrderDetail.issue_result }</Descriptions.Item>
+                {
+                  goldEntryDissentOrderDetail.forfiet && 
+                  <Descriptions.Item label="惩罚金额">{ `${goldEntryDissentOrderDetail.forfiet}USDT` }</Descriptions.Item>
+                }
+              </Fragment>
+            }
+            <Descriptions.Item label="创建时间">
               {moment(goldEntryDissentOrderDetail.created_at)
                 .local()
                 .format('YYYY-MM-DD HH:mm:ss')}
             </Descriptions.Item>
-            <Descriptions.Item label="操作">
-              <Button type="primary" onClick={this.handleKF}>
-                客服介入
-              </Button>
-              <span style={{ display: 'inline-block', width: '10px' }}></span>
-              <Button loading={closeLock} type="danger" onClick={this.closeObjection}>
-                关闭异议
-              </Button>
-            </Descriptions.Item>
+            {
+              (goldEntryDissentOrderDetail.issue_state == 1 
+              || goldEntryDissentOrderDetail.complainant == 1) &&
+              <Descriptions.Item label="操作">
+                {
+                  goldEntryDissentOrderDetail.issue_state == 1 &&
+                  <Fragment>
+                    <Button type="primary" onClick={this.handleKF}>
+                      客服介入
+                    </Button>
+                    <span style={{ display: 'inline-block', width: '10px' }}></span>
+                  </Fragment>
+                }
+                {
+                  goldEntryDissentOrderDetail.complainant == 1 &&
+                  <Popconfirm title="是否要确认关闭异议？" onConfirm={this.closeObjection}>
+                    <Button type="danger" loading={closeLock}>关闭异议</Button>
+                  </Popconfirm>
+                }
+              </Descriptions.Item>
+            }
           </Descriptions>
         </div>
         {KFVisible && (

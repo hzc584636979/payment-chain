@@ -2,6 +2,7 @@ import { Button, Descriptions, Popconfirm, Input, message, Upload, Icon } from '
 import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
+import router from 'umi/router';
 import ContLayout from '@/components/ContLayout';
 import { getBase64 } from '@/utils/utils';
 import Layer from '@/components/Layer';
@@ -27,6 +28,7 @@ function beforeUpload(file) {
 @connect(({ buyDissentOrderDetail, loading }) => ({
   buyDissentOrderDetail,
   fetchLoading: loading.effects['buyDissentOrderDetail/fetch'],
+  receiptLoading: loading.effects['buyDissentOrderDetail/receiptFromMerchant'],
 }))
 class BuyDissentOrderDetail extends Component {
   state = {
@@ -154,14 +156,32 @@ class BuyDissentOrderDetail extends Component {
       }else {
         message.success('操作成功');
       }
-      this.setState({
-        KFVisible: false,
-      })
+      router.push(`/dissentOrder/buyOrder?history`);
+    })
+  }
+
+  receiptFromMerchant = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'buyDissentOrderDetail/receiptFromMerchant',
+      payload: {
+        payment_screenshot: null
+      },
+    }).then(data => {
+      if(data.status != 1) {
+        message.error(data.msg);
+        return;
+      }else {
+        message.success('操作成功');
+      }
+      dispatch({
+        type: 'buyDissentOrderDetail/fetch',
+      });
     })
   }
 
   render() {
-    const { buyDissentOrderDetail, fetchLoading } = this.props;
+    const { buyDissentOrderDetail, fetchLoading, receiptLoading } = this.props;
     const { KFVisible, submitLock, closeLock, loading, upLock } = this.state;
     const KFStatus = true/*new Date().getTime() - moment(buyDissentOrderDetail.issue_create_time).local().format('x') > 3 * 60 * 60 * 1000 ? true : false*/;
     const fileList = buyDissentOrderDetail.issue_file ? buyDissentOrderDetail.issue_file.split(',') : [];
@@ -177,17 +197,13 @@ class BuyDissentOrderDetail extends Component {
         <div className={styles.wrap}>
           <Descriptions column={1}>
             <Descriptions.Item label="异议时间">{ moment(buyDissentOrderDetail.issue_create_time).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
-            <Descriptions.Item label="问题类型">{ buyDissentOrderDetail.issue_type }</Descriptions.Item>
+            <Descriptions.Item label="平台订单号">{ buyDissentOrderDetail.order_id }</Descriptions.Item>
+            {/*<Descriptions.Item label="问题类型">{ buyDissentOrderDetail.issue_type }</Descriptions.Item>*/}
             <Descriptions.Item label="问题描述">{ buyDissentOrderDetail.issue_desc }</Descriptions.Item>
             <Descriptions.Item label="问题图片">
               { fileList.map((v, i) => <a key={i} target="_blank" href={v}><img src={v} style={{maxWidth: 150}} /></a>) }
             </Descriptions.Item>
             <Descriptions.Item label="处理状态">{ issueTypeStatus[buyDissentOrderDetail.issue_state] }</Descriptions.Item>
-            {
-              buyDissentOrderDetail.issue_state == 2 &&
-              <Descriptions.Item label="处理结果">{ buyDissentOrderDetail.issue_result }</Descriptions.Item>
-            }
-            <Descriptions.Item label="平台订单号">{ buyDissentOrderDetail.order_id }</Descriptions.Item>
             <Descriptions.Item label="唯一标示号">{ buyDissentOrderDetail.out_order_id }</Descriptions.Item>
             <Descriptions.Item label="订单状态">{ buyStatusType[buyDissentOrderDetail.state] }</Descriptions.Item>
             <Descriptions.Item label="订单金额/代币数量">{ `${buyDissentOrderDetail.pay_amount_cny} ${cashType[buyDissentOrderDetail.currency_type]}/${buyDissentOrderDetail.pay_amount} ${coinType[buyDissentOrderDetail.token_id]}` }</Descriptions.Item>
@@ -234,19 +250,50 @@ class BuyDissentOrderDetail extends Component {
               </Fragment>
             }
 
+            {
+              buyDissentOrderDetail.issue_state == 2 &&
+              <Fragment>
+                <Descriptions.Item label="处理结果">{ buyDissentOrderDetail.issue_result }</Descriptions.Item>
+                {
+                  buyDissentOrderDetail.forfiet && 
+                  <Descriptions.Item label="惩罚金额">{ `${buyDissentOrderDetail.forfiet}USDT` }</Descriptions.Item>
+                }
+              </Fragment>
+            }
+
             <Descriptions.Item label="创建时间">{ moment(buyDissentOrderDetail.created_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
-            <Descriptions.Item label="订单更新时间">{ moment(buyDissentOrderDetail.updated_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
+            {/*<Descriptions.Item label="订单更新时间">{ moment(buyDissentOrderDetail.updated_at).local().format('YYYY-MM-DD HH:mm:ss') }</Descriptions.Item>
             <Descriptions.Item label="接单时间">{ buyDissentOrderDetail.transfer_time ? moment(buyDissentOrderDetail.transfer_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
-            <Descriptions.Item label="转款时间">{ buyDissentOrderDetail.confirm_time ? moment(buyDissentOrderDetail.confirm_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>
-            <Descriptions.Item label="操作">
-              {
-                
-                <Button type="primary" onClick={this.handleKF}>客服介入</Button>
-              }
-              
-              <span style={{display: 'inline-block', width: '10px'}}></span>
-              <Button loading={closeLock} type="danger" onClick={this.closeObjection}>关闭异议</Button>
-            </Descriptions.Item>
+            <Descriptions.Item label="转款时间">{ buyDissentOrderDetail.confirm_time ? moment(buyDissentOrderDetail.confirm_time).local().format('YYYY-MM-DD HH:mm:ss') : EXHIBITION2 }</Descriptions.Item>*/}
+            {
+              ((buyDissentOrderDetail.issue_state != 2 && buyDissentOrderDetail.state == 7) 
+              || buyDissentOrderDetail.issue_state == 1 
+              || buyDissentOrderDetail.complainant == 2) && 
+              <Descriptions.Item label="操作">
+                {
+                  (buyDissentOrderDetail.issue_state != 2 && buyDissentOrderDetail.state == 7) && 
+                  <Fragment>
+                    <Popconfirm title="是否要确认成交？" onConfirm={this.receiptFromMerchant}>
+                      <Button loading={receiptLoading}>确认成交</Button>
+                    </Popconfirm>
+                    <span style={{display: 'inline-block', width: '10px'}}></span>
+                  </Fragment>
+                }
+                {
+                  buyDissentOrderDetail.issue_state == 1 &&
+                  <Fragment>
+                    <Button type="primary" onClick={this.handleKF}>客服介入</Button>
+                    <span style={{display: 'inline-block', width: '10px'}}></span>
+                  </Fragment>
+                }
+                {
+                  buyDissentOrderDetail.complainant == 2 &&
+                  <Popconfirm title="是否要确认关闭异议？" onConfirm={this.closeObjection}>
+                    <Button type="danger" loading={closeLock}>关闭异议</Button>
+                  </Popconfirm>
+                }
+              </Descriptions.Item>
+            }
           </Descriptions>
         </div>
         {

@@ -1,4 +1,4 @@
-import { buyDissentOrder, buyDissentOrderSearchAll } from '@/services/api';
+import { buyDissentOrder, buyDissentOrderSearchAll, buyOrderReceipt } from '@/services/api';
 
 const Model = {
   namespace: 'buyDissentOrder',
@@ -42,6 +42,10 @@ const Model = {
     *export({ payload }, { call, put }) {
       console.log(payload)
       const response = yield call(buyDissentOrderSearchAll, payload);
+      return response;
+    },
+    *receiptFromMerchant({ payload }, { call, put }) {
+      const response = yield call(buyOrderReceipt, payload);
       return response;
     },
   },

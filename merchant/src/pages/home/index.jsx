@@ -259,6 +259,45 @@ class Home extends Component {
     });
   };
 
+  getHeaderMessage = () => {
+    const { currentUser } = this.props;
+    if(!currentUser.real_name_passed) {
+      return (
+        <Row
+          className={styles.message1}
+          type="flex"
+          justify="space-between"
+        >
+          <Col>
+            您尚未通过支付链商家认证，<Link to="/account">去认证></Link>
+          </Col>
+        </Row>
+      )
+    }else if(!currentUser.trade_permission) {
+      return (
+        <Row
+          className={styles.message1}
+          type="flex"
+          justify="space-between"
+        >
+          <Col>
+            当前账号因为在异议订单中有一方申请客服介入，现已被冻结，请及时联系管理员：{`${currentUser.parent_name} ${currentUser.manager_telephone_number}`}
+          </Col>
+        </Row>
+      )
+    }else if(currentUser.real_name_passed) {
+      return (
+        <Row
+          className={`${styles.message1} ${styles.passed}`}
+          type="flex"
+          justify="space-between"
+        >
+          <Col>您已通过支付链商家认证</Col>
+        </Row>
+      )
+    }
+  }
+
   render() {
     const {
       tokenBalance1,
@@ -343,24 +382,7 @@ class Home extends Component {
                 </Col>
                 <Col xl={19} md={24} sm={24} xs={24}>
                   <div className={`${styles.layoutRight} ${styles.messageWrap}`}>
-                    {currentUser.real_name_passed ? (
-                      <Row
-                        className={`${styles.message1} ${styles.passed}`}
-                        type="flex"
-                        justify="space-between"
-                      >
-                        <Col>您已通过支付链商家认证</Col>
-                      </Row>
-                    ) : (
-                      <Row className={styles.message1} type="flex" justify="space-between">
-                        <Col>
-                          您尚未通过支付链商家认证，<Link to="/account">去认证></Link>
-                        </Col>
-                        {/*<Col>
-                          <Link to="/message" style={{color: '#2194FF'}}>了解详情</Link>
-                        </Col>*/}
-                      </Row>
-                    )}
+                    { this.getHeaderMessage() }
                     <div className={styles.message2}>
                       <Carousel
                         style={{

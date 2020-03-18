@@ -1,4 +1,4 @@
-import { queryBuyDissentOrderDetail, buyDissentOrderKF, buyDissentOrderClose } from '@/services/api';
+import { queryBuyDissentOrderDetail, buyDissentOrderKF, buyDissentOrderClose, buyOrderReceipt } from '@/services/api';
 import pathToRegexp from 'path-to-regexp';
 
 const Model = {
@@ -27,6 +27,12 @@ const Model = {
       const match = pathToRegexp('/dissentOrder/buyOrder_detail/:id').exec(window.location.pathname);
       const payload1 = { order_id: match[1], order_type: 1 };
       const response = yield call(buyDissentOrderClose, payload1);
+      return response;
+    },
+    *receiptFromMerchant({ payload }, { call, put }) {
+      const match = pathToRegexp('/dissentOrder/buyOrder_detail/:id').exec(window.location.pathname);
+      const payload1 = { ...payload, order_id: match[1] };
+      const response = yield call(buyOrderReceipt, payload1);
       return response;
     },
   },

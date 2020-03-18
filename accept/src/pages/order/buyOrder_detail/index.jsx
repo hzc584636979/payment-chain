@@ -2,6 +2,7 @@ import { Button, Descriptions, Popconfirm, Input, message, Popover, Icon, Upload
 import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
+import router from 'umi/router';
 import ContLayout from '@/components/ContLayout';
 import Layer from '@/components/Layer';
 import { getBase64 } from '@/utils/utils';
@@ -84,9 +85,7 @@ class buyOrderDetail extends Component {
       }else {
         message.success('操作成功');
       }
-      dispatch({
-        type: 'buyOrderDetail/fetch',
-      });
+      router.push(`/order/buyOrder?history`);
     })
   }
 

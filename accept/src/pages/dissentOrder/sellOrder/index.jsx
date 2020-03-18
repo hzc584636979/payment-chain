@@ -247,7 +247,7 @@ class SellDissentOrder extends Component {
           return(
             <span>
               {
-                (record.state == 1 || record.state == 2 || record.state == 8) &&
+                (record.state == 1 || record.state == 2 || record.state == 4 || record.state == 8) &&
                 <Fragment>
                   <Popconfirm title="是否要确认收款？" onConfirm={() => this.receipt(record.order_id)}>
                     <Button>确认收款</Button>
