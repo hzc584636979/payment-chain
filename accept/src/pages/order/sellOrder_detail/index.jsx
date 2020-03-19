@@ -74,6 +74,11 @@ const CreateModifyForm = Form.create()(props => {
 @connect(({ sellOrderDetail, loading }) => ({
   sellOrderDetail,
   loading: loading.effects['sellOrderDetail/fetch'],
+  receiptLoading: loading.effects['sellOrderDetail/receipt'],
+  noReceiptLoading: loading.effects['sellOrderDetail/noReceipt'],
+  orderCancelLoading: loading.effects['sellOrderDetail/orderCancel'],
+  modifyPriceLoading: loading.effects['sellOrderDetail/modifyPrice'],
+  orderWithdrawLoading: loading.effects['sellOrderDetail/orderWithdraw'],
 }))
 class SellOrderDetail extends Component {
   state = {
@@ -234,7 +239,15 @@ class SellOrderDetail extends Component {
   }
 
   render() {
-    const { sellOrderDetail, loading } = this.props;
+    const { 
+      sellOrderDetail,
+      loading,
+      receiptLoading,
+      noReceiptLoading,
+      orderCancelLoading,
+      modifyPriceLoading,
+      orderWithdrawLoading, 
+    } = this.props;
     const time = (new Date().getTime() - moment(sellOrderDetail.updated_at).local().format('x')) > 5 * 60 * 1000 ? true : false;
 
     const lessTime = this.getAging(sellOrderDetail);
@@ -307,7 +320,7 @@ class SellOrderDetail extends Component {
               /*sellOrderDetail.state == 1 &&
               <Descriptions.Item label="操作">
                 <Popconfirm title="是否要确认收款？" onConfirm={this.receipt}>
-                  <Button>确认收款</Button>
+                  <Button loading={receiptLoading}>确认收款</Button>
                 </Popconfirm>
               </Descriptions.Item>*/
             }
@@ -315,7 +328,7 @@ class SellOrderDetail extends Component {
               /*lessTime > 0 && sellOrderDetail.state == 2 &&
               <Descriptions.Item label="操作">
                 <Popconfirm title="是否要确认收款？" onConfirm={this.receipt}>
-                  <Button>确认收款</Button>
+                  <Button loading={receiptLoading}>确认收款</Button>
                 </Popconfirm>
                 {
                   time &&
@@ -332,18 +345,18 @@ class SellOrderDetail extends Component {
               (sellOrderDetail.state == 1 || sellOrderDetail.state == 2) &&
               <Descriptions.Item label="操作">
                 <Popconfirm title="是否要确认收款？" onConfirm={this.receipt}>
-                  <Button>确认收款</Button>
+                  <Button loading={receiptLoading}>确认收款</Button>
                 </Popconfirm>
                 <span style={{display: 'inline-block', width: '10px'}}></span>
                 
                 {
                   sellOrderDetail.state == 1 ?
                   <Popconfirm title="是否要确认取消订单？" onConfirm={this.orderCancel}>
-                    <Button>取消订单</Button>
+                    <Button loading={orderCancelLoading}>取消订单</Button>
                   </Popconfirm>
                   :
                   <Popconfirm title="是否要确认未收款？" onConfirm={this.noReceipt}>
-                    <Button>未收到收款</Button>
+                    <Button loading={noReceiptLoading}>未收到收款</Button>
                   </Popconfirm>
                 }
                 <span style={{display: 'inline-block', width: '10px'}}></span>
@@ -354,7 +367,7 @@ class SellOrderDetail extends Component {
               sellOrderDetail.state == 3 &&
               <Descriptions.Item label="操作">
                 <Popconfirm title="是否要确认撤回？" onConfirm={this.orderWithdraw}>
-                  <Button>12小时撤回权</Button>
+                  <Button loading={orderWithdrawLoading}>12小时撤回权</Button>
                 </Popconfirm>
               </Descriptions.Item>
             }
@@ -362,7 +375,7 @@ class SellOrderDetail extends Component {
               (sellOrderDetail.state == 4 || sellOrderDetail.state == 8) &&
               <Descriptions.Item label="操作">
                 <Popconfirm title="是否要确认收款？" onConfirm={this.receipt}>
-                  <Button>确认收款</Button>
+                  <Button loading={receiptLoading}>确认收款</Button>
                 </Popconfirm>
               </Descriptions.Item>
             }

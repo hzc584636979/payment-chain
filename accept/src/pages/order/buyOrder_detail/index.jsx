@@ -30,6 +30,10 @@ const { TextArea } = Input;
 @connect(({ buyOrderDetail, loading }) => ({
   buyOrderDetail,
   loading: loading.effects['buyOrderDetail/fetch'],
+  transferLoading: loading.effects['buyOrderDetail/transfer'],
+  changeTransferLoading: loading.effects['buyOrderDetail/changeTransfer'],
+  receiptLoading: loading.effects['buyOrderDetail/receipt'],
+  receiptFromMerchantLoading: loading.effects['buyOrderDetail/receiptFromMerchant'],
 }))
 class buyOrderDetail extends Component {
   state = {
@@ -193,7 +197,14 @@ class buyOrderDetail extends Component {
   }
 
   render() {
-    const { buyOrderDetail, loading } = this.props;
+    const { 
+      buyOrderDetail, 
+      loading,
+      transferLoading,
+      changeTransferLoading,
+      receiptLoading,
+      receiptFromMerchantLoading, 
+    } = this.props;
     const { handleUploadImgLoading, receiptImg, visible } = this.state;
     const lessTime = this.getAging(buyOrderDetail);
     const hoursTime = 60 * 60 * 1000;
@@ -299,7 +310,7 @@ class buyOrderDetail extends Component {
                           </div>
                           <Button onClick={this.handleReceiptChange}>取消</Button>
                           <span style={{display: 'inline-block', width: '10px'}}></span>
-                          <Button disabled={!receiptImg} type="primary" onClick={this.receipt}>确定</Button>
+                          <Button loading={receiptLoading} disabled={!receiptImg} type="primary" onClick={this.receipt}>确定</Button>
                         </div>
                       }
                       trigger="click"
@@ -309,18 +320,18 @@ class buyOrderDetail extends Component {
                     </Popover>
                     <span style={{display: 'inline-block', width: '10px'}}></span>
                     <Popconfirm title="是否要确认等待商户确认？" onConfirm={this.receiptFromMerchant}>
-                      <Button>等待商户确认</Button>
+                      <Button loading={receiptFromMerchantLoading}>等待商户确认</Button>
                     </Popconfirm>
                   </Fragment>
                   :
                   buyOrderDetail.state == 3 ?
                   <Fragment>
                     <Popconfirm title="是否要确认接单？" onConfirm={this.transfer}>
-                      <Button type="primary">确认接单</Button>
+                      <Button loading={transferLoading} type="primary">确认接单</Button>
                     </Popconfirm>
                     <span style={{display: 'inline-block', width: '10px'}}></span>
                     <Popconfirm title="是否要确认让别人接单？" onConfirm={this.changeTransfer}>
-                      <Button>让别人接单</Button>
+                      <Button loading={changeTransferLoading}>让别人接单</Button>
                     </Popconfirm>
                   </Fragment>
                   :
@@ -332,7 +343,7 @@ class buyOrderDetail extends Component {
               buyOrderDetail.state == 7 && 
               <Descriptions.Item label="操作">
                 <Popconfirm title="是否要确认成交？" onConfirm={this.receiptFromMerchant}>
-                  <Button>确认成交</Button>
+                  <Button loading={receiptFromMerchantLoading}>确认成交</Button>
                 </Popconfirm>
               </Descriptions.Item>
             }

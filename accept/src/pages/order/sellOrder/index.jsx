@@ -91,6 +91,11 @@ const CreateModifyForm = Form.create()(props => {
 @connect(({ sellOrder, loading }) => ({
   sellOrder,
   loading: loading.effects['sellOrder/fetch'],
+  receiptLoading: loading.effects['sellOrder/receipt'],
+  noReceiptLoading: loading.effects['sellOrder/noReceipt'],
+  orderCancelLoading: loading.effects['sellOrder/orderCancel'],
+  modifyPriceLoading: loading.effects['sellOrder/modifyPrice'],
+  orderWithdrawLoading: loading.effects['sellOrder/orderWithdraw'],
 }))
 @Form.create()
 class SellOrder extends Component {
@@ -455,7 +460,14 @@ class SellOrder extends Component {
   }
 
   render() {
-    const { loading } = this.props;
+    const { 
+      loading,
+      receiptLoading,
+      noReceiptLoading,
+      orderCancelLoading,
+      modifyPriceLoading,
+      orderWithdrawLoading, 
+    } = this.props;
     const { history, list, pagination } = this.props.sellOrder.data;
     const { exportVisible, modifyVisible, params } = this.state;
 
@@ -480,11 +492,11 @@ class SellOrder extends Component {
                 /*record.state == 1 &&
                 <Fragment>
                   <Popconfirm title="是否要确认收款？" onConfirm={() => this.receipt(record.order_id)}>
-                    <Button>确认收款</Button>
+                    <Button loading={receiptLoading}>确认收款</Button>
                   </Popconfirm>
                   <span style={{display: 'inline-block', width: '10px'}}></span>
                   <Popconfirm title="是否要确认未收款？" onConfirm={() => this.noReceipt(record.order_id)}>
-                    <Button>未收到收款</Button>
+                    <Button loading={noReceiptLoading}>未收到收款</Button>
                   </Popconfirm>
                 </Fragment>*/
               }
@@ -492,11 +504,11 @@ class SellOrder extends Component {
                 /*this.getAging(record) && record.state == 2 &&
                 <Fragment>
                   <Popconfirm title="是否要确认收款？" onConfirm={() => this.receipt(record.order_id)}>
-                    <Button>确认收款</Button>
+                    <Button loading={receiptLoading}>确认收款</Button>
                   </Popconfirm>
                   <span style={{display: 'inline-block', width: '10px'}}></span>
                   <Popconfirm title="是否要确认未收款？" onConfirm={() => this.noReceipt(record.order_id)}>
-                    <Button>未收到收款</Button>
+                    <Button loading={noReceiptLoading}>未收到收款</Button>
                   </Popconfirm>
                 </Fragment>*/
               }
@@ -505,16 +517,16 @@ class SellOrder extends Component {
                 <Fragment>
                   <Row type="flex" justify="space-around">
                     <Popconfirm title="是否要确认收款？" onConfirm={() => this.receipt(record.order_id)}>
-                      <Button>确认收款</Button>
+                      <Button loading={receiptLoading}>确认收款</Button>
                     </Popconfirm>
                     {
                       record.state == 1 ?
                       <Popconfirm title="是否要确认取消订单？" onConfirm={() => this.orderCancel(record.order_id)}>
-                        <Button>取消订单</Button>
+                        <Button loading={orderCancelLoading}>取消订单</Button>
                       </Popconfirm>
                       :
                       <Popconfirm title="是否要确认未收款？" onConfirm={() => this.noReceipt(record.order_id)}>
-                        <Button>未收到收款</Button>
+                        <Button loading={noReceiptLoading}>未收到收款</Button>
                       </Popconfirm>
                     }
                   </Row>
@@ -527,7 +539,7 @@ class SellOrder extends Component {
                 record.state == 3 &&
                 <Fragment>
                   <Popconfirm title="是否要确认撤回？" onConfirm={() => this.orderWithdraw(record.order_id)}>
-                    <Button>12小时撤回权</Button>
+                    <Button loading={orderWithdrawLoading}>12小时撤回权</Button>
                   </Popconfirm>
                   <span style={{display: 'inline-block', width: '10px'}}></span>
                 </Fragment> 
@@ -536,7 +548,7 @@ class SellOrder extends Component {
                 (record.state == 4 || record.state == 8) &&
                 <Fragment>
                   <Popconfirm title="是否要确认收款？" onConfirm={() => this.receipt(record.order_id)}>
-                    <Button>确认收款</Button>
+                    <Button loading={receiptLoading}>确认收款</Button>
                   </Popconfirm>
                   <span style={{display: 'inline-block', width: '10px'}}></span>
                 </Fragment> 

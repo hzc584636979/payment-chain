@@ -51,6 +51,10 @@ const getValue = obj =>
 @connect(({ buyOrder, loading }) => ({
   buyOrder,
   loading: loading.effects['buyOrder/fetch'],
+  transferLoading: loading.effects['buyOrder/transfer'],
+  changeTransferLoading: loading.effects['buyOrder/changeTransfer'],
+  receiptLoading: loading.effects['buyOrder/receipt'],
+  receiptFromMerchantLoading: loading.effects['buyOrder/receiptFromMerchant'],
 }))
 @Form.create()
 class BuyOrder extends Component {
@@ -449,7 +453,13 @@ class BuyOrder extends Component {
   }
 
   render() {
-    const { loading } = this.props;
+    const { 
+      loading, 
+      transferLoading,
+      changeTransferLoading,
+      receiptLoading,
+      receiptFromMerchantLoading,
+    } = this.props;
     const { handleUploadImgLoading, receiptImg, receiptId } = this.state;
     const { history, list, pagination } = this.props.buyOrder.data;
 
@@ -491,7 +501,7 @@ class BuyOrder extends Component {
                           </div>
                           <Button onClick={this.handleReceiptChange}>取消</Button>
                           <span style={{display: 'inline-block', width: '10px'}}></span>
-                          <Button disabled={!receiptImg} type="primary" onClick={() => this.receipt(record.order_id)}>确定</Button>
+                          <Button loading={receiptLoading} disabled={!receiptImg} type="primary" onClick={() => this.receipt(record.order_id)}>确定</Button>
                         </div>
                       }
                       trigger="click"
@@ -501,7 +511,7 @@ class BuyOrder extends Component {
                     </Popover>
                     <span style={{display: 'inline-block', width: '10px'}}></span>
                     <Popconfirm title="是否要确认等待商户确认？" onConfirm={() => this.receiptFromMerchant(record.order_id)}>
-                      <Button>等待商户确认</Button>
+                      <Button loading={receiptFromMerchantLoading}>等待商户确认</Button>
                     </Popconfirm>
                     <span style={{display: 'inline-block', width: '10px'}}></span>
                     <Button>
@@ -512,11 +522,11 @@ class BuyOrder extends Component {
                   record.state == 3 ?
                   <Fragment>
                     <Popconfirm title="是否要确认接单？" onConfirm={() => this.transfer(record)}>
-                      <Button>确认接单</Button>
+                      <Button loading={transferLoading}>确认接单</Button>
                     </Popconfirm>
                     <span style={{display: 'inline-block', width: '10px'}}></span>
                     <Popconfirm title="是否要确认让别人接单？" onConfirm={() => this.changeTransfer(record.order_id)}>
-                      <Button>让别人接单</Button>
+                      <Button loading={changeTransferLoading}>让别人接单</Button>
                     </Popconfirm>
                   </Fragment>
                   :
@@ -528,7 +538,7 @@ class BuyOrder extends Component {
               {
                 record.state == 7 &&
                 <Popconfirm title="是否要确认成交？" onConfirm={() => this.receiptFromMerchant(record.order_id)}>
-                  <Button>确认成交</Button>
+                  <Button loading={receiptFromMerchantLoading}>确认成交</Button>
                 </Popconfirm>
               }
               <span style={{display: 'inline-block', width: '10px'}}></span>
