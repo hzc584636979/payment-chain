@@ -173,9 +173,9 @@ class WithdrawApply extends Component {
     } = this.state;
     const allBalance = currentUser.id ? new BigNumber(wei2USDT(currentUser.erc20.balance)).plus(new BigNumber(wei2USDT(currentUser.omni.balance, 'omni'))).toNumber() : 0;
     const allLockBalance = currentUser.id ? new BigNumber(wei2USDT(currentUser.erc20.lock_balance)).plus(new BigNumber(wei2USDT(currentUser.omni.lock_balance, 'omni'))).toNumber() : 0;
-    const gas = currentUser.id
+    const gas = 0/*currentUser.id
       ? currentUser.erc20.gas
-      : 0;
+      : 0*/;
 
     return (
       <ContLayout>
