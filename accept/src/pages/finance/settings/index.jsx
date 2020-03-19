@@ -32,12 +32,22 @@ class FinanceSettings extends Component {
   }
 
   handleMinCoin = e => {
+    const { financeSettings } = this.props;
+    if(e.target.value.toString().indexOf('.') > -1 && e.target.value.toString().split('.')[1].length > 2) {
+      message.error('收款金额的小数不能大于2位');
+      return;
+    }
     this.setState({
       minCoin: e.target.value
     })
   }
 
   handleMaxCoin = e => {
+    const { financeSettings } = this.props;
+    if(e.target.value.toString().indexOf('.') > -1 && e.target.value.toString().split('.')[1].length > 2) {
+      message.error('收款金额的小数不能大于2位');
+      return;
+    }
     this.setState({
       maxCoin: e.target.value
     })
@@ -50,11 +60,14 @@ class FinanceSettings extends Component {
       message.error('请修改金额后保存');
       return;
     }
-    if(minCoin < financeSettings.limit_min_amount || minCoin > financeSettings.limit_max_amount || maxCoin < financeSettings.limit_min_amount || maxCoin > financeSettings.limit_max_amount){
+    if(minCoin < financeSettings.limit_min_amount 
+      || minCoin > financeSettings.limit_max_amount 
+      || maxCoin < financeSettings.limit_min_amount 
+      || maxCoin > financeSettings.limit_max_amount){
       message.error(`最小不低于${financeSettings.limit_min_amount}CNY,最大不高于${financeSettings.limit_max_amount}CNY`);
       return;
     }
-    if(minCoin > maxCoin) {
+    if(Number(minCoin) > Number(maxCoin)) {
       message.error(`最小值不可大于最大值`);
       return;
     }

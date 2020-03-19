@@ -31,6 +31,7 @@ const getValue = obj =>
 @connect(({ sellDissentOrder, loading }) => ({
   sellDissentOrder,
   loading: loading.effects['sellDissentOrder/fetch'],
+  receiptLoading: loading.effects['sellDissentOrder/receipt'],
 }))
 @Form.create()
 class SellDissentOrder extends Component {
@@ -234,7 +235,7 @@ class SellDissentOrder extends Component {
   }
 
   render() {
-    const { loading } = this.props;
+    const { loading, receiptLoading } = this.props;
     const { history, list, pagination } = this.props.sellDissentOrder.data;
     const columns = [
       {
@@ -250,7 +251,7 @@ class SellDissentOrder extends Component {
                 (record.issue_state != 2 && (record.state == 1 || record.state == 2 || record.state == 4 || record.state == 8)) &&
                 <Fragment>
                   <Popconfirm title="是否要确认收款？" onConfirm={() => this.receipt(record.order_id)}>
-                    <Button>确认收款</Button>
+                    <Button loading={receiptLoading}>确认收款</Button>
                   </Popconfirm>
                   <span style={{display: 'inline-block', width: '10px'}}></span>
                 </Fragment> 
