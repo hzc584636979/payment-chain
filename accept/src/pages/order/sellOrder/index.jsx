@@ -30,7 +30,7 @@ const getValue = obj =>
     .join(',');
 
 const CreateModifyForm = Form.create()(props => {
-  const { modalVisible, form, submit, cancel, params } = props;
+  const { modalVisible, form, submit, cancel, params, modifyPriceLoading } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -59,6 +59,7 @@ const CreateModifyForm = Form.create()(props => {
       visible={modalVisible}
       onOk={okHandle}
       onCancel={cancelHandle}
+      confirmLoading={modifyPriceLoading}
       centered
       okText='确认'
     >
@@ -475,6 +476,7 @@ class SellOrder extends Component {
       submit: this.modify,
       cancel: this.modifyCancel,
       params,
+      modifyPriceLoading,
     };
 
     const columns = [

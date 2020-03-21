@@ -536,7 +536,7 @@ class BuyOrder extends Component {
                 null
               }
               {
-                record.state == 7 &&
+                record.state == 8 &&
                 <Popconfirm title="是否要确认成交？" onConfirm={() => this.receiptFromMerchant(record.order_id)}>
                   <Button loading={receiptFromMerchantLoading}>确认成交</Button>
                 </Popconfirm>

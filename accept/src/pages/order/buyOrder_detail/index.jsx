@@ -340,7 +340,7 @@ class buyOrderDetail extends Component {
               </Descriptions.Item>
             }
             {
-              buyOrderDetail.state == 7 && 
+              buyOrderDetail.state == 8 && 
               <Descriptions.Item label="操作">
                 <Popconfirm title="是否要确认成交？" onConfirm={this.receiptFromMerchant}>
                   <Button loading={receiptFromMerchantLoading}>确认成交</Button>

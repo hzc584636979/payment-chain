@@ -271,7 +271,7 @@ class BuyDissentOrderDetail extends Component {
               || buyDissentOrderDetail.complainant == 2) && 
               <Descriptions.Item label="操作">
                 {
-                  (buyDissentOrderDetail.issue_state != 2 && buyDissentOrderDetail.state == 7) && 
+                  (buyDissentOrderDetail.issue_state != 2 && buyDissentOrderDetail.state == 8) && 
                   <Fragment>
                     <Popconfirm title="是否要确认成交？" onConfirm={this.receiptFromMerchant}>
                       <Button loading={receiptLoading}>确认成交</Button>

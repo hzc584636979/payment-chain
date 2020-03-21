@@ -37,7 +37,7 @@ const statusType = {
 };
 
 const CreateForm = Form.create()(props => {
-  const { modalVisible, form, submit, cancel, params } = props;
+  const { modalVisible, form, submit, cancel, params, refuseLoading } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -57,6 +57,7 @@ const CreateForm = Form.create()(props => {
       visible={modalVisible}
       onOk={okHandle}
       onCancel={cancelHandle}
+      confirmLoading={refuseLoading}
       centered
       okText='确认'
     >
@@ -80,6 +81,8 @@ const CreateForm = Form.create()(props => {
 @connect(({ acceptCoinWithdrawApply, loading }) => ({
   acceptCoinWithdrawApply,
   loading: loading.effects['acceptCoinWithdrawApply/fetch'],
+  agreeLoading: loading.effects['acceptCoinWithdrawApply/agree'],
+  refuseLoading: loading.effects['acceptCoinWithdrawApply/refuse'],
 }))
 @Form.create()
 class AccpetCoinWithdrawApply extends Component {
@@ -245,14 +248,19 @@ class AccpetCoinWithdrawApply extends Component {
   }
 
   render() {
-    const { loading } = this.props;
+    const { 
+      loading,
+      agreeLoading,
+      refuseLoading
+    } = this.props;
     const { history, list, pagination } = this.props.acceptCoinWithdrawApply.data;
     const { visible, params } = this.state;
 
     const methods = {
       submit: this.refuse,
       cancel: this.cancel,
-      params
+      params,
+      refuseLoading
     };
 
     const columns = [
@@ -318,7 +326,7 @@ class AccpetCoinWithdrawApply extends Component {
                 record.state == 1 &&
                 <Fragment>
                   <Popconfirm title="是否要确认同意？" onConfirm={() => this.agree(record.id)}>
-                    <Button>同意</Button>
+                    <Button loading={agreeLoading}>同意</Button>
                   </Popconfirm>
                   <span style={{display: 'inline-block', width: '10px'}}></span>
                   <Button onClick={() => this.handleModalVisible(record)}>拒绝</Button>

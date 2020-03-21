@@ -68,6 +68,18 @@ function rsaDecryptLong(content) {
  * 异常处理程序
  */
 let loginOutStatus = false;
+
+const loginOut = () => {
+  loginOutStatus = true;
+  window.g_app._store.dispatch({
+    type: 'login/logout',
+  }).then(data => {
+    setTimeout(() => {
+      loginOutStatus = false;
+    }, 2000) 
+  })
+}
+
 const errorHandler = error => {
   const { response } = error;
 
@@ -79,16 +91,11 @@ const errorHandler = error => {
       description: errorText,
     });
     if(status == 504 && !loginOutStatus) {
-      loginOutStatus = true;
-      window.g_app._store.dispatch({
-        type: 'login/logout',
-      }).then(data => {
-        setTimeout(() => {
-          loginOutStatus = false;
-        }, 1000) 
-      })
+      loginOut();
     }
   } else if (!response) {
+    if(loginOutStatus) return;
+    loginOut();
     notification.error({
       description: '未接收到服务器返回数据',
       message: '发生异常',
@@ -134,19 +141,11 @@ request.interceptors.response.use(async (response) => {
   if(response.status == 200) {
     const data = await response.clone().json();
     if(data.status == 50012 || data.status == 50008) {//登陆过期拦截
+      if(loginOutStatus) return;
+      loginOut();
       notification.error({
         message: data.msg,
       });
-      if(!loginOutStatus) {
-        loginOutStatus = true;
-        window.g_app._store.dispatch({
-          type: 'login/logout',
-        }).then(data => {
-          setTimeout(() => {
-            loginOutStatus = false;
-          }, 1000) 
-        })
-      }
     }
     /*try {
       const replaceUrl = process.env.NODE_ENV == 'development' ? response.url.replace(window.location.origin+'/server/api/', baseApi+'/management/api/') : response.url;
