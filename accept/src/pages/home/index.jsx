@@ -424,7 +424,9 @@ class Home extends Component {
                             <div className={styles.item}>
                               <span style={{display: 'inline-block', width: 160}}>冻结余额（USDT）</span>
                               {tokenBalance2 ? 
-                                <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>{ allLockBalance }</span>
+                                <span style={{display: 'inline-block', minWidth: 100,color: '#2194FF'}}>{ new BigNumber(allLockBalance)
+                          .minus(new BigNumber(currentUser.pledge_amount))
+                          .toNumber() }</span>
                                 : 
                                 <span style={{display: 'inline-block', minWidth: 100, color: '#333333'}}>****</span>
                               }
